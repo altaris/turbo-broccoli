@@ -7,6 +7,11 @@ Turbo Broccoli
 
 JSON (de)serialization extensions aimed at `numpy` and `tensorflow` objects.
 
+# Supported types
+
+* `numpy.number`
+* `numpy.ndarray`
+
 # Contributing
 
 ## Dependencies
