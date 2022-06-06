@@ -18,11 +18,15 @@ docs-browser:
 
 .PHONY: format
 format:
-	black --line-length 79 --target-version py39 $(SRC_PATH)
+	black --line-length 79 --target-version py39 $(SRC_PATH) tests/
 
 .PHONY: lint
 lint:
 	pylint $(SRC_PATH)
+
+.PHONY: test
+test:
+	pytest -v
 
 .PHONY: typecheck
 typecheck:
