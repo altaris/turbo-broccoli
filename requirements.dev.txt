@@ -1,0 +1,6 @@
+black
+mypy
+numpy
+pdoc
+pylint
+tensorflow
