@@ -37,7 +37,7 @@ def _json_to_ndarray_v1(dct: dict) -> np.ndarray:
     Converts a JSON document to a numpy array following the v1 specification.
     """
     return np.frombuffer(
-        b64decode(dct["value"]),
+        b64decode(dct["data"]),
         dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
     ).reshape(dct["shape"])
 
