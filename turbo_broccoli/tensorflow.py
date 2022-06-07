@@ -22,6 +22,27 @@ def _json_to_tensor_v1(dct: dict) -> tf.Tensor:
     return tf.constant(dct["numpy"], dtype=dct["dtype"])
 
 
+def _json_to_variable(dct: dict) -> tf.Variable:
+    """Converts a JSON document to a tensorflow variable."""
+    DECODERS = {
+        1: _json_to_variable_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_variable_v1(dct: dict) -> tf.Variable:
+    """
+    Converts a JSON document following the v1 specification to a tensorflow
+    variable.
+    """
+    return tf.Variable(
+        dtype=dct["dtype"],
+        initial_value=dct["numpy"],
+        name=dct["name"],
+        trainable=dct["trainable"],
+    )
+
+
 def _ragged_tensor_to_json(tens: tf.Tensor) -> dict:
     """Serializes a general tensor"""
     raise NotImplementedError(
@@ -39,6 +60,18 @@ def _tensor_to_json(tens: tf.Tensor) -> dict:
     }
 
 
+def _variable_to_json(var: tf.Variable) -> dict:
+    """Serializes a general tensor"""
+    return {
+        "__type__": "variable",
+        "__version__": 1,
+        "dtype": var.dtype.name,
+        "name": var.name,
+        "numpy": var.numpy(),
+        "trainable": var.trainable,
+    }
+
+
 def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a tensorflow object. See `to_json` for the
@@ -47,6 +80,7 @@ def from_json(dct: dict) -> Any:
     """
     DECODERS = {
         "tensor": _json_to_tensor,
+        "variable": _json_to_variable,
     }
     try:
         return DECODERS[dct["__tensorflow__"]["__type__"]](
@@ -82,11 +116,24 @@ def to_json(obj: Any) -> dict:
             }
 
       where `{...}` is the document produced by `turbo_broccoli.numpy.to_json`.
+    * `tf.Variable`:
+
+            {
+                "__type__": "tensor",
+                "__version__": 1,
+                "dtype": <str>,
+                "name": <str>,
+                "numpy": {...},
+                "trainable": <bool>,
+            }
+
+      where `{...}` is the document produced by `turbo_broccoli.numpy.to_json`.
 
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (tf.RaggedTensor, _ragged_tensor_to_json),
         (tf.Tensor, _tensor_to_json),
+        (tf.Variable, _variable_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):

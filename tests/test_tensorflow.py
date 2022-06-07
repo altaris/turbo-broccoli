@@ -20,3 +20,12 @@ def test_tensorflow_numerical():
     _assert_equal(x, from_json(to_json(x)))
     x = tf.random.uniform((10, 10))
     _assert_equal(x, from_json(to_json(x)))
+
+
+def test_tensorflow_variable():
+    x = tf.Variable(1.0)
+    _assert_equal(x, from_json(to_json(x)))
+    x = tf.Variable([1.0])
+    _assert_equal(x, from_json(to_json(x)))
+    x = tf.Variable(tf.random.uniform((10, 10)))
+    _assert_equal(x, from_json(to_json(x)))
