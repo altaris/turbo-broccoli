@@ -27,6 +27,7 @@ lint:
 .PHONY: test
 test:
 	pytest -v
+	-rm out/*
 
 .PHONY: typecheck
 typecheck:

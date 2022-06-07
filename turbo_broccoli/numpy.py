@@ -6,8 +6,11 @@ Todo:
 """
 __docformat__ = "google"
 
-from typing import Any, Callable, List, Tuple
+import os
 from base64 import b64decode, b64encode
+from pathlib import Path
+from typing import Any, Callable, List, Tuple
+from uuid import uuid4
 
 try:
     import numpy as np
@@ -16,8 +19,9 @@ try:
 except ModuleNotFoundError:
     HAS_NUMPY = False
 
-VERSION = 1
-"""numpy document format version"""
+
+DEFAULT_TB_NUMPY_MAX_NBYTES = 8000
+DEFAULT_TB_NUMPY_PATH = "./"
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
@@ -28,6 +32,7 @@ def _json_to_ndarray(dct: dict) -> np.ndarray:
     """
     DECODERS = {
         1: _json_to_ndarray_v1,
+        2: _json_to_ndarray_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -40,6 +45,16 @@ def _json_to_ndarray_v1(dct: dict) -> np.ndarray:
         b64decode(dct["data"]),
         dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
     ).reshape(dct["shape"])
+
+
+def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
+    """
+    Converts a JSON document to a numpy array following the v1 specification.
+    """
+    if "data" in dct:
+        return _json_to_ndarray_v1(dct)
+    path = Path(os.environ.get("TB_NUMPY_PATH", DEFAULT_TB_NUMPY_PATH))
+    return np.load(path / (dct["id"] + ".npy"))
 
 
 def _json_to_number(dct: dict) -> np.number:
@@ -66,12 +81,24 @@ def _json_to_number_v1(dct: dict) -> np.number:
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
     """Serializes a `numpy` array."""
+    max_nbytes = int(
+        os.environ.get("TB_NUMPY_MAX_NBYTES", DEFAULT_TB_NUMPY_MAX_NBYTES)
+    )
+    if arr.nbytes <= max_nbytes:
+        return {
+            "__type__": "ndarray",
+            "__version__": 2,
+            "data": b64encode(arr.data).decode("ASCII"),
+            "dtype": np.lib.format.dtype_to_descr(arr.dtype),
+            "shape": arr.shape,
+        }
+    path = Path(os.environ.get("TB_NUMPY_PATH", DEFAULT_TB_NUMPY_PATH))
+    name = str(uuid4())
+    np.save(path / name, arr)
     return {
         "__type__": "ndarray",
-        "__version__": VERSION,
-        "data": b64encode(arr.data).decode("ASCII"),
-        "dtype": np.lib.format.dtype_to_descr(arr.dtype),
-        "shape": arr.shape,
+        "__version__": 2,
+        "id": name,
     }
 
 
@@ -80,7 +107,7 @@ def _number_to_json(num: np.number) -> dict:
 
     return {
         "__type__": "number",
-        "__version__": VERSION,
+        "__version__": 1,
         "value": b64encode(np.array(num).data).decode("ASCII"),
         "dtype": np.lib.format.dtype_to_descr(num.dtype),
     }
@@ -116,24 +143,44 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `numpy.ndarray`:
+    * `numpy.ndarray`: An array is processed differently depending on its size
+      and on the `TB_NUMPY_MAX_NBYTES` environment variable. If the array is
+      small, i.e. `arr.nbytes <= TB_NUMPY_MAX_NBYTES`, then it is directly
+      stored in the resulting JSON document as
 
             {
                 "__numpy__": {
                     "__type__": "ndarray",
-                    "__version__": <str>,
+                    "__version__": 2,
                     "data": <ASCII encoded byte string>,
                     "dtype": <str>,
                     "shape": <int tuple>,
                 }
             }
 
+      On the other hand, if `arr.nbytes > TB_NUMPY_MAX_NBYTES`, then the
+      content of `arr` is stored in an `.npy` file. Said file is saved to the
+      path specified by the `TB_NUMPY_PATH` environment variable with a random
+      UUID4 as filename. The resulting JSON document looks like
+
+            {
+                "__numpy__": {
+                    "__type__": "ndarray",
+                    "__version__": 2,
+                    "id": <UUID4 str>,
+                }
+            }
+
+      By default, `TB_NUMPY_MAX_NBYTES` is `8000` bytes, which should be enough
+      to store an array of 1000 `float64`s, and `TB_NUMPY_PATH` is `./`.
+      `TB_NUMPY_PATH` must point to an existing directory.
+
     * `numpy.number`:
 
             {
                 "__numpy__": {
                     "__type__": "number",
-                    "__version__": <str>,
+                    "__version__": 1,
                     "value": <float>,
                     "dtype": <str>,
                 }
