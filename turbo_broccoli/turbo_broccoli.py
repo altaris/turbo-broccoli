@@ -8,6 +8,13 @@ from typing import Any, Callable, Dict, List
 import turbo_broccoli.bytes
 
 try:
+    import turbo_broccoli.keras
+
+    HAS_KERAS = True
+except ModuleNotFoundError:
+    HAS_KERAS = False
+
+try:
     import turbo_broccoli.numpy
 
     HAS_NUMPY = True
@@ -36,6 +43,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         DECODERS: Dict[str, Callable[[dict], Any]] = {
             "__bytes__": turbo_broccoli.bytes.from_json,
         }
+        if HAS_KERAS:
+            DECODERS["__keras__"] = turbo_broccoli.keras.from_json
         if HAS_NUMPY:
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
         if HAS_TENSORFLOW:
@@ -57,6 +66,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         ENCODERS: List[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
         ]
+        if HAS_KERAS:
+            ENCODERS.append(turbo_broccoli.keras.to_json)
         if HAS_NUMPY:
             ENCODERS.append(turbo_broccoli.numpy.to_json)
         if HAS_TENSORFLOW:
