@@ -169,5 +169,7 @@ cython_debug/
 *.code-workspace
 .vscode/
 
-# Documentation
+# Other stuff
 docs/
+out/
+playground.py
