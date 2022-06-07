@@ -7,7 +7,6 @@ Todo:
 __docformat__ = "google"
 
 import os
-from base64 import b64decode, b64encode
 from pathlib import Path
 from typing import Any, Callable, List, Tuple
 from uuid import uuid4
@@ -42,7 +41,7 @@ def _json_to_ndarray_v1(dct: dict) -> np.ndarray:
     Converts a JSON document to a numpy array following the v1 specification.
     """
     return np.frombuffer(
-        b64decode(dct["data"]),
+        dct["data"],
         dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
     ).reshape(dct["shape"])
 
@@ -74,7 +73,7 @@ def _json_to_number_v1(dct: dict) -> np.number:
     Converts a JSON document to a numpy number following the v1 specification.
     """
     return np.frombuffer(
-        b64decode(dct["value"]),
+        dct["value"],
         dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
     )[0]
 
@@ -88,7 +87,7 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
         return {
             "__type__": "ndarray",
             "__version__": 2,
-            "data": b64encode(arr.data).decode("ASCII"),
+            "data": bytes(arr.data),
             "dtype": np.lib.format.dtype_to_descr(arr.dtype),
             "shape": arr.shape,
         }
@@ -108,7 +107,7 @@ def _number_to_json(num: np.number) -> dict:
     return {
         "__type__": "number",
         "__version__": 1,
-        "value": b64encode(np.array(num).data).decode("ASCII"),
+        "value": bytes(np.array(num).data),
         "dtype": np.lib.format.dtype_to_descr(num.dtype),
     }
 

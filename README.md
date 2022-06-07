@@ -42,6 +42,7 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 ## Supported types
 
+* `bytes`
 * `numpy.number`
 * `numpy.ndarray`
 

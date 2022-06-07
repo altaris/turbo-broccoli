@@ -5,6 +5,7 @@ import json
 from typing import Any, Callable, Dict, List
 
 
+import turbo_broccoli.bytes
 import turbo_broccoli.numpy
 
 
@@ -19,7 +20,9 @@ class TurboBroccoliDecoder(json.JSONDecoder):
 
     def _hook(self, dct):
         """Deserialization hook"""
-        DECODERS: Dict[str, Callable[[dict], Any]] = {}
+        DECODERS: Dict[str, Callable[[dict], Any]] = {
+            "__bytes__": turbo_broccoli.bytes.from_json,
+        }
         if turbo_broccoli.numpy.HAS_NUMPY:
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
         for t, f in DECODERS.items():
@@ -36,7 +39,9 @@ class TurboBroccoliEncoder(json.JSONEncoder):
 
     def default(self, o: Any) -> Any:
 
-        ENCODERS: List[Callable[[Any], dict]] = []
+        ENCODERS: List[Callable[[Any], dict]] = [
+            turbo_broccoli.bytes.to_json,
+        ]
         if turbo_broccoli.numpy.HAS_NUMPY:
             ENCODERS.append(turbo_broccoli.numpy.to_json)
         for f in ENCODERS:
