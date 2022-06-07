@@ -45,6 +45,7 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 * `bytes`
 * `numpy.number`
 * `numpy.ndarray`
+* `tensorflow.Tensor` but not `tensorflow.RaggedTensor`
 
 # Contributing
 

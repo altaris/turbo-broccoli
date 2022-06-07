@@ -19,7 +19,7 @@ def _assert_equal(a, b):
         assert_equal(a, b)
 
 
-def test_number():
+def test_numpy_number():
     x = np.float32(-1.2)
     _assert_equal(x, from_json(to_json(x)))
     x = np.float32(0.0000000001)
@@ -30,7 +30,7 @@ def test_number():
     _assert_equal(x, from_json(to_json(x)))
 
 
-def test_ndarray():
+def test_numpy_array():
     x = np.array([])
     _assert_equal(x, from_json(to_json(x)))
     x = np.array(1, dtype="int8")
@@ -41,7 +41,7 @@ def test_ndarray():
     _assert_equal(x, from_json(to_json(x)))
 
 
-def test_large_ndarray():
+def test_numpy_large_array():
     os.environ["TB_NUMPY_MAX_NBYTES"] = "8000"
     os.environ["TB_NUMPY_PATH"] = "./out"
     x = np.random.random((100, 100))

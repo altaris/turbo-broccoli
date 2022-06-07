@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List
 
 import turbo_broccoli.bytes
 import turbo_broccoli.numpy
+import turbo_broccoli.tensorflow
 
 
 class TurboBroccoliDecoder(json.JSONDecoder):
@@ -25,6 +26,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         }
         if turbo_broccoli.numpy.HAS_NUMPY:
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
+        if turbo_broccoli.tensorflow.HAS_TENSORFLOW:
+            DECODERS["__tensorflow__"] = turbo_broccoli.tensorflow.from_json
         for t, f in DECODERS.items():
             if t in dct:
                 return f(dct)
@@ -44,6 +47,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         ]
         if turbo_broccoli.numpy.HAS_NUMPY:
             ENCODERS.append(turbo_broccoli.numpy.to_json)
+        if turbo_broccoli.tensorflow.HAS_TENSORFLOW:
+            ENCODERS.append(turbo_broccoli.tensorflow.to_json)
         for f in ENCODERS:
             try:
                 return f(o)
