@@ -3,12 +3,7 @@ __docformat__ = "google"
 
 from typing import Any, Callable, List, Tuple
 
-try:
-    import tensorflow as tf
-
-    HAS_TENSORFLOW = True
-except ModuleNotFoundError:
-    HAS_TENSORFLOW = False
+import tensorflow as tf
 
 
 def _json_to_tensor(dct: dict) -> tf.Tensor:

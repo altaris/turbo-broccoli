@@ -11,12 +11,7 @@ from pathlib import Path
 from typing import Any, Callable, List, Tuple
 from uuid import uuid4
 
-try:
-    import numpy as np
-
-    HAS_NUMPY = True
-except ModuleNotFoundError:
-    HAS_NUMPY = False
+import numpy as np
 
 
 DEFAULT_TB_NUMPY_MAX_NBYTES = 8000

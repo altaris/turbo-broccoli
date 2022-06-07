@@ -20,4 +20,3 @@ def test_tensorflow_numerical():
     _assert_equal(x, from_json(to_json(x)))
     x = tf.random.uniform((10, 10))
     _assert_equal(x, from_json(to_json(x)))
-
