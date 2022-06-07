@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 import json
-from typing import Any
+from typing import Any, Callable, Dict, List
 
 
 import turbo_broccoli.numpy
@@ -19,9 +19,9 @@ class TurboBroccoliDecoder(json.JSONDecoder):
 
     def _hook(self, dct):
         """Deserialization hook"""
-        DECODERS = {
-            "__numpy__": turbo_broccoli.numpy.from_json,
-        }
+        DECODERS: Dict[str, Callable[[dict], Any]] = {}
+        if turbo_broccoli.numpy.HAS_NUMPY:
+            DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
         for t, f in DECODERS.items():
             if t in dct:
                 return f(dct)
@@ -35,9 +35,10 @@ class TurboBroccoliEncoder(json.JSONEncoder):
     """
 
     def default(self, o: Any) -> Any:
-        ENCODERS = [
-            turbo_broccoli.numpy.to_json,
-        ]
+
+        ENCODERS: List[Callable[[Any], dict]] = []
+        if turbo_broccoli.numpy.HAS_NUMPY:
+            ENCODERS.append(turbo_broccoli.numpy.to_json)
         for f in ENCODERS:
             try:
                 return f(o)
