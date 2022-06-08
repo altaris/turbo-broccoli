@@ -1,5 +1,8 @@
 # pylint: disable=missing-function-docstring
-"""Environment variable and settings management."""
+"""
+Environment variable and settings management. See the README for information
+about the supported environment variables.
+"""
 __docformat__ = "google"
 
 import logging

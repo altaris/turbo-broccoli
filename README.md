@@ -40,6 +40,50 @@ For deserialization, simply use
 json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 ```
 
+# Environment variables
+
+Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
+variables. If you want to modify these parameters programatically, do not do so
+by modifying `os.environ`. Rather, use the methods of
+`turbo_broccoli.environment`.
+
+* `TB_ARTIFACT_PATH` (default: `./`): During serialization, Turbo Broccoli may
+  create artifacts to which the JSON object will point to. The artifacts will
+  be stored in `TB_ARTIFACT_PATH`. For example, if `arr` is a big numpy array,
+
+    ```py
+    obj = {"an_array": arr}
+    json.dumps(obj, cls=tb.TurboBroccoliEncoder)
+    ```
+
+  will generate the following string (modulo indentation and id)
+
+    ```
+    {
+        "an_array": {
+            "__numpy__": {
+                "__type__": "ndarray",
+                "__version__": 2,
+                "id": "70692d08-c4cf-4231-b3f0-0969ea552d5a"
+            }
+        }
+    }
+    ```
+
+  and a `70692d08-c4cf-4231-b3f0-0969ea552d5a.npy` file has been created in
+  `TB_ARTIFACT_PATH`.
+
+* `TB_KERAS_FORMAT` (default: `tf`, valid values are `json`, `h5`, and `tf`):
+  The serialization format for keras models. If `h5` or `tf` is used, an
+  artifact following said format will be created in `TB_ARTIFACT_PATH`. If
+  `json` is used, the model will be contained in the JSON document (anthough
+  the weights may be in artifacts if they are too large).
+
+* `TB_NUMPY_MAX_NBYTES` (default: `8000`): The maximum byte size of an numpy
+  array beyond which serialization will produce an artifact instead of storing
+  the array in the JSON document. 8000 bytes should be enough for an array of
+  1000 `float64`s to be stored in-document.
+
 ## Supported types
 
 * `bytes`
