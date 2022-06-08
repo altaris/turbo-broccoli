@@ -40,7 +40,20 @@ For deserialization, simply use
 json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 ```
 
-# Environment variables
+## Supported types
+
+* `bytes`
+* `keras.Model`
+* [`keras.layers.Layer` standard subclasses](https://keras.io/api/layers/)
+* [`keras.losses.Loss` standard subclasses](https://keras.io/api/losses/)
+* [`keras.metrics.Metric` standard subclasses](https://keras.io/api/metrics/)
+* [`keras.optimizers.Optimizer` standard
+  subclasses](https://keras.io/api/optimizers/)
+* `numpy.number`
+* `numpy.ndarray` with numerical dtype
+* `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
+
+## Environment variables
 
 Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
 variables. If you want to modify these parameters programatically, do not do so
@@ -83,13 +96,6 @@ by modifying `os.environ`. Rather, use the methods of
   array beyond which serialization will produce an artifact instead of storing
   the array in the JSON document. 8000 bytes should be enough for an array of
   1000 `float64`s to be stored in-document.
-
-## Supported types
-
-* `bytes`
-* `numpy.number`
-* `numpy.ndarray` with numerical dtype
-* `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
 
 # Contributing
 
