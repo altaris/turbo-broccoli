@@ -43,6 +43,5 @@ def test_numpy_array():
 
 def test_numpy_large_array():
     os.environ["TB_NUMPY_MAX_NBYTES"] = "8000"
-    os.environ["TB_NUMPY_PATH"] = "./out"
     x = np.random.random((100, 100))
     _assert_equal(x, from_json(to_json(x)))

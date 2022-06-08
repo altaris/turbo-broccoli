@@ -7,6 +7,7 @@ Todo:
 __docformat__ = "google"
 
 import os
+import logging
 from pathlib import Path
 from typing import Any, Callable, List, Tuple
 from uuid import uuid4
@@ -15,7 +16,20 @@ import numpy as np
 
 
 DEFAULT_TB_NUMPY_MAX_NBYTES = 8000
-DEFAULT_TB_NUMPY_PATH = "./"
+
+
+def _get_artifact_path() -> Path:
+    """
+    Reads the `TB_NUMPY_PATH` or `TB_ARTIFACT_PATH` environment variable, but logs a
+    warning in the former case.
+    """
+    if "TB_NUMPY_PATH" in os.environ:
+        logging.warning(
+            "The use of the TB_NUMPY_PATH environment variable is deprecated. "
+            "Consider using TB_ARTIFACT_PATH instead"
+        )
+        return Path(os.environ.get("TB_NUMPY_PATH", "./"))
+    return Path(os.environ.get("TB_ARTIFACT_PATH", "./"))
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
@@ -47,7 +61,7 @@ def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
     """
     if "data" in dct:
         return _json_to_ndarray_v1(dct)
-    path = Path(os.environ.get("TB_NUMPY_PATH", DEFAULT_TB_NUMPY_PATH))
+    path = _get_artifact_path()
     return np.load(path / (dct["id"] + ".npy"))
 
 
@@ -86,7 +100,7 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
             "dtype": np.lib.format.dtype_to_descr(arr.dtype),
             "shape": arr.shape,
         }
-    path = Path(os.environ.get("TB_NUMPY_PATH", DEFAULT_TB_NUMPY_PATH))
+    path = _get_artifact_path()
     name = str(uuid4())
     np.save(path / name, arr)
     return {
@@ -154,8 +168,8 @@ def to_json(obj: Any) -> dict:
 
       On the other hand, if `arr.nbytes > TB_NUMPY_MAX_NBYTES`, then the
       content of `arr` is stored in an `.npy` file. Said file is saved to the
-      path specified by the `TB_NUMPY_PATH` environment variable with a random
-      UUID4 as filename. The resulting JSON document looks like
+      path specified by the `TB_ARTIFACT_PATH` environment variable with a
+      random UUID4 as filename. The resulting JSON document looks like
 
             {
                 "__numpy__": {
@@ -166,8 +180,8 @@ def to_json(obj: Any) -> dict:
             }
 
       By default, `TB_NUMPY_MAX_NBYTES` is `8000` bytes, which should be enough
-      to store an array of 1000 `float64`s, and `TB_NUMPY_PATH` is `./`.
-      `TB_NUMPY_PATH` must point to an existing directory.
+      to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
+      `TB_ARTIFACT_PATH` must point to an existing directory.
 
     * `numpy.number`:
 
