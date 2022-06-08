@@ -31,7 +31,7 @@ test:
 
 .PHONY: test-clean
 test-clean:
-	-rm out/test/*
+	-rm -r out/test/*
 
 .PHONY: typecheck
 typecheck:

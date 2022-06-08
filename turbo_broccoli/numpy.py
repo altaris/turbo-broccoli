@@ -43,8 +43,7 @@ def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
     """
     if "data" in dct:
         return _json_to_ndarray_v1(dct)
-    path = get_artifact_path()
-    return np.load(path / (dct["id"] + ".npy"))
+    return np.load(get_artifact_path() / (dct["id"] + ".npy"))
 
 
 def _json_to_number(dct: dict) -> np.number:
@@ -79,9 +78,8 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
             "dtype": np.lib.format.dtype_to_descr(arr.dtype),
             "shape": arr.shape,
         }
-    path = get_artifact_path()
     name = str(uuid4())
-    np.save(path / name, arr)
+    np.save(get_artifact_path() / name, arr)
     return {
         "__type__": "ndarray",
         "__version__": 2,

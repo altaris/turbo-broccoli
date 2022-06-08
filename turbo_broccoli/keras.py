@@ -3,8 +3,10 @@ __docformat__ = "google"
 
 from functools import partial
 from typing import Any, Callable, List, Tuple
+from uuid import uuid4
 
 from tensorflow import keras
+from turbo_broccoli.environment import get_artifact_path, get_keras_format
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
@@ -213,6 +215,7 @@ def _json_to_model(dct: dict) -> Any:
     """Converts a JSON document to a serializable keras object."""
     DECODERS = {
         1: _json_to_model_v1,
+        2: _json_to_model_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -230,6 +233,16 @@ def _json_to_model_v1(dct: dict) -> Any:
             kwargs[k] = dct[k]
     model.compile(**kwargs)
     return model
+
+
+def _json_to_model_v2(dct: dict) -> Any:
+    """
+    Converts a JSON document to a keras model object following the v2
+    specification.
+    """
+    if "model" in dct:
+        return _json_to_model_v1(dct)
+    return keras.models.load_model(get_artifact_path() / dct["id"])
 
 
 def _json_to_optimizer(dct: dict) -> Any:
@@ -262,14 +275,24 @@ def _generic_keras_to_json(obj: Any, type_: str) -> dict:
 
 def _model_to_json(model: keras.Model) -> dict:
     """Serializes a keras model"""
+    fmt = get_keras_format()
+    if fmt == "json":
+        return {
+            "__type__": "model",
+            "__version__": 2,
+            "loss": getattr(model, "loss", None),
+            "metrics": getattr(model, "metrics", []),
+            "model": keras.utils.serialize_keras_object(model),
+            "optimizer": getattr(model, "optimizer", None),
+            "weights": model.weights,
+        }
+    name = str(uuid4())
+    model.save(get_artifact_path() / name, save_format=fmt)
     return {
         "__type__": "model",
-        "__version__": 1,
-        "loss": getattr(model, "loss", None),
-        "metrics": getattr(model, "metrics", []),
-        "model": keras.utils.serialize_keras_object(model),
-        "optimizer": getattr(model, "optimizer", None),
-        "weights": model.weights,
+        "__version__": 2,
+        "format": fmt,
+        "id": name,
     }
 
 
@@ -307,18 +330,30 @@ def to_json(obj: Any) -> dict:
     depends on the precise type of `obj`. Most keras object will simply be
     serialized using `keras.utils.serialize_keras_object`. Here are the exceptions:
 
-    * `keras.Model` (the model must have weights)
+    * `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is
+      `json`, the document will look like
 
             {
                 "__keras__": {
                     "__type__": "model",
-                    "__version__": 1,
+                    "__version__": 2,
                     "loss": {...} or null,
                     "metrics": [...],
                     "model": {...},
                     "optimizer": {...} or null,
                     "weights": [...],
                 },
+            }
+
+      if `TB_KERAS_FORMAT` is `h5` or `tf`, the document will look like
+
+            {
+                "__keras__": {
+                    "__type__": "model",
+                    "__version__": 2,
+                    "format": <str>,
+                    "id": <UUID4 str>
+                }
             }
 
     """

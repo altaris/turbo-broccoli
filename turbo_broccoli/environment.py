@@ -2,14 +2,15 @@
 """Environment variable and settings management."""
 __docformat__ = "google"
 
+import logging
 import os
 from pathlib import Path
-from typing import Any, Dict
-import logging
+from typing import Any, Dict, Union
 
 # The initial values are the defaults
 _ENVIRONMENT: Dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
+    "TB_KERAS_FORMAT": "tf",
     "TB_NUMPY_MAX_NBYTES": 8_000,
 }
 
@@ -24,18 +25,34 @@ def _init():
             "The use of the TB_NUMPY_PATH environment variable is deprecated. "
             "Consider using TB_ARTIFACT_PATH instead"
         )
-        _ENVIRONMENT["TB_ARTIFACT_PATH"] = Path(os.environ["TB_NUMPY_PATH"])
+        set_artifact_path(Path(os.environ["TB_NUMPY_PATH"]))
     else:
-        _ENVIRONMENT["TB_ARTIFACT_PATH"] = Path(
+        set_artifact_path(
             os.environ.get(
                 "TB_ARTIFACT_PATH",
                 _ENVIRONMENT["TB_ARTIFACT_PATH"],
             )
         )
-    _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"] = int(
-        os.environ.get(
-            "TB_NUMPY_MAX_NBYTES",
-            _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"],
+    try:
+        set_keras_format(
+            os.environ.get(
+                "TB_KERAS_FORMAT",
+                _ENVIRONMENT["TB_KERAS_FORMAT"],
+            )
+        )
+    except ValueError:
+        logging.error(
+            "Invalid value for environment variable TB_KERAS_FORMAT: '%s'. "
+            "Expected 'h5', 'json', or 'tf'. Defaulting to 'tf'",
+            _ENVIRONMENT["TB_KERAS_FORMAT"],
+        )
+        set_keras_format("tf")
+    set_numpy_max_nbytes(
+        int(
+            os.environ.get(
+                "TB_NUMPY_MAX_NBYTES",
+                _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"],
+            )
         )
     )
 
@@ -44,22 +61,37 @@ def get_artifact_path() -> Path:
     return _ENVIRONMENT["TB_ARTIFACT_PATH"]
 
 
+def get_keras_format() -> str:
+    return _ENVIRONMENT["TB_KERAS_FORMAT"]
+
+
 def get_numpy_max_nbytes() -> int:
     return _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"]
 
 
-def set_artifact_path(path: Path):
-    if path.exists() and path.is_dir():
-        _ENVIRONMENT["TB_ARTIFACT_PATH"] = path
-    raise RuntimeError(
-        f"Path {str(path)} does not point to an existing directory"
-    )
+def set_artifact_path(path: Union[str, Path]):
+    if isinstance(path, str):
+        path = Path(path)
+    if not (path.exists() and path.is_dir()):
+        raise RuntimeError(
+            f"Path {str(path)} does not point to an existing directory"
+        )
+    _ENVIRONMENT["TB_ARTIFACT_PATH"] = path
 
 
-def set_numpy_max_nbytes(nbytes: int) -> Path:
-    if nbytes > 0:
-        _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"] = nbytes
-    raise ValueError("numpy's max nbytes must be > 0")
+def set_keras_format(fmt: str):
+    fmt = fmt.lower()
+    if fmt not in ["h5", "json", "tf"]:
+        raise ValueError(
+            f"Invalid value for environment variable TB_KERAS_FORMAT: {fmt}."
+        )
+    _ENVIRONMENT["TB_KERAS_FORMAT"] = fmt
+
+
+def set_numpy_max_nbytes(nbytes: int):
+    if nbytes <= 0:
+        raise ValueError("numpy's max nbytes must be > 0")
+    _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"] = nbytes
 
 
 _init()
