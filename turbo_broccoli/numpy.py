@@ -6,30 +6,12 @@ Todo:
 """
 __docformat__ = "google"
 
-import os
-import logging
-from pathlib import Path
 from typing import Any, Callable, List, Tuple
 from uuid import uuid4
 
 import numpy as np
 
-
-DEFAULT_TB_NUMPY_MAX_NBYTES = 8000
-
-
-def _get_artifact_path() -> Path:
-    """
-    Reads the `TB_NUMPY_PATH` or `TB_ARTIFACT_PATH` environment variable, but logs a
-    warning in the former case.
-    """
-    if "TB_NUMPY_PATH" in os.environ:
-        logging.warning(
-            "The use of the TB_NUMPY_PATH environment variable is deprecated. "
-            "Consider using TB_ARTIFACT_PATH instead"
-        )
-        return Path(os.environ.get("TB_NUMPY_PATH", "./"))
-    return Path(os.environ.get("TB_ARTIFACT_PATH", "./"))
+from turbo_broccoli.environment import get_artifact_path, get_numpy_max_nbytes
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
@@ -61,7 +43,7 @@ def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
     """
     if "data" in dct:
         return _json_to_ndarray_v1(dct)
-    path = _get_artifact_path()
+    path = get_artifact_path()
     return np.load(path / (dct["id"] + ".npy"))
 
 
@@ -89,10 +71,7 @@ def _json_to_number_v1(dct: dict) -> np.number:
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
     """Serializes a `numpy` array."""
-    max_nbytes = int(
-        os.environ.get("TB_NUMPY_MAX_NBYTES", DEFAULT_TB_NUMPY_MAX_NBYTES)
-    )
-    if arr.nbytes <= max_nbytes:
+    if arr.nbytes <= get_numpy_max_nbytes():
         return {
             "__type__": "ndarray",
             "__version__": 2,
@@ -100,7 +79,7 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
             "dtype": np.lib.format.dtype_to_descr(arr.dtype),
             "shape": arr.shape,
         }
-    path = _get_artifact_path()
+    path = get_artifact_path()
     name = str(uuid4())
     np.save(path / name, arr)
     return {
