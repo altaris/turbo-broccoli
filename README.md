@@ -44,13 +44,27 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `bytes`
 * `keras.Model`
-* [`keras.layers.Layer` standard subclasses](https://keras.io/api/layers/)
-* [`keras.losses.Loss` standard subclasses](https://keras.io/api/losses/)
-* [`keras.metrics.Metric` standard subclasses](https://keras.io/api/metrics/)
-* [`keras.optimizers.Optimizer` standard
-  subclasses](https://keras.io/api/optimizers/)
+* standard subclasses of [`keras.layers.Layer`](https://keras.io/api/layers/),
+  [`keras.losses.Loss`](https://keras.io/api/losses/),
+  [`keras.metrics.Metric`](https://keras.io/api/metrics/),
+  [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
 * `numpy.number`
 * `numpy.ndarray` with numerical dtype
+* `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
+  * the following dtypes are not supported: `complex`, `object`, `timedelta`
+  * the column / series names must be strings and not numbers. The following is
+    not acceptable:
+
+      ```py
+      df = pd.DataFrame([[1, 2], [3, 4]])
+      print([c for c in df.columns])
+      # [0, 1]
+      print([type(c) for c in df.columns])
+      # [int, int]
+      ```
+
+*  with non-object dtypes and string column names (as opposed to
+  column names which are integers)
 * `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
 
 ## Environment variables
@@ -92,11 +106,11 @@ by modifying `os.environ`. Rather, use the methods of
   `json` is used, the model will be contained in the JSON document (anthough
   the weights may be in artifacts if they are too large).
 
-* `TB_MAX_NBYTES` (default: `8000`): The maximum byte size of an numpy array
-  beyond which serialization will produce an artifact instead of storing it in
-  the JSON document. This does not limit the size of the overall JSON document
-  though. 8000 bytes should be enough for a numpy array of 1000 `float64`s to
-  be stored in-document.
+* `TB_MAX_NBYTES` (default: `8000`): The maximum byte size of an numpy array or
+  pandas object beyond which serialization will produce an artifact instead of
+  storing it in the JSON document. This does not limit the size of the overall
+  JSON document though. 8000 bytes should be enough for a numpy array of 1000
+  `float64`s to be stored in-document.
 
 # Contributing
 

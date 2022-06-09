@@ -1,6 +1,7 @@
 black
 mypy
 numpy
+pandas
 pdoc
 pylint
 pytest

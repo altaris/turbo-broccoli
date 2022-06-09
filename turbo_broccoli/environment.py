@@ -14,6 +14,7 @@ from typing import Any, Dict, Union
 _ENVIRONMENT: Dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
     "TB_KERAS_FORMAT": "tf",
+    "TB_PANDAS_FORMAT": "h5",
     "TB_MAX_NBYTES": 8_000,
 }
 
@@ -45,12 +46,28 @@ def _init():
             )
         )
     except ValueError:
-        logging.error(
+        logging.warning(
             "Invalid value for environment variable TB_KERAS_FORMAT: '%s'. "
-            "Expected 'h5', 'json', or 'tf'. Defaulting to 'tf'",
+            "Expected 'h5', 'json', or 'tf'. Defaulting to '%s'",
+            os.environ["TB_KERAS_FORMAT"],
             _ENVIRONMENT["TB_KERAS_FORMAT"],
         )
-        set_keras_format("tf")
+
+    try:
+        set_pandas_format(
+            os.environ.get(
+                "TB_PANDAS_FORMAT",
+                _ENVIRONMENT["TB_PANDAS_FORMAT"],
+            )
+        )
+    except ValueError:
+        logging.warning(
+            "Invalid value for environment variable TB_PANDAS_FORMAT: '%s'. "
+            "Expected 'csv', 'excel', 'feather', 'h5', 'hdf', 'pickle', "
+            "'stata', or 'xml'. Defaulting to '%s'",
+            os.environ["TB_PANDAS_FORMAT"],
+            _ENVIRONMENT["TB_PANDAS_FORMAT"],
+        )
 
     if "TB_NUMPY_MAX_NBYTES" in os.environ:
         logging.warning(
@@ -77,6 +94,10 @@ def get_keras_format() -> str:
     return _ENVIRONMENT["TB_KERAS_FORMAT"]
 
 
+def get_pandas_format() -> str:
+    return _ENVIRONMENT["TB_PANDAS_FORMAT"]
+
+
 def get_max_nbytes() -> int:
     return _ENVIRONMENT["TB_MAX_NBYTES"]
 
@@ -93,11 +114,33 @@ def set_artifact_path(path: Union[str, Path]):
 
 def set_keras_format(fmt: str):
     fmt = fmt.lower()
-    if fmt not in ["h5", "json", "tf"]:
+    KERAS_FORMATS = ["h5", "json", "tf"]
+    if fmt not in KERAS_FORMATS:
         raise ValueError(
             f"Invalid value for environment variable TB_KERAS_FORMAT: {fmt}."
         )
     _ENVIRONMENT["TB_KERAS_FORMAT"] = fmt
+
+
+def set_pandas_format(fmt: str):
+    fmt = fmt.lower()
+    PANDAS_FORMATS = [
+        "csv",
+        "excel",
+        "feather",
+        "h5",
+        "hdf",
+        "html",
+        "pickle",
+        "sql",
+        "stata",
+        "xml",
+    ]
+    if fmt not in PANDAS_FORMATS:
+        raise ValueError(
+            f"Invalid value for environment variable TB_PANDAS_FORMAT: {fmt}."
+        )
+    _ENVIRONMENT["TB_PANDAS_FORMAT"] = fmt
 
 
 def set_max_nbytes(nbytes: int):

@@ -22,6 +22,13 @@ except ModuleNotFoundError:
     HAS_NUMPY = False
 
 try:
+    import turbo_broccoli.pandas
+
+    HAS_PANDAS = True
+except ModuleNotFoundError:
+    HAS_PANDAS = False
+
+try:
     import turbo_broccoli.tensorflow
 
     HAS_TENSORFLOW = True
@@ -47,6 +54,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
             DECODERS["__keras__"] = turbo_broccoli.keras.from_json
         if HAS_NUMPY:
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
+        if HAS_PANDAS:
+            DECODERS["__pandas__"] = turbo_broccoli.pandas.from_json
         if HAS_TENSORFLOW:
             DECODERS["__tensorflow__"] = turbo_broccoli.tensorflow.from_json
         for t, f in DECODERS.items():
@@ -70,6 +79,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             ENCODERS.append(turbo_broccoli.keras.to_json)
         if HAS_NUMPY:
             ENCODERS.append(turbo_broccoli.numpy.to_json)
+        if HAS_PANDAS:
+            ENCODERS.append(turbo_broccoli.pandas.to_json)
         if HAS_TENSORFLOW:
             ENCODERS.append(turbo_broccoli.tensorflow.to_json)
         for f in ENCODERS:
