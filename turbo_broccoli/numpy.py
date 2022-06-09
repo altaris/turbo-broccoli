@@ -11,7 +11,7 @@ from uuid import uuid4
 
 import numpy as np
 
-from turbo_broccoli.environment import get_artifact_path, get_numpy_max_nbytes
+from turbo_broccoli.environment import get_artifact_path, get_max_nbytes
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
@@ -70,7 +70,7 @@ def _json_to_number_v1(dct: dict) -> np.number:
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
     """Serializes a `numpy` array."""
-    if arr.nbytes <= get_numpy_max_nbytes():
+    if arr.nbytes <= get_max_nbytes():
         return {
             "__type__": "ndarray",
             "__version__": 2,
@@ -129,8 +129,8 @@ def to_json(obj: Any) -> dict:
     depends on the precise type of `obj`.
 
     * `numpy.ndarray`: An array is processed differently depending on its size
-      and on the `TB_NUMPY_MAX_NBYTES` environment variable. If the array is
-      small, i.e. `arr.nbytes <= TB_NUMPY_MAX_NBYTES`, then it is directly
+      and on the `TB_MAX_NBYTES` environment variable. If the array is
+      small, i.e. `arr.nbytes <= TB_MAX_NBYTES`, then it is directly
       stored in the resulting JSON document as
 
             {
@@ -143,7 +143,7 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
-      On the other hand, if `arr.nbytes > TB_NUMPY_MAX_NBYTES`, then the
+      On the other hand, if `arr.nbytes > TB_MAX_NBYTES`, then the
       content of `arr` is stored in an `.npy` file. Said file is saved to the
       path specified by the `TB_ARTIFACT_PATH` environment variable with a
       random UUID4 as filename. The resulting JSON document looks like
@@ -156,7 +156,7 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
-      By default, `TB_NUMPY_MAX_NBYTES` is `8000` bytes, which should be enough
+      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough
       to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
       `TB_ARTIFACT_PATH` must point to an existing directory.
 

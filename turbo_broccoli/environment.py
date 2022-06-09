@@ -14,7 +14,7 @@ from typing import Any, Dict, Union
 _ENVIRONMENT: Dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
     "TB_KERAS_FORMAT": "tf",
-    "TB_NUMPY_MAX_NBYTES": 8_000,
+    "TB_MAX_NBYTES": 8_000,
 }
 
 
@@ -36,6 +36,7 @@ def _init():
                 _ENVIRONMENT["TB_ARTIFACT_PATH"],
             )
         )
+
     try:
         set_keras_format(
             os.environ.get(
@@ -50,14 +51,22 @@ def _init():
             _ENVIRONMENT["TB_KERAS_FORMAT"],
         )
         set_keras_format("tf")
-    set_numpy_max_nbytes(
-        int(
-            os.environ.get(
-                "TB_NUMPY_MAX_NBYTES",
-                _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"],
+
+    if "TB_NUMPY_MAX_NBYTES" in os.environ:
+        logging.warning(
+            "The use of the TB_NUMPY_MAX_NBYTES environment variable is "
+            "deprecated. Consider using TB_MAX_NBYTES instead"
+        )
+        set_max_nbytes(int(os.environ["TB_NUMPY_MAX_NBYTES"]))
+    else:
+        set_max_nbytes(
+            int(
+                os.environ.get(
+                    "TB_MAX_NBYTES",
+                    _ENVIRONMENT["TB_MAX_NBYTES"],
+                )
             )
         )
-    )
 
 
 def get_artifact_path() -> Path:
@@ -68,8 +77,8 @@ def get_keras_format() -> str:
     return _ENVIRONMENT["TB_KERAS_FORMAT"]
 
 
-def get_numpy_max_nbytes() -> int:
-    return _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"]
+def get_max_nbytes() -> int:
+    return _ENVIRONMENT["TB_MAX_NBYTES"]
 
 
 def set_artifact_path(path: Union[str, Path]):
@@ -91,10 +100,10 @@ def set_keras_format(fmt: str):
     _ENVIRONMENT["TB_KERAS_FORMAT"] = fmt
 
 
-def set_numpy_max_nbytes(nbytes: int):
+def set_max_nbytes(nbytes: int):
     if nbytes <= 0:
         raise ValueError("numpy's max nbytes must be > 0")
-    _ENVIRONMENT["TB_NUMPY_MAX_NBYTES"] = nbytes
+    _ENVIRONMENT["TB_MAX_NBYTES"] = nbytes
 
 
 _init()

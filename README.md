@@ -92,10 +92,11 @@ by modifying `os.environ`. Rather, use the methods of
   `json` is used, the model will be contained in the JSON document (anthough
   the weights may be in artifacts if they are too large).
 
-* `TB_NUMPY_MAX_NBYTES` (default: `8000`): The maximum byte size of an numpy
-  array beyond which serialization will produce an artifact instead of storing
-  the array in the JSON document. 8000 bytes should be enough for an array of
-  1000 `float64`s to be stored in-document.
+* `TB_MAX_NBYTES` (default: `8000`): The maximum byte size of an numpy array
+  beyond which serialization will produce an artifact instead of storing it in
+  the JSON document. This does not limit the size of the overall JSON document
+  though. 8000 bytes should be enough for a numpy array of 1000 `float64`s to
+  be stored in-document.
 
 # Contributing
 
