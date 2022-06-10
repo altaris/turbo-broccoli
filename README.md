@@ -43,6 +43,7 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 ## Supported types
 
 * `bytes`
+* `collections.deque`
 * `keras.Model`
 * standard subclasses of [`keras.layers.Layer`](https://keras.io/api/layers/),
   [`keras.losses.Loss`](https://keras.io/api/losses/),

@@ -6,6 +6,7 @@ from typing import Any, Callable, Dict, List
 
 
 import turbo_broccoli.bytes
+import turbo_broccoli.collections
 
 try:
     import turbo_broccoli.keras
@@ -49,6 +50,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         """Deserialization hook"""
         DECODERS: Dict[str, Callable[[dict], Any]] = {
             "__bytes__": turbo_broccoli.bytes.from_json,
+            "__collections__": turbo_broccoli.collections.from_json,
         }
         if HAS_KERAS:
             DECODERS["__keras__"] = turbo_broccoli.keras.from_json
@@ -74,6 +76,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
 
         ENCODERS: List[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
+            turbo_broccoli.collections.to_json,
         ]
         if HAS_KERAS:
             ENCODERS.append(turbo_broccoli.keras.to_json)
