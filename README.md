@@ -43,16 +43,54 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 ## Supported types
 
 * `bytes`
+
 * `collections.deque`
+
 * Dataclasses, **serialization only**, see `turbo_broccoli.dataclass.to_json`
+
+* *Generic object*, **serialization only**. A generic object is an object that
+  has the `__turbo_broccoli__` attribute. This attribute is expected to be a
+  list of attributes whose values will be serialized. For example,
+
+    ```py
+    class C:
+        __turbo_broccoli__ = ["a"]
+        a: int
+        b: int
+
+    x = C()
+    x.a = 42
+    x.b = 43
+    json.dumps(x, cls=tb.TurboBroccoliEncoder)
+    ```
+  produces the following string (modulo indentation):
+
+    ```
+    {
+        "__generic__": {
+            "__version__": 1,
+            "data": {
+                "a": 42,
+            }
+        }
+    }
+    ```
+
+  Registered attributes can of course have any type supported by Turbo
+  Broccoli, such as numpy arrays. Registered attributes can be `@property`
+  methods.
+
 * `keras.Model`
+
 * standard subclasses of
   * [`keras.layers.Layer`](https://keras.io/api/layers/),
   * [`keras.losses.Loss`](https://keras.io/api/losses/),
   * [`keras.metrics.Metric`](https://keras.io/api/metrics/),
   * [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
 * `numpy.number`
+
 * `numpy.ndarray` with numerical dtype
+
 * `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
   * the following dtypes are not supported: `complex`, `object`, `timedelta`
   * the column / series names must be strings and not numbers. The following is

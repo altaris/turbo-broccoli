@@ -3,6 +3,8 @@ __docformat__ = "google"
 
 # TODO: Write module documentation
 # TODO: Replace all the XXX placeholders
+# TODO: Register in main module
+# TODO: Document in README
 
 from typing import Any, Callable, List, Tuple
 
