@@ -44,11 +44,13 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `bytes`
 * `collections.deque`
+* Dataclasses, **serialization only**, see `turbo_broccoli.dataclass.to_json`
 * `keras.Model`
-* standard subclasses of [`keras.layers.Layer`](https://keras.io/api/layers/),
-  [`keras.losses.Loss`](https://keras.io/api/losses/),
-  [`keras.metrics.Metric`](https://keras.io/api/metrics/),
-  [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
+* standard subclasses of
+  * [`keras.layers.Layer`](https://keras.io/api/layers/),
+  * [`keras.losses.Loss`](https://keras.io/api/losses/),
+  * [`keras.metrics.Metric`](https://keras.io/api/metrics/),
+  * [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
 * `numpy.number`
 * `numpy.ndarray` with numerical dtype
 * `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
@@ -64,8 +66,6 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
       # [int, int]
       ```
 
-*  with non-object dtypes and string column names (as opposed to
-  column names which are integers)
 * `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
 
 ## Environment variables

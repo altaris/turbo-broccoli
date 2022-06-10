@@ -7,6 +7,7 @@ from typing import Any, Callable, Dict, List
 
 import turbo_broccoli.bytes
 import turbo_broccoli.collections
+import turbo_broccoli.dataclass
 
 try:
     import turbo_broccoli.keras
@@ -77,6 +78,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         ENCODERS: List[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
             turbo_broccoli.collections.to_json,
+            turbo_broccoli.dataclass.to_json,
         ]
         if HAS_KERAS:
             ENCODERS.append(turbo_broccoli.keras.to_json)
