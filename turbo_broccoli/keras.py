@@ -243,7 +243,9 @@ def _json_to_model_v2(dct: dict) -> Any:
     """
     if "model" in dct:
         return _json_to_model_v1(dct)
-    return keras.models.load_model(get_artifact_path() / dct["id"])
+    return keras.models.load_model(
+        get_artifact_path() / (dct["id"] + "." + dct["format"])
+    )
 
 
 def _json_to_optimizer(dct: dict) -> Any:
@@ -288,7 +290,7 @@ def _model_to_json(model: keras.Model) -> dict:
             "weights": model.weights,
         }
     name = str(uuid4())
-    model.save(get_artifact_path() / (name + fmt), save_format=fmt)
+    model.save(get_artifact_path() / (name + "." + fmt), save_format=fmt)
     return {
         "__type__": "model",
         "__version__": 2,
