@@ -288,7 +288,7 @@ def _model_to_json(model: keras.Model) -> dict:
             "weights": model.weights,
         }
     name = str(uuid4())
-    model.save(get_artifact_path() / name, save_format=fmt)
+    model.save(get_artifact_path() / (name + fmt), save_format=fmt)
     return {
         "__type__": "model",
         "__version__": 2,
