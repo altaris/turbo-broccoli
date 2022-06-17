@@ -53,6 +53,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         DECODERS: Dict[str, Callable[[dict], Any]] = {
             "__bytes__": turbo_broccoli.bytes.from_json,
             "__collections__": turbo_broccoli.collections.from_json,
+            "__dataclass__": turbo_broccoli.dataclass.from_json,
         }
         if HAS_KERAS:
             DECODERS["__keras__"] = turbo_broccoli.keras.from_json

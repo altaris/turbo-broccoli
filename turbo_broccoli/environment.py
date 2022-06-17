@@ -10,6 +10,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, Union
 
+_DATACLASSES_TYPES: Dict[str, type] = {}
+
 # The initial values are the defaults
 _ENVIRONMENT: Dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
@@ -100,6 +102,18 @@ def get_pandas_format() -> str:
 
 def get_max_nbytes() -> int:
     return _ENVIRONMENT["TB_MAX_NBYTES"]
+
+
+def get_register_dataclass(name: str) -> type:
+    return _DATACLASSES_TYPES[name]
+
+
+def register_dataclass(name: str, cls: type):
+    """
+    Registers a dataclass for dataclass deserialization. Registered types may
+    be overwritten.
+    """
+    _DATACLASSES_TYPES[name] = cls
 
 
 def set_artifact_path(path: Union[str, Path]):

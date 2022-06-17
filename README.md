@@ -34,7 +34,6 @@ produces the following string (modulo indentation):
     }
 }
 ```
-
 For deserialization, simply use
 ```py
 json.loads(json_string, cls=tb.TurboBroccoliDecoder)
@@ -46,12 +45,26 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `collections.deque`
 
-* Dataclasses, **serialization only**, see `turbo_broccoli.dataclass.to_json`
+* Dataclasses. Serialization is straightforward:
+    ```py
+    @dataclass
+    class C:
+        a: int
+        b: str
+
+    doc = json.dumps({"c": C(a=1, b="Hello")}, cls=tb.TurboBroccoliEncoder)
+    ```
+  For deserialization, first register the class:
+    ```py
+    from turbo_broccoli.environment import register_dataclass
+
+    register_dataclass("C", C)
+    json.loads(doc, cls=tb.TurboBroccoliDecoder)
+    ```
 
 * *Generic object*, **serialization only**. A generic object is an object that
   has the `__turbo_broccoli__` attribute. This attribute is expected to be a
   list of attributes whose values will be serialized. For example,
-
     ```py
     class C:
         __turbo_broccoli__ = ["a"]
@@ -64,7 +77,6 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
     json.dumps(x, cls=tb.TurboBroccoliEncoder)
     ```
   produces the following string (modulo indentation):
-
     ```
     {
         "__generic__": {
@@ -75,7 +87,6 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
         }
     }
     ```
-
   Registered attributes can of course have any type supported by Turbo
   Broccoli, such as numpy arrays. Registered attributes can be `@property`
   methods.
@@ -87,6 +98,7 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
   * [`keras.losses.Loss`](https://keras.io/api/losses/),
   * [`keras.metrics.Metric`](https://keras.io/api/metrics/),
   * [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
+
 * `numpy.number`
 
 * `numpy.ndarray` with numerical dtype
@@ -116,14 +128,11 @@ by modifying `os.environ`. Rather, use the methods of
 * `TB_ARTIFACT_PATH` (default: `./`): During serialization, Turbo Broccoli may
   create artifacts to which the JSON object will point to. The artifacts will
   be stored in `TB_ARTIFACT_PATH`. For example, if `arr` is a big numpy array,
-
     ```py
     obj = {"an_array": arr}
     json.dumps(obj, cls=tb.TurboBroccoliEncoder)
     ```
-
   will generate the following string (modulo indentation and id)
-
     ```
     {
         "an_array": {
@@ -135,7 +144,6 @@ by modifying `os.environ`. Rather, use the methods of
         }
     }
     ```
-
   and a `70692d08-c4cf-4231-b3f0-0969ea552d5a.npy` file has been created in
   `TB_ARTIFACT_PATH`.
 
