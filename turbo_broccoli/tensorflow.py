@@ -6,6 +6,26 @@ from typing import Any, Callable, List, Tuple
 import tensorflow as tf
 
 
+def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
+    """Converts a JSON document to a tensorflow tensor."""
+    DECODERS = {
+        1: _json_to_sparse_tensor_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_sparse_tensor_v1(dct: dict) -> tf.Tensor:
+    """
+    Converts a JSON document following the v1 specification to a tensorflow
+    sparse tensor.
+    """
+    return tf.SparseTensor(
+        dense_shape=dct["shape"],
+        indices=dct["indices"],
+        values=dct["values"],
+    )
+
+
 def _json_to_tensor(dct: dict) -> tf.Tensor:
     """Converts a JSON document to a tensorflow tensor."""
     DECODERS = {
@@ -50,6 +70,17 @@ def _ragged_tensor_to_json(tens: tf.Tensor) -> dict:
     )
 
 
+def _sparse_tensor_to_json(tens: tf.SparseTensor) -> dict:
+    """Serializes a sparse tensor"""
+    return {
+        "__type__": "sparse_tensor",
+        "__version__": 1,
+        "indices": tens.indices,
+        "shape": tens.dense_shape.numpy(),
+        "values": tens.values,
+    }
+
+
 def _tensor_to_json(tens: tf.Tensor) -> dict:
     """Serializes a general tensor"""
     return {
@@ -79,6 +110,7 @@ def from_json(dct: dict) -> Any:
     must contain the key `__tensorflow__`.
     """
     DECODERS = {
+        "sparse_tensor": _json_to_sparse_tensor,
         "tensor": _json_to_tensor,
         "variable": _json_to_variable,
     }
@@ -105,7 +137,18 @@ def to_json(obj: Any) -> dict:
     depends on the precise type of `obj`.
 
     * `tf.RaggedTensor`: Not supported.
-    * `tf.SparseTensor`: Will be treated like general tensors.
+    * `tf.SparseTensor`:
+
+            {
+                "__type__": "sparse_tensor",
+                "__version__": 1,
+                "indices": {...},
+                "values": {...},
+                "shape": {...},
+            }
+
+      where the first two `{...}` placeholders result in the serialization of
+      `tf.Tensor` (see below).
     * other `tf.Tensor` subtypes:
 
             {
@@ -132,6 +175,7 @@ def to_json(obj: Any) -> dict:
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (tf.RaggedTensor, _ragged_tensor_to_json),
+        (tf.SparseTensor, _sparse_tensor_to_json),
         (tf.Tensor, _tensor_to_json),
         (tf.Variable, _variable_to_json),
     ]
