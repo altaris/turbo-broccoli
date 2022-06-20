@@ -5,8 +5,10 @@ Turbo Broccoli
 ![License](https://img.shields.io/github/license/altaris/turbo-broccoli)
 [![Code style](https://img.shields.io/badge/style-black-black)](https://pypi.org/project/black)
 ![hehe](https://img.shields.io/badge/project%20name-github-pink)
+[![Documentation](https://badgen.net/badge/documentation/here/blue)](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html)
 
-JSON (de)serialization extensions aimed at `numpy` and `tensorflow` objects.
+JSON (de)serialization extensions, originally aimed at `numpy` and `tensorflow`
+objects.
 
 # Usage
 
