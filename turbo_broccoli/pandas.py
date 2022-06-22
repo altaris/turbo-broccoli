@@ -70,7 +70,16 @@ def _json_to_dataframe_v1(dct: dict) -> pd.DataFrame:
             df = getattr(pd, f"read_{fmt}")(path)
     # Rename columns with non-string names
     # df.rename({str(d[0]): d[0] for d in dct["dtypes"]}, inplace=True)
-    return df.astype({str(a): b for a, b in dct["dtypes"]})
+    df = df.astype(
+        {
+            str(a): b
+            for a, b in dct["dtypes"]
+            if not str(b).startswith("datetime")
+        }
+    )
+    for a, _ in filter(lambda x: x[1].startswith("datetime"), dct["dtypes"]):
+        df[a] = pd.to_datetime(df[a]).dt.tz_localize(None)
+    return df
 
 
 def _json_to_series(dct: dict) -> pd.Series:
