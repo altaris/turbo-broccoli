@@ -36,9 +36,9 @@ setuptools.setup(
     packages=packages,
     platforms="any",
     project_urls={
-        "Issues": "https://github.com/altaris/turbo_broccoli/issues",
+        "Issues": "https://github.com/altaris/turbo-broccoli/issues",
     },
     python_requires=">=3.8",
-    url="https://github.com/altaris/turbo_broccoli",
+    url="https://github.com/altaris/turbo-broccoli",
     version=version,
 )
