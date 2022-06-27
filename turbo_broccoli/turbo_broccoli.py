@@ -97,3 +97,17 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             except TypeError:
                 pass
         return super().default(o)
+
+    def encode(self, o: Any) -> str:
+        """
+        Reimplementation of encode just to treat the `namedtuple` case. An
+        object is considered a namedtuple if it is an instance of `tuple` and
+        has the following attributes: `_asdict`, `_field_defaults`, `_fields`,
+        `_make`, `_replace`. In this case,
+        `turbo_broccoli.collections._namedtuple_to_json` is called directly.
+        """
+        attrs = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
+        if isinstance(o, tuple) and all(map(lambda a: hasattr(o, a), attrs)):
+            d = turbo_broccoli.collections._namedtuple_to_json(o)
+            return super().encode({"__collections__": d})
+        return super().encode(o)

@@ -53,6 +53,8 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `collections.deque`
 
+* `collections.namedtuple`
+
 * Dataclasses. Serialization is straightforward:
     ```py
     @dataclass
