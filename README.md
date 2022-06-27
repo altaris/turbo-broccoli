@@ -64,9 +64,7 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
     ```
   For deserialization, first register the class:
     ```py
-    from turbo_broccoli.environment import register_dataclass
-
-    register_dataclass("C", C)
+    tb.register_dataclass("C", C)
     json.loads(doc, cls=tb.TurboBroccoliDecoder)
     ```
 
