@@ -43,7 +43,7 @@
                     <a class="function" href="#get_max_nbytes">get_max_nbytes</a>
             </li>
             <li>
-                    <a class="function" href="#get_register_dataclass">get_register_dataclass</a>
+                    <a class="function" href="#get_registered_dataclass">get_registered_dataclass</a>
             </li>
             <li>
                     <a class="function" href="#register_dataclass">register_dataclass</a>
@@ -190,7 +190,7 @@ about the supported environment variables.</p>
 </span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">return</span> <span class="n">_ENVIRONMENT</span><span class="p">[</span><span class="s2">&quot;TB_MAX_NBYTES&quot;</span><span class="p">]</span>
 </span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>
 </span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span> <span class="nf">get_register_dataclass</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a><span class="k">def</span> <span class="nf">get_registered_dataclass</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
 </span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>    <span class="k">return</span> <span class="n">_DATACLASSES_TYPES</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 </span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>
 </span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
@@ -330,19 +330,19 @@ about the supported environment variables.</p>
     
 
                 </section>
-                <section id="get_register_dataclass">
-                            <input id="get_register_dataclass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+                <section id="get_registered_dataclass">
+                            <input id="get_registered_dataclass-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_register_dataclass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">type</span>:</span></span>
+        <span class="name">get_registered_dataclass</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">name</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="nb">type</span>:</span></span>
 
-                <label class="view-source-button" for="get_register_dataclass-view-source"><span>View Source</span></label>
+                <label class="view-source-button" for="get_registered_dataclass-view-source"><span>View Source</span></label>
 
     </div>
-    <a class="headerlink" href="#get_register_dataclass"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="get_register_dataclass-108"><a href="#get_register_dataclass-108"><span class="linenos">108</span></a><span class="k">def</span> <span class="nf">get_register_dataclass</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
-</span><span id="get_register_dataclass-109"><a href="#get_register_dataclass-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="n">_DATACLASSES_TYPES</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <a class="headerlink" href="#get_registered_dataclass"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="get_registered_dataclass-108"><a href="#get_registered_dataclass-108"><span class="linenos">108</span></a><span class="k">def</span> <span class="nf">get_registered_dataclass</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">:</span>
+</span><span id="get_registered_dataclass-109"><a href="#get_registered_dataclass-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="n">_DATACLASSES_TYPES</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 </span></pre></div>
 
 
