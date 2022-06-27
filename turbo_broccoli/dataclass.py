@@ -3,7 +3,7 @@ __docformat__ = "google"
 
 from typing import Any
 
-from turbo_broccoli.environment import get_register_dataclass
+from turbo_broccoli.environment import get_registered_dataclass
 
 
 def _json_to_dataclass_v2(dct: dict) -> Any:
@@ -11,7 +11,7 @@ def _json_to_dataclass_v2(dct: dict) -> Any:
     Converts a JSON document following the v2 specification to a dataclass
     object.
     """
-    return get_register_dataclass(dct["class"])(**dct["data"])
+    return get_registered_dataclass(dct["class"])(**dct["data"])
 
 
 def from_json(dct: dict) -> Any:

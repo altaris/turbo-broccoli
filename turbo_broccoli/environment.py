@@ -104,7 +104,7 @@ def get_max_nbytes() -> int:
     return _ENVIRONMENT["TB_MAX_NBYTES"]
 
 
-def get_register_dataclass(name: str) -> type:
+def get_registered_dataclass(name: str) -> type:
     return _DATACLASSES_TYPES[name]
 
 
