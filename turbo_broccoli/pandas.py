@@ -10,6 +10,7 @@ from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
     get_pandas_format,
+    is_nodecode,
 )
 
 
@@ -123,7 +124,10 @@ def from_json(dct: dict) -> Any:
         "series": _json_to_series,
     }
     try:
-        return DECODERS[dct["__pandas__"]["__type__"]](dct["__pandas__"])
+        type_name = dct["__pandas__"]["__type__"]
+        if is_nodecode("pandas." + type_name):
+            return None
+        return DECODERS[type_name](dct["__pandas__"])
     except KeyError as exc:
         raise TypeError("Not a valid pandas document") from exc
 

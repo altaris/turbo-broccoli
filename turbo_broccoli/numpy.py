@@ -11,7 +11,11 @@ from uuid import uuid4
 
 import numpy as np
 
-from turbo_broccoli.environment import get_artifact_path, get_max_nbytes
+from turbo_broccoli.environment import (
+    get_artifact_path,
+    get_max_nbytes,
+    is_nodecode,
+)
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
@@ -109,7 +113,10 @@ def from_json(dct: dict) -> Any:
         "number": _json_to_number,
     }
     try:
-        return DECODERS[dct["__numpy__"]["__type__"]](dct["__numpy__"])
+        type_name = dct["__numpy__"]["__type__"]
+        if is_nodecode("numpy." + type_name):
+            return None
+        return DECODERS[type_name](dct["__numpy__"])
     except KeyError as exc:
         raise TypeError("Not a valid numpy document") from exc
 

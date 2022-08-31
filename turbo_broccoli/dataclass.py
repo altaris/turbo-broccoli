@@ -3,7 +3,7 @@ __docformat__ = "google"
 
 from typing import Any
 
-from turbo_broccoli.environment import get_registered_dataclass
+from turbo_broccoli.environment import get_registered_dataclass, is_nodecode
 
 
 def _json_to_dataclass_v2(dct: dict) -> Any:
@@ -11,6 +11,8 @@ def _json_to_dataclass_v2(dct: dict) -> Any:
     Converts a JSON document following the v2 specification to a dataclass
     object.
     """
+    if is_nodecode("dataclass." + dct["class"]):
+        return None
     return get_registered_dataclass(dct["class"])(**dct["data"])
 
 
@@ -28,7 +30,7 @@ def from_json(dct: dict) -> Any:
             dct["__dataclass__"]
         )
     except KeyError as exc:
-        raise TypeError("Not a valid tensorflow document") from exc
+        raise TypeError("Not a valid dataclass document") from exc
 
 
 def to_json(obj: Any) -> dict:

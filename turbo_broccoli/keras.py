@@ -6,7 +6,11 @@ from typing import Any, Callable, List, Tuple
 from uuid import uuid4
 
 from tensorflow import keras
-from turbo_broccoli.environment import get_artifact_path, get_keras_format
+from turbo_broccoli.environment import (
+    get_artifact_path,
+    get_keras_format,
+    is_nodecode,
+)
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
@@ -313,7 +317,10 @@ def from_json(dct: dict) -> Any:
         "optimizer": _json_to_optimizer,
     }
     try:
-        return DECODERS[dct["__keras__"]["__type__"]](dct["__keras__"])
+        type_name = dct["__keras__"]["__type__"]
+        if is_nodecode("keras." + type_name):
+            return None
+        return DECODERS[type_name](dct["__keras__"])
     except KeyError as exc:
         raise TypeError("Not a valid Keras document") from exc
 

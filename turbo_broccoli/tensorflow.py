@@ -5,6 +5,8 @@ from typing import Any, Callable, List, Tuple
 
 import tensorflow as tf
 
+from turbo_broccoli.environment import is_nodecode
+
 
 def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
     """Converts a JSON document to a tensorflow tensor."""
@@ -115,9 +117,10 @@ def from_json(dct: dict) -> Any:
         "variable": _json_to_variable,
     }
     try:
-        return DECODERS[dct["__tensorflow__"]["__type__"]](
-            dct["__tensorflow__"]
-        )
+        type_name = dct["__tensorflow__"]["__type__"]
+        if is_nodecode("tensorflow." + type_name):
+            return None
+        return DECODERS[type_name](dct["__tensorflow__"])
     except KeyError as exc:
         raise TypeError("Not a valid tensorflow document") from exc
 

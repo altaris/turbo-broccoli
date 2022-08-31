@@ -8,7 +8,7 @@ __docformat__ = "google"
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 _DATACLASSES_TYPES: Dict[str, type] = {}
 
@@ -16,8 +16,9 @@ _DATACLASSES_TYPES: Dict[str, type] = {}
 _ENVIRONMENT: Dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
     "TB_KERAS_FORMAT": "tf",
-    "TB_PANDAS_FORMAT": "h5",
     "TB_MAX_NBYTES": 8_000,
+    "TB_NODECODE": [],
+    "TB_PANDAS_FORMAT": "h5",
 }
 
 
@@ -108,6 +109,10 @@ def get_registered_dataclass(name: str) -> type:
     return _DATACLASSES_TYPES[name]
 
 
+def is_nodecode(type_name: str) -> bool:
+    return type_name in _ENVIRONMENT["TB_NODECODE"]
+
+
 def register_dataclass(name: str, cls: type):
     """
     Registers a dataclass for dataclass deserialization. Registered types may
@@ -136,6 +141,18 @@ def set_keras_format(fmt: str):
     _ENVIRONMENT["TB_KERAS_FORMAT"] = fmt
 
 
+def set_max_nbytes(nbytes: int):
+    if nbytes <= 0:
+        raise ValueError("numpy's max nbytes must be > 0")
+    _ENVIRONMENT["TB_MAX_NBYTES"] = nbytes
+
+
+def set_nodecode(types: Union[str, List[str]]):
+    _ENVIRONMENT["TB_NODECODE"] = (
+        types.split(",") if isinstance(types, str) else types
+    )
+
+
 def set_pandas_format(fmt: str):
     fmt = fmt.lower()
     PANDAS_FORMATS = [
@@ -155,12 +172,6 @@ def set_pandas_format(fmt: str):
             f"Invalid value for environment variable TB_PANDAS_FORMAT: {fmt}."
         )
     _ENVIRONMENT["TB_PANDAS_FORMAT"] = fmt
-
-
-def set_max_nbytes(nbytes: int):
-    if nbytes <= 0:
-        raise ValueError("numpy's max nbytes must be > 0")
-    _ENVIRONMENT["TB_MAX_NBYTES"] = nbytes
 
 
 _init()

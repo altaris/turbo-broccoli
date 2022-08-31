@@ -167,6 +167,22 @@ by modifying `os.environ`. Rather, use the methods of
   JSON document though. 8000 bytes should be enough for a numpy array of 1000
   `float64`s to be stored in-document.
 
+* `TB_NODECODE` (detault: empty): Comma-separated list of types to not
+  deserialize, for example `bytes,numpy.ndarray`. Excludable types are:
+  * `bytes`,
+  * `dataclass.<dataclass_name>` (case sensitive),
+  * `collections.deque`, `collections.namedtuple`,
+  * `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
+    `keras.optimizer`,
+  * `numpy.ndarray`, `numpy.number`,
+  * `pandas.dataframe`, `pandas.series`, **WARNING: excluding
+    `pandas.dataframe` will crash any deserialization of `pandas.series`**
+  * `tensorflow.sparse_tensor`, `tensorflow.tensor`, `tensorflow.variable`
+    **WARNING: excluding `numpy.ndarray` will crash any deserialization of
+    Tensorflow types**.
+
+  See also `turbo_broccoli.environment.set_nodecode`
+
 # Contributing
 
 ## Dependencies

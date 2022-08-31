@@ -2,7 +2,9 @@
 __docformat__ = "google"
 
 from collections import deque, namedtuple
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, List, Optional, Tuple
+
+from turbo_broccoli.environment import is_nodecode
 
 
 def _deque_to_json(deq: deque) -> dict:
@@ -15,7 +17,7 @@ def _deque_to_json(deq: deque) -> dict:
     }
 
 
-def _json_to_deque(dct: dict) -> deque:
+def _json_to_deque(dct: dict) -> Optional[deque]:
     """
     Converts a JSON document to a deque. See `to_json` for the specification
     `dct` is expected to follow. Note that the key `__collections__` should not
@@ -79,9 +81,10 @@ def from_json(dct: dict) -> Any:
         "namedtuple": _json_to_namedtuple,
     }
     try:
-        return DECODERS[dct["__collections__"]["__type__"]](
-            dct["__collections__"]
-        )
+        type_name = dct["__collections__"]["__type__"]
+        if is_nodecode("collections." + type_name):
+            return None
+        return DECODERS[type_name](dct["__collections__"])
     except KeyError as exc:
         raise TypeError("Not a valid collections document") from exc
 
