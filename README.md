@@ -126,6 +126,68 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
 
+## Secrets
+
+Basic Python types can be wrapped in their corresponding secret type according
+to the following table
+
+| Python type | Secret type                         |
+|-------------|-------------------------------------|
+| `dict`      | `turbo_broccoli.secret.SecretDict`  |
+| `float`     | `turbo_broccoli.secret.SecretFloat` |
+| `int`       | `turbo_broccoli.secret.SecretInt`   |
+| `list`      | `turbo_broccoli.secret.SecretList`  |
+| `str`       | `turbo_broccoli.secret.SecretStr`   |
+
+The secret value can be recovered with the `get_secret_value` mathod. At
+serialization, the this value will be encrypted. For example,
+```py
+# See https://pynacl.readthedocs.io/en/latest/secret/#key
+import nacl.secret
+import nacl.utils
+
+key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+
+from turbo_broccoli.secret import SecretStr
+from turbo_broccoli.environment import set_shared_key
+
+set_shared_key(key)
+
+x = {
+    "user": "alice",
+    "password": SecretStr("dolphin")
+}
+json.dumps(x, cls=tb.TurboBroccoliEncoder)
+```
+produces the following string (modulo indentation and modulo the encrypted
+content):
+```
+{
+  "user": "alice",
+  "password": {
+    "__secret__": {
+      "__version__": 1,
+      "data": {
+        "__bytes__": {
+          "__version__": 1,
+          "data": "qUcYxkKXJM..."
+        }
+      }
+    }
+  }
+}
+```
+Deserialization decrypts the secrets, but they stay wrapped inside the secret
+types above. If the wrong key is provided, an exception is raised. If no key is
+provided, the secret values are replaced by a
+`turbo_broccoli.secret.LockedSecret`. Internally, Turbo Broccoli uses
+[`pynacl`](https://pynacl.readthedocs.io/en/latest/)'s
+[`SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
+**WARNING**: In the case of `SecretDict` and `SecretList`, the values contained
+within must be JSON-serializable **without** Turbo Broccoli. See also the
+`TB_SHARED_KEY` environment variable below.
+
+
 ## Environment variables
 
 Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
@@ -167,7 +229,7 @@ by modifying `os.environ`. Rather, use the methods of
   JSON document though. 8000 bytes should be enough for a numpy array of 1000
   `float64`s to be stored in-document.
 
-* `TB_NODECODE` (detault: empty): Comma-separated list of types to not
+* `TB_NODECODE` (default: empty): Comma-separated list of types to not
   deserialize, for example `bytes,numpy.ndarray`. Excludable types are:
   * `bytes`,
   * `dataclass.<dataclass_name>` (case sensitive),
@@ -182,6 +244,12 @@ by modifying `os.environ`. Rather, use the methods of
     Tensorflow types**.
 
   See also `turbo_broccoli.environment.set_nodecode`
+
+* `TB_SHARED_KEY` (default: empty): Secret key used to encrypt secrets. The
+  encryption uses [`pynacl`'s
+  `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
+  An exception is raised when attempting to serialize a secret type while no
+  key is set. See also `turbo_broccoli.environment.set_shared_key`.
 
 # Contributing
 

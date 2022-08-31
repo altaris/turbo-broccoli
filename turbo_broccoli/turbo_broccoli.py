@@ -31,6 +31,14 @@ try:
 except ModuleNotFoundError:
     HAS_PANDAS = False
 
+
+try:
+    import turbo_broccoli.secret
+
+    HAS_SECRET = True
+except ModuleNotFoundError:
+    HAS_SECRET = False
+
 try:
     import turbo_broccoli.tensorflow
 
@@ -61,6 +69,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
         if HAS_PANDAS:
             DECODERS["__pandas__"] = turbo_broccoli.pandas.from_json
+        if HAS_SECRET:
+            DECODERS["__secret__"] = turbo_broccoli.secret.from_json
         if HAS_TENSORFLOW:
             DECODERS["__tensorflow__"] = turbo_broccoli.tensorflow.from_json
         for t, f in DECODERS.items():
@@ -89,6 +99,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             ENCODERS.append(turbo_broccoli.numpy.to_json)
         if HAS_PANDAS:
             ENCODERS.append(turbo_broccoli.pandas.to_json)
+        if HAS_SECRET:
+            ENCODERS.append(turbo_broccoli.secret.to_json)
         if HAS_TENSORFLOW:
             ENCODERS.append(turbo_broccoli.tensorflow.to_json)
         for f in ENCODERS:

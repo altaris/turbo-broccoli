@@ -8,7 +8,7 @@ __docformat__ = "google"
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 _DATACLASSES_TYPES: Dict[str, type] = {}
 
@@ -19,6 +19,7 @@ _ENVIRONMENT: Dict[str, Any] = {
     "TB_MAX_NBYTES": 8_000,
     "TB_NODECODE": [],
     "TB_PANDAS_FORMAT": "h5",
+    "TB_SHARED_KEY": None,
 }
 
 
@@ -72,6 +73,9 @@ def _init():
             _ENVIRONMENT["TB_PANDAS_FORMAT"],
         )
 
+    if "TB_NODECODE" in os.environ:
+        set_nodecode(os.environ["TB_NODECODE"])
+
     if "TB_NUMPY_MAX_NBYTES" in os.environ:
         logging.warning(
             "The use of the TB_NUMPY_MAX_NBYTES environment variable is "
@@ -87,6 +91,9 @@ def _init():
                 )
             )
         )
+
+    if "TB_SHARED_KEY" in os.environ:
+        set_shared_key(os.environ["TB_SHARED_KEY"])
 
 
 def get_artifact_path() -> Path:
@@ -107,6 +114,10 @@ def get_max_nbytes() -> int:
 
 def get_registered_dataclass(name: str) -> type:
     return _DATACLASSES_TYPES[name]
+
+
+def get_shared_key() -> Optional[bytes]:
+    return _ENVIRONMENT["TB_SHARED_KEY"]
 
 
 def is_nodecode(type_name: str) -> bool:
@@ -172,6 +183,12 @@ def set_pandas_format(fmt: str):
             f"Invalid value for environment variable TB_PANDAS_FORMAT: {fmt}."
         )
     _ENVIRONMENT["TB_PANDAS_FORMAT"] = fmt
+
+
+def set_shared_key(key: Optional[Union[str, bytes]]):
+    if isinstance(key, str):
+        key = key.encode("utf-8")
+    _ENVIRONMENT["TB_SHARED_KEY"] = key
 
 
 _init()

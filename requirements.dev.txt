@@ -4,5 +4,6 @@ numpy
 pandas
 pdoc
 pylint
+pynacl
 pytest
 tensorflow
