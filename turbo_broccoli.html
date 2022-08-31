@@ -28,6 +28,7 @@
   <li><a href="#usage">Usage</a>
   <ul>
     <li><a href="#supported-types">Supported types</a></li>
+    <li><a href="#secrets">Secrets</a></li>
     <li><a href="#environment-variables">Environment variables</a></li>
   </ul></li>
   <li><a href="#contributing">Contributing</a>
@@ -52,6 +53,7 @@
                 <li><a href="turbo_broccoli/keras.html">keras</a></li>
                 <li><a href="turbo_broccoli/numpy.html">numpy</a></li>
                 <li><a href="turbo_broccoli/pandas.html">pandas</a></li>
+                <li><a href="turbo_broccoli/secret.html">secret</a></li>
                 <li><a href="turbo_broccoli/tensorflow.html">tensorflow</a></li>
                 <li><a href="turbo_broccoli/turbo_broccoli.html">turbo_broccoli</a></li>
         </ul>
@@ -196,6 +198,92 @@ not acceptable:
 <li><p><code>tensorflow.Tensor</code> with numerical dtype, but not <code>tensorflow.RaggedTensor</code></p></li>
 </ul>
 
+<h2 id="secrets">Secrets</h2>
+
+<p>Basic Python types can be wrapped in their corresponding secret type according
+to the following table</p>
+
+<table>
+<thead>
+<tr>
+  <th>Python type</th>
+  <th>Secret type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>dict</code></td>
+  <td><code><a href="turbo_broccoli/secret.html#SecretDict">turbo_broccoli.secret.SecretDict</a></code></td>
+</tr>
+<tr>
+  <td><code>float</code></td>
+  <td><code><a href="turbo_broccoli/secret.html#SecretFloat">turbo_broccoli.secret.SecretFloat</a></code></td>
+</tr>
+<tr>
+  <td><code>int</code></td>
+  <td><code><a href="turbo_broccoli/secret.html#SecretInt">turbo_broccoli.secret.SecretInt</a></code></td>
+</tr>
+<tr>
+  <td><code>list</code></td>
+  <td><code><a href="turbo_broccoli/secret.html#SecretList">turbo_broccoli.secret.SecretList</a></code></td>
+</tr>
+<tr>
+  <td><code>str</code></td>
+  <td><code><a href="turbo_broccoli/secret.html#SecretStr">turbo_broccoli.secret.SecretStr</a></code></td>
+</tr>
+</tbody>
+</table>
+
+<p>The secret value can be recovered with the <code>get_secret_value</code> mathod. At
+serialization, the this value will be encrypted. For example,</p>
+
+<div class="pdoc-code codehilite"><pre><span></span><code><span class="c1"># See https://pynacl.readthedocs.io/en/latest/secret/#key</span>
+<span class="kn">import</span> <span class="nn">nacl.secret</span>
+<span class="kn">import</span> <span class="nn">nacl.utils</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">nacl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nacl</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">SecretBox</span><span class="o">.</span><span class="n">KEY_SIZE</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn"><a href="turbo_broccoli/secret.html">turbo_broccoli.secret</a></span> <span class="kn">import</span> <span class="n">SecretStr</span>
+<span class="kn">from</span> <span class="nn"><a href="turbo_broccoli/environment.html">turbo_broccoli.environment</a></span> <span class="kn">import</span> <span class="n">set_shared_key</span>
+
+<span class="n">set_shared_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;dolphin&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+</code></pre></div>
+
+<p>produces the following string (modulo indentation and modulo the encrypted
+content):</p>
+
+<pre><code>{
+  "user": "alice",
+  "password": {
+    "__secret__": {
+      "__version__": 1,
+      "data": {
+        "__bytes__": {
+          "__version__": 1,
+          "data": "qUcYxkKXJM..."
+        }
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>Deserialization decrypts the secrets, but they stay wrapped inside the secret
+types above. If the wrong key is provided, an exception is raised. If no key is
+provided, the secret values are replaced by a
+<code><a href="turbo_broccoli/secret.html#LockedSecret">turbo_broccoli.secret.LockedSecret</a></code>. Internally, Turbo Broccoli uses
+<a href="https://pynacl.readthedocs.io/en/latest/"><code>pynacl</code></a>'s
+<a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>SecretBox</code></a>.
+<strong>WARNING</strong>: In the case of <code>SecretDict</code> and <code>SecretList</code>, the values contained
+within must be JSON-serializable <strong>without</strong> Turbo Broccoli. See also the
+<code>TB_SHARED_KEY</code> environment variable below.</p>
+
 <h2 id="environment-variables">Environment variables</h2>
 
 <p>Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
@@ -237,7 +325,7 @@ pandas object beyond which serialization will produce an artifact instead of
 storing it in the JSON document. This does not limit the size of the overall
 JSON document though. 8000 bytes should be enough for a numpy array of 1000
 <code>float64</code>s to be stored in-document.</p></li>
-<li><p><code>TB_NODECODE</code> (detault: empty): Comma-separated list of types to not
+<li><p><code>TB_NODECODE</code> (default: empty): Comma-separated list of types to not
 deserialize, for example <code>bytes,numpy.ndarray</code>. Excludable types are:</p>
 
 <ul>
@@ -255,6 +343,11 @@ Tensorflow types</strong>.</li>
 </ul>
 
 <p><p>See also <code><a href="turbo_broccoli/environment.html#set_nodecode">turbo_broccoli.environment.set_nodecode</a></code></p></li>
+<li><p><code>TB_SHARED_KEY</code> (default: empty): Secret key used to encrypt secrets. The
+encryption uses <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>pynacl</code>'s
+<code>SecretBox</code></a>.
+An exception is raised when attempting to serialize a secret type while no
+key is set. See also <code><a href="turbo_broccoli/environment.html#set_shared_key">turbo_broccoli.environment.set_shared_key</a></code>.</p></li>
 </ul></p>
 
 <h1 id="contributing">Contributing</h1>
