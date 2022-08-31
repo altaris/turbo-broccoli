@@ -23,6 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pdoc
           python -m pip install -r requirements.txt
+          python -m pip install -r requirements.dev.txt
 
       - name: Run pdoc
         run: pdoc -o docs turbo_broccoli
