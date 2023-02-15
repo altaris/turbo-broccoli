@@ -2,10 +2,22 @@
 __docformat__ = "google"
 
 from typing import Any, Callable, List, Tuple
+from uuid import uuid4
 
 import tensorflow as tf
 
-from turbo_broccoli.environment import is_nodecode
+try:
+    from safetensors import tensorflow as st
+
+    HAS_SAFETENSORS = True
+except ImportError:
+    HAS_SAFETENSORS = False
+
+from turbo_broccoli.environment import (
+    get_artifact_path,
+    get_max_nbytes,
+    is_nodecode,
+)
 
 
 def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
@@ -32,6 +44,7 @@ def _json_to_tensor(dct: dict) -> tf.Tensor:
     """Converts a JSON document to a tensorflow tensor."""
     DECODERS = {
         1: _json_to_tensor_v1,
+        2: _json_to_tensor_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -44,10 +57,27 @@ def _json_to_tensor_v1(dct: dict) -> tf.Tensor:
     return tf.constant(dct["numpy"], dtype=dct["dtype"])
 
 
+def _json_to_tensor_v2(dct: dict) -> tf.Tensor:
+    """
+    Converts a JSON document following the v1 specification to a tensorflow
+    tensor.
+    """
+    if not HAS_SAFETENSORS:
+        raise RuntimeError(
+            "A v2 tensorflow tensor document cannot be deserialized without "
+            "safetensors. Install safetensors using "
+            "'pip install safetensors'"
+        )
+    if "data" in dct:
+        return st.load(dct["data"])["data"]
+    return st.load_file(get_artifact_path() / dct["id"])["data"]
+
+
 def _json_to_variable(dct: dict) -> tf.Variable:
     """Converts a JSON document to a tensorflow variable."""
     DECODERS = {
         1: _json_to_variable_v1,
+        2: _json_to_variable_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -60,6 +90,18 @@ def _json_to_variable_v1(dct: dict) -> tf.Variable:
     return tf.Variable(
         dtype=dct["dtype"],
         initial_value=dct["numpy"],
+        name=dct["name"],
+        trainable=dct["trainable"],
+    )
+
+
+def _json_to_variable_v2(dct: dict) -> tf.Variable:
+    """
+    Converts a JSON document following the v2 specification to a tensorflow
+    variable.
+    """
+    return tf.Variable(
+        initial_value=dct["value"],
         name=dct["name"],
         trainable=dct["trainable"],
     )
@@ -78,13 +120,25 @@ def _sparse_tensor_to_json(tens: tf.SparseTensor) -> dict:
         "__type__": "sparse_tensor",
         "__version__": 1,
         "indices": tens.indices,
-        "shape": tens.dense_shape.numpy(),
+        "shape": list(tens.dense_shape),
         "values": tens.values,
     }
 
 
 def _tensor_to_json(tens: tf.Tensor) -> dict:
     """Serializes a general tensor"""
+    return (
+        _tensor_to_json_v2(tens)
+        if HAS_SAFETENSORS
+        else _tensor_to_json_v1(tens)
+    )
+
+
+def _tensor_to_json_v1(tens: tf.Tensor) -> dict:
+    """
+    Serializes a general tensor following the v1 format, (which doesn't use
+    `safetensors`)
+    """
     return {
         "__type__": "tensor",
         "__version__": 1,
@@ -93,14 +147,33 @@ def _tensor_to_json(tens: tf.Tensor) -> dict:
     }
 
 
+def _tensor_to_json_v2(tens: tf.Tensor) -> dict:
+    """
+    Serializes a general tensor following the v2 format, (which does use
+    `safetensors`)
+    """
+    if tens.numpy().nbytes <= get_max_nbytes():
+        return {
+            "__type__": "tensor",
+            "__version__": 2,
+            "data": st.save({"data": tens}),
+        }
+    name = str(uuid4())
+    st.save_file({"data": tens}, get_artifact_path() / name)
+    return {
+        "__type__": "tensor",
+        "__version__": 2,
+        "id": name,
+    }
+
+
 def _variable_to_json(var: tf.Variable) -> dict:
-    """Serializes a general tensor"""
+    """Serializes a tensorflow variable"""
     return {
         "__type__": "variable",
-        "__version__": 1,
-        "dtype": var.dtype.name,
+        "__version__": 2,
         "name": var.name,
-        "numpy": var.numpy(),
+        "value": var.value(),
         "trainable": var.trainable,
     }
 
@@ -140,6 +213,7 @@ def to_json(obj: Any) -> dict:
     depends on the precise type of `obj`.
 
     * `tf.RaggedTensor`: Not supported.
+
     * `tf.SparseTensor`:
 
             {
@@ -152,6 +226,7 @@ def to_json(obj: Any) -> dict:
 
       where the first two `{...}` placeholders result in the serialization of
       `tf.Tensor` (see below).
+
     * other `tf.Tensor` subtypes:
 
             {
@@ -161,19 +236,46 @@ def to_json(obj: Any) -> dict:
                 "numpy": {...},
             }
 
-      where `{...}` is the document produced by `turbo_broccoli.numpy.to_json`.
+      or, if the `safetensors` package is available:
+
+            {
+                "__type__": "tensor",
+                "__version__": 2,
+                "dtype": <str>,
+                "data": {...},
+            }
+
+      On the other hand, if the `safetensors` package is available, and if the
+      tensor is too large (i.e. the number of bytes exceeds `TB_MAX_NBYTES` or
+      the value set by `turbo_broccoli.environment.set_max_nbytes`), then the
+      content of the tensor is stored in a binary artefact´. Said file is saved
+      to the path specified by the `TB_ARTIFACT_PATH` environment variable with
+      a random UUID4 as filename. The resulting JSON document looks like
+
+            {
+                "__numpy__": {
+                    "__type__": "tensor",
+                    "__version__": 2,
+                    "id": <UUID4 str>,
+                }
+            }
+
+      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough
+      to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
+      `TB_ARTIFACT_PATH` must point to an existing directory.
+
     * `tf.Variable`:
 
             {
                 "__type__": "tensor",
-                "__version__": 1,
-                "dtype": <str>,
+                "__version__": 2,
                 "name": <str>,
-                "numpy": {...},
+                "value": {...},
                 "trainable": <bool>,
             }
 
-      where `{...}` is the document produced by `turbo_broccoli.numpy.to_json`.
+      where `{...}` is the document produced by serializing the value tensor of
+      the variable.
 
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [

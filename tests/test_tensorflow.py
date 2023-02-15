@@ -1,6 +1,7 @@
 # pylint: disable=missing-function-docstring
 """Tensorflow (de)serialization test suite"""
 
+import os
 import tensorflow as tf
 
 from common import from_json, to_json
@@ -18,6 +19,12 @@ def test_tensorflow_numerical():
     x = tf.constant([1, 2, 3])
     tf.debugging.assert_equal(x, from_json(to_json(x)))
     x = tf.random.uniform((10, 10))
+    tf.debugging.assert_equal(x, from_json(to_json(x)))
+
+
+def test_tensorflow_numerical_large():
+    os.environ["TB_MAX_NBYTES"] = "8000"
+    x = tf.random.uniform((100, 100), dtype=tf.float64)
     tf.debugging.assert_equal(x, from_json(to_json(x)))
 
 
