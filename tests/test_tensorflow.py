@@ -23,7 +23,7 @@ def test_tensorflow_numerical():
 
 
 def test_tensorflow_numerical_large():
-    os.environ["TB_MAX_NBYTES"] = "8000"
+    os.environ["TB_MAX_NBYTES"] = "0"
     x = tf.random.uniform((100, 100), dtype=tf.float64)
     tf.debugging.assert_equal(x, from_json(to_json(x)))
 

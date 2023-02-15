@@ -126,6 +126,9 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 
 * `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
 
+* `torch.Tensor`. **WARNING**: loaded tensors are automatically placed on the
+  CPU and gradients are lost.
+
 ## Secrets
 
 Basic Python types can be wrapped in their corresponding secret type according

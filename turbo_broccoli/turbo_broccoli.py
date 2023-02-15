@@ -46,6 +46,13 @@ try:
 except ModuleNotFoundError:
     HAS_TENSORFLOW = False
 
+try:
+    import turbo_broccoli.pytorch
+
+    HAS_PYTORCH = True
+except ModuleNotFoundError:
+    HAS_PYTORCH = False
+
 
 class TurboBroccoliDecoder(json.JSONDecoder):
     """
@@ -69,6 +76,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
             DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
         if HAS_PANDAS:
             DECODERS["__pandas__"] = turbo_broccoli.pandas.from_json
+        if HAS_PYTORCH:
+            DECODERS["__pytorch__"] = turbo_broccoli.pytorch.from_json
         if HAS_SECRET:
             DECODERS["__secret__"] = turbo_broccoli.secret.from_json
         if HAS_TENSORFLOW:
@@ -99,6 +108,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             ENCODERS.append(turbo_broccoli.numpy.to_json)
         if HAS_PANDAS:
             ENCODERS.append(turbo_broccoli.pandas.to_json)
+        if HAS_PYTORCH:
+            ENCODERS.append(turbo_broccoli.pytorch.to_json)
         if HAS_SECRET:
             ENCODERS.append(turbo_broccoli.secret.to_json)
         if HAS_TENSORFLOW:

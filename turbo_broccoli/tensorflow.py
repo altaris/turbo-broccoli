@@ -10,7 +10,7 @@ try:
     from safetensors import tensorflow as st
 
     HAS_SAFETENSORS = True
-except ImportError:
+except ModuleNotFoundError:
     HAS_SAFETENSORS = False
 
 from turbo_broccoli.environment import (

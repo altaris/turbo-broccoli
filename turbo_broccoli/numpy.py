@@ -15,7 +15,7 @@ try:
     from safetensors import numpy as st
 
     HAS_SAFETENSORS = True
-except ImportError:
+except ModuleNotFoundError:
     HAS_SAFETENSORS = False
 
 
