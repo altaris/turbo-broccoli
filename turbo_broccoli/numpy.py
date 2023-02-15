@@ -11,6 +11,14 @@ from uuid import uuid4
 
 import numpy as np
 
+try:
+    from safetensors import numpy as st
+
+    HAS_SAFETENSORS = True
+except ImportError:
+    HAS_SAFETENSORS = False
+
+
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
@@ -27,6 +35,7 @@ def _json_to_ndarray(dct: dict) -> np.ndarray:
     DECODERS = {
         1: _json_to_ndarray_v1,
         2: _json_to_ndarray_v2,
+        3: _json_to_ndarray_v3,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -48,6 +57,21 @@ def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
     if "data" in dct:
         return _json_to_ndarray_v1(dct)
     return np.load(get_artifact_path() / (dct["id"] + ".npy"))
+
+
+def _json_to_ndarray_v3(dct: dict) -> np.ndarray:
+    """
+    Converts a JSON document to a numpy array following the v1 specification.
+    """
+    if not HAS_SAFETENSORS:
+        raise RuntimeError(
+            "A v3 numpy array document cannot be deserialized without "
+            "safetensors. Install safetensors using "
+            "'pip install safetensors'"
+        )
+    if "data" in dct:
+        return st.load(dct["data"])["data"]
+    return st.load_file(get_artifact_path() / dct["id"])["data"]
 
 
 def _json_to_number(dct: dict) -> np.number:
@@ -74,6 +98,18 @@ def _json_to_number_v1(dct: dict) -> np.number:
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
     """Serializes a `numpy` array."""
+    return (
+        _ndarray_to_json_v3(arr)
+        if HAS_SAFETENSORS
+        else _ndarray_to_json_v2(arr)
+    )
+
+
+def _ndarray_to_json_v2(arr: np.ndarray) -> dict:
+    """
+    Serializes a `numpy` array using the v2 format (which doesn't use
+    `safetensors`)
+    """
     if arr.nbytes <= get_max_nbytes():
         return {
             "__type__": "ndarray",
@@ -87,6 +123,26 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
     return {
         "__type__": "ndarray",
         "__version__": 2,
+        "id": name,
+    }
+
+
+def _ndarray_to_json_v3(arr: np.ndarray) -> dict:
+    """
+    Serializes a `numpy` array using the v3 format (which does use
+    `safetensors`)
+    """
+    if arr.nbytes <= get_max_nbytes():
+        return {
+            "__type__": "ndarray",
+            "__version__": 3,
+            "data": st.save({"data": arr}),
+        }
+    name = str(uuid4())
+    st.save_file({"data": arr}, get_artifact_path() / name)
+    return {
+        "__type__": "ndarray",
+        "__version__": 3,
         "id": name,
     }
 
@@ -150,15 +206,28 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
-      On the other hand, if `arr.nbytes > TB_MAX_NBYTES`, then the
-      content of `arr` is stored in an `.npy` file. Said file is saved to the
-      path specified by the `TB_ARTIFACT_PATH` environment variable with a
+      or, if the `safetensors` package is available:
+
+            {
+                "__numpy__": {
+                    "__type__": "ndarray",
+                    "__version__": 3,
+                    "data": <ASCII encoded byte string>,
+                }
+            }
+
+
+      On the other hand, the array is too large (i.e. the number of bytes
+      exceeds `TB_MAX_NBYTES` or the value set by
+      `turbo_broccoli.environment.set_max_nbytes`), then the content of `arr`
+      is stored in an `.npy` file. Said file is saved to the path specified by
+      the `TB_ARTIFACT_PATH` environment variable with a
       random UUID4 as filename. The resulting JSON document looks like
 
             {
                 "__numpy__": {
                     "__type__": "ndarray",
-                    "__version__": 2,
+                    "__version__": <2 or 3>,
                     "id": <UUID4 str>,
                 }
             }
