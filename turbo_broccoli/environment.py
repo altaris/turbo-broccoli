@@ -133,12 +133,12 @@ def is_nodecode(type_name: str) -> bool:
     return type_name in _ENVIRONMENT["TB_NODECODE"]
 
 
-def register_dataclass_type(name: str, cls: type):
+def register_dataclass_type(cls: type):
     """
     Registers a dataclass for dataclass deserialization. Registered types may
     be overwritten.
     """
-    _DATACLASSES_TYPES[name] = cls
+    _DATACLASSES_TYPES[cls.__name__] = cls
 
 
 def register_pytorch_module_type(cls: type):

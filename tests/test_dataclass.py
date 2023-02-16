@@ -24,7 +24,7 @@ class D:
 
 
 def test_dataclass():
-    register_dataclass_type("C", C)
+    register_dataclass_type(C)
     x = C(
         a_byte_str="🦐🦐🦐".encode("utf8"),
         a_list=list(range(10)),
@@ -37,8 +37,8 @@ def test_dataclass():
 
 
 def test_dataclass_recursive():
-    register_dataclass_type("C", C)
-    register_dataclass_type("D", D)
+    register_dataclass_type(C)
+    register_dataclass_type(D)
     x = D(
         a_dataclass=C(
             a_byte_str="🦐🦐🦐".encode("utf8"),

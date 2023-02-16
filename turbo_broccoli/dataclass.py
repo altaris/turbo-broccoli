@@ -23,7 +23,7 @@ def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a dataclass object. See `to_json` for the
     specification `dct` is expected to follow, and
-    `turbo_broccoli.environment.register_dataclass`
+    `turbo_broccoli.environment.register_dataclass_type`.
     """
     DECODERS = {
         2: _json_to_dataclass_v2,
