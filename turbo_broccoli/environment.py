@@ -1,7 +1,8 @@
 # pylint: disable=missing-function-docstring
 """
-Environment variable and settings management. See the README for information
-about the supported environment variables.
+Environment variable and settings management. See the
+[README](https://cedric.hothanh.fr/turbo-broccoli/turbo_broccoli.html#environment-variables)
+for information about the supported environment variables.
 """
 __docformat__ = "google"
 
@@ -143,11 +144,13 @@ def set_artifact_path(path: Union[str, Path]):
 
 
 def set_keras_format(fmt: str):
+    """Valid format are `h5`, `json`, and `tf`."""
     fmt = fmt.lower()
     KERAS_FORMATS = ["h5", "json", "tf"]
     if fmt not in KERAS_FORMATS:
         raise ValueError(
-            f"Invalid value for environment variable TB_KERAS_FORMAT: {fmt}."
+            f"Invalid value for environment variable TB_KERAS_FORMAT: {fmt}. "
+            "Valid formats are 'h5', 'json', and 'tf' (the default)."
         )
     _ENVIRONMENT["TB_KERAS_FORMAT"] = fmt
 
@@ -165,6 +168,12 @@ def set_nodecode(types: Union[str, List[str]]):
 
 
 def set_pandas_format(fmt: str):
+    """
+    Valid formats are `csv`, `excel`, `feather`, `h5`, `hdf`, `html`, `pickle`,
+    `sql`, `stata`, and `xml`.
+
+    TODO: Write all the unit tests.
+    """
     fmt = fmt.lower()
     PANDAS_FORMATS = [
         "csv",
@@ -180,12 +189,15 @@ def set_pandas_format(fmt: str):
     ]
     if fmt not in PANDAS_FORMATS:
         raise ValueError(
-            f"Invalid value for environment variable TB_PANDAS_FORMAT: {fmt}."
+            f"Invalid value for environment variable TB_PANDAS_FORMAT: {fmt}. "
+            "Valid formats are `csv`, `excel`, `feather`, `h5` (the default), "
+            "`hdf`, `html`, `pickle`, `sql`, `stata`, and `xml`."
         )
     _ENVIRONMENT["TB_PANDAS_FORMAT"] = fmt
 
 
 def set_shared_key(key: Optional[Union[str, bytes]]):
+    """If the provided key is a string, it will be encoded in `utf-8`."""
     if isinstance(key, str):
         key = key.encode("utf-8")
     _ENVIRONMENT["TB_SHARED_KEY"] = key
