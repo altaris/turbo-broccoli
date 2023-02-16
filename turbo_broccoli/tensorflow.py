@@ -12,6 +12,9 @@ try:
     HAS_SAFETENSORS = True
 except ModuleNotFoundError:
     HAS_SAFETENSORS = False
+    from turbo_broccoli.utils import warn_about_safetensors
+
+    warn_about_safetensors()
 
 from turbo_broccoli.environment import (
     get_artifact_path,
