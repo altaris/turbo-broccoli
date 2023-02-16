@@ -3,7 +3,10 @@ __docformat__ = "google"
 
 from typing import Any
 
-from turbo_broccoli.environment import get_registered_dataclass, is_nodecode
+from turbo_broccoli.environment import (
+    get_registered_dataclass_type,
+    is_nodecode,
+)
 
 
 def _json_to_dataclass_v2(dct: dict) -> Any:
@@ -13,7 +16,7 @@ def _json_to_dataclass_v2(dct: dict) -> Any:
     """
     if is_nodecode("dataclass." + dct["class"]):
         return None
-    return get_registered_dataclass(dct["class"])(**dct["data"])
+    return get_registered_dataclass_type(dct["class"])(**dct["data"])
 
 
 def from_json(dct: dict) -> Any:

@@ -1,3 +1,4 @@
+# pylint: disable=global-variable-not-assigned
 # pylint: disable=missing-function-docstring
 """
 Environment variable and settings management. See the
@@ -16,6 +17,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 _DATACLASSES_TYPES: Dict[str, type] = {}
+_PYTORCH_MODULE_TYPES: Dict[str, type] = {}
 
 # The initial values are the defaults
 _ENVIRONMENT: Dict[str, Any] = {
@@ -115,8 +117,12 @@ def get_max_nbytes() -> int:
     return _ENVIRONMENT["TB_MAX_NBYTES"]
 
 
-def get_registered_dataclass(name: str) -> type:
+def get_registered_dataclass_type(name: str) -> type:
     return _DATACLASSES_TYPES[name]
+
+
+def get_registered_pytorch_module_type(name: str) -> type:
+    return _PYTORCH_MODULE_TYPES[name]
 
 
 def get_shared_key() -> Optional[bytes]:
@@ -127,12 +133,20 @@ def is_nodecode(type_name: str) -> bool:
     return type_name in _ENVIRONMENT["TB_NODECODE"]
 
 
-def register_dataclass(name: str, cls: type):
+def register_dataclass_type(name: str, cls: type):
     """
     Registers a dataclass for dataclass deserialization. Registered types may
     be overwritten.
     """
     _DATACLASSES_TYPES[name] = cls
+
+
+def register_pytorch_module_type(cls: type):
+    """
+    Registers a `torch.nn.Module` type for module deserialization. Registered
+    types may be overwritten.
+    """
+    _PYTORCH_MODULE_TYPES[cls.__name__] = cls
 
 
 def set_artifact_path(path: Union[str, Path]):
