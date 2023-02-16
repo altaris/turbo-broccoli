@@ -6,4 +6,6 @@ pdoc
 pylint
 pynacl
 pytest
+safetensors
 tensorflow
+torch
