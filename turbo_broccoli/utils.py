@@ -1,8 +1,11 @@
 """Various utilities and internal methods"""
 
-import logging
+try:
+    from loguru import logger as logging
+except ModuleNotFoundError:
+    import logging  # type: ignore
 
-WARNED_ABOUT_SAFETENSORS = False
+_WARNED_ABOUT_SAFETENSORS = False
 
 
 def warn_about_safetensors():
@@ -10,11 +13,11 @@ def warn_about_safetensors():
     If safetensors is not installed, logs a warning message. This method may be
     called multiple times, but the message will only be logged once.
     """
-    global WARNED_ABOUT_SAFETENSORS  # pylint: disable=global-statement
-    if not WARNED_ABOUT_SAFETENSORS:
+    global _WARNED_ABOUT_SAFETENSORS  # pylint: disable=global-statement
+    if not _WARNED_ABOUT_SAFETENSORS:
         logging.warning(
             "Serialization of numpy arrays and Tensorflow tensors without "
             "safetensors is deprecated. Consider installing safetensors using "
-            "'pip install safetensors'"
+            "'pip install safetensors'."
         )
-        WARNED_ABOUT_SAFETENSORS = True
+        _WARNED_ABOUT_SAFETENSORS = True

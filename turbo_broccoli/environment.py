@@ -6,7 +6,11 @@ for information about the supported environment variables.
 """
 __docformat__ = "google"
 
-import logging
+try:
+    from loguru import logger as logging
+except ModuleNotFoundError:
+    import logging  # type: ignore
+
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -31,8 +35,8 @@ def _init():
     """
     if "TB_NUMPY_PATH" in os.environ:
         logging.warning(
-            "The use of the TB_NUMPY_PATH environment variable is deprecated. "
-            "Consider using TB_ARTIFACT_PATH instead"
+            "The use of the 'TB_NUMPY_PATH' environment variable is "
+            "deprecated. Consider using 'TB_ARTIFACT_PATH' instead."
         )
         set_artifact_path(Path(os.environ["TB_NUMPY_PATH"]))
     else:
@@ -52,10 +56,9 @@ def _init():
         )
     except ValueError:
         logging.warning(
-            "Invalid value for environment variable TB_KERAS_FORMAT: '%s'. "
-            "Expected 'h5', 'json', or 'tf'. Defaulting to '%s'",
-            os.environ["TB_KERAS_FORMAT"],
-            _ENVIRONMENT["TB_KERAS_FORMAT"],
+            "Invalid value for environment variable TB_KERAS_FORMAT: "
+            f"'{os.environ['TB_KERAS_FORMAT']}'. Expected 'h5', 'json', or "
+            f"'tf'. Defaulting to '{_ENVIRONMENT['TB_KERAS_FORMAT']}'."
         )
 
     try:
@@ -67,11 +70,10 @@ def _init():
         )
     except ValueError:
         logging.warning(
-            "Invalid value for environment variable TB_PANDAS_FORMAT: '%s'. "
-            "Expected 'csv', 'excel', 'feather', 'h5', 'hdf', 'pickle', "
-            "'stata', or 'xml'. Defaulting to '%s'",
-            os.environ["TB_PANDAS_FORMAT"],
-            _ENVIRONMENT["TB_PANDAS_FORMAT"],
+            "Invalid value for environment variable TB_PANDAS_FORMAT: "
+            f"'{os.environ['TB_PANDAS_FORMAT']}'. Expected 'csv', 'excel', "
+            "'feather', 'h5', 'hdf', 'pickle', 'stata', or 'xml'. Defaulting "
+            f"to '{_ENVIRONMENT['TB_PANDAS_FORMAT']}'."
         )
 
     if "TB_NODECODE" in os.environ:
@@ -79,8 +81,8 @@ def _init():
 
     if "TB_NUMPY_MAX_NBYTES" in os.environ:
         logging.warning(
-            "The use of the TB_NUMPY_MAX_NBYTES environment variable is "
-            "deprecated. Consider using TB_MAX_NBYTES instead"
+            "The use of the 'TB_NUMPY_MAX_NBYTES' environment variable is "
+            "deprecated. Consider using 'TB_MAX_NBYTES' instead."
         )
         set_max_nbytes(int(os.environ["TB_NUMPY_MAX_NBYTES"]))
     else:
