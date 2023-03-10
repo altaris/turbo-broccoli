@@ -18,6 +18,7 @@ from turbo_broccoli.turbo_broccoli import (
     TurboBroccoliDecoder,
     TurboBroccoliEncoder,
 )
+from turbo_broccoli.guard import produces_document
 
 try:
     __version__ = get_distribution("turbo-broccoli").version
