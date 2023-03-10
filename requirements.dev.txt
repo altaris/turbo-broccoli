@@ -8,5 +8,6 @@ pylint
 pynacl
 pytest
 safetensors
+scikit-learn
 tensorflow
 torch
