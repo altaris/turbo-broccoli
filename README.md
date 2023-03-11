@@ -156,6 +156,84 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
   directly. Wrap them in your own custom module class.
 
+* **EXPERIMENTAL** `sklearn` estimators (i.e. that descent from
+  [`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
+  To make sure which class is supported, take a look at the [unit
+  tests](https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py)
+  Doesn't work with:
+  * All CV classes because the `score_` attribute is a dict indexed with
+    `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
+  * All estimator classes that have mandatory arguments: `ClassifierChain`,
+    `ColumnTransformer`, `FeatureUnion`, `GridSearchCV`,
+    `MultiOutputClassifier`, `MultiOutputRegressor`, `OneVsOneClassifier`,
+    `OneVsRestClassifier`, `OutputCodeClassifier`, `Pipeline`,
+    `RandomizedSearchCV`, `RegressorChain`, `RFE`, `RFECV`, `SelectFromModel`,
+    `SelfTrainingClassifier`, `SequentialFeatureSelector`, `SparseCoder`,
+    `StackingClassifier`, `StackingRegressor`, `VotingClassifier`,
+    `VotingRegressor`.
+  * Everything that is parametrized by an arbitrary object/callable/estimator:
+    `FunctionTransformer`, `TransformedTargetRegressor`.
+  * Everything that stores a random state (in the form of a `RandomState`
+    object): `MiniBatchKMeans`, `BisectingKMeans`,
+    `MiniBatchDictionaryLearning`, `LatentDirichletAllocation`,
+    `NeighborhoodComponentsAnalysis`, `MLPClassifier`, `MLPRegressor`,
+    `SparseRandomProjection`, `GaussianRandomProjection`.
+  * Everything with trees and forest since `Tree` objects are not JSON
+    serializable: `ExtraTreesClassifier`, `ExtraTreesRegressor`,
+    `RandomForestClassifier`, `RandomForestRegressor`, `RandomTreesEmbedding`,
+    `IsolationForest`, `AdaBoostClassifier`, `AdaBoostRegressor`,
+    `DecisionTreeClassifier`, `DecisionTreeRegressor`.
+  * Other classes that have non JSON-serializable attributes:
+    | Class                       | Non-serializable attr.    |
+    | --------------------------- | ------------------------- |
+    | `Birch`                     | `_CFNode`                 |
+    | `GaussianProcessRegressor`  | `Sum`                     |
+    | `GaussianProcessClassifier` | `Product`                 |
+    | `Perceptron`                | `Hinge`                   |
+    | `SGDClassifier`             | `Hinge`                   |
+    | `SGDOneClassSVM`            | `Hinge`                   |
+    | `PoissonRegressor`          | `HalfPoissonLoss`         |
+    | `GammaRegressor`            | `HalfGammaLoss`           |
+    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
+    | `SpectralEmbedding`         | `csr_matrix`              |
+    | `KernelDensity`             | `KDTree`                  |
+    | `SplineTransformer`         | `BSpline`                 |
+    | `SimpleImputer`             | `dtype`                   |
+  * Some classes have AttributeErrors?
+    | Class                         | Attribute      |
+    | ----------------------------- | -------------- |
+    | `IsotonicRegression`          | `f_`           |
+    | `KNeighborsClassifier`        | `_y`           |
+    | `KNeighborsRegressor`         | `_y`           |
+    | `KNeighborsTransformer`       | `_tree`        |
+    | `RadiusNeighborsClassifier`   | `_tree`        |
+    | `RadiusNeighborsRegressor`    | `_tree`        |
+    | `RadiusNeighborsTransformer`  | `_tree`        |
+    | `LocalOutlierFactor`          | `_lrd`         |
+    | `PowerTransformer`            | `_scaler`      |
+    | `LabelPropagation`            | `X_`           |
+    | `LabelSpreading`              | `X_`           |
+    | `NuSVC`                       | `_sparse`      |
+    | `NuSVR`                       | `_sparse`      |
+    | `OneClassSVM`                 | `_sparse`      |
+    | `SVC`                         | `_sparse`      |
+    | `SVR`                         | `_sparse`      |
+    | `MissingIndicator`            | `_precomputed` |
+  * Other errors:
+    * `FastICA`: I'm not sure why...
+    * `KernelPCA`: `'KernelPCA' object has no attribute '_centerer'`.
+    * `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis
+      (...), numpy.newaxis (None) and integer or boolean arrays are valid
+      indices`.
+    * `GradientBoostingClassifier`: `Exception: dtype object is not covered`.
+    * `GradientBoostingRegressor`: `Exception: dtype object is not covered`.
+    * `HistGradientBoostingClassifier`: Problems with deserialization of
+      `_BinMapper` object?
+    * `PassiveAggressiveClassifier`: some unknown label type error...
+    * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
+    * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
+
+
 ## Secrets
 
 Basic Python types can be wrapped in their corresponding secret type according
