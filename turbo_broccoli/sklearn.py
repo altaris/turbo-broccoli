@@ -42,6 +42,7 @@ from sklearn import (
     tree,
 )
 from sklearn.base import BaseEstimator
+from sklearn.tree._tree import Tree
 
 _SKLEARN_SUBMODULES = [
     # calibration,
@@ -81,6 +82,25 @@ _SKLEARN_SUBMODULES = [
     discriminant_analysis,
     impute,
     compose,
+]
+
+_SKLEARN_TREE_ATTRIBUTES = [
+    "capacity",
+    "children_left",
+    "children_right",
+    "feature",
+    "impurity",
+    "max_depth",
+    "max_n_classes",
+    "n_classes",
+    "n_features",
+    "n_leaves",
+    "n_node_samples",
+    "n_outputs",
+    "node_count",
+    "threshold",
+    "value",
+    "weighted_n_node_samples",
 ]
 
 
@@ -127,6 +147,15 @@ def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
     }
 
 
+def _sklearn_tree_to_json(obj: Tree) -> dict:
+    """Converts a sklearn Tree object into a JSON document."""
+    return {
+        "__type__": "tree",
+        "__version__": 1,
+        **{a: getattr(obj, a) for a in _SKLEARN_TREE_ATTRIBUTES},
+    }
+
+
 def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
     """
     Converts a JSON document to a sklearn estimator. See `to_json` for the
@@ -152,6 +181,32 @@ def _json_to_sklearn_estimator_v1(dct: dict) -> BaseEstimator:
     return obj
 
 
+def _json_to_sklearn_tree(dct: dict) -> BaseEstimator:
+    """
+    Converts a JSON document to a sklearn tree object. See `to_json` for the
+    specification `dct` is expected to follow. Note that the key `__sklearn__`
+    should not be present.
+    """
+    DECODERS = {
+        1: _json_to_sklearn_tree_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_sklearn_tree_v1(dct: dict) -> BaseEstimator:
+    """
+    Converts a JSON document to a sklearn tree following the v1 specification.
+
+    See also:
+        * https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_tree.pxd
+        * https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_classes.py#L349
+    """
+    obj = Tree(dct["n_features"], dct["n_classes"], dct["n_outputs"])
+    for k in _SKLEARN_TREE_ATTRIBUTES:
+        setattr(obj, k, dct[k])
+    return obj
+
+
 def from_json(dct: dict) -> BaseEstimator:
     """
     Deserializes a dict into a sklearn estimator. See `to_json` for the
@@ -160,6 +215,7 @@ def from_json(dct: dict) -> BaseEstimator:
     """
     DECODERS = {
         "estimator": _json_to_sklearn_estimator,
+        "tree": _json_to_sklearn_tree,
     }
     try:
         return DECODERS[dct["__sklearn__"]["__type__"]](dct["__sklearn__"])
@@ -189,6 +245,7 @@ def to_json(obj: BaseEstimator) -> dict:
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (BaseEstimator, _sklearn_estimator_to_json),
+        (Tree, _sklearn_tree_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
