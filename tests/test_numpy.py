@@ -45,3 +45,14 @@ def test_numpy_large_array():
     os.environ["TB_MAX_NBYTES"] = "0"
     x = np.random.random((100, 100))
     _assert_equal(x, from_json(to_json(x)))
+
+
+def test_numpy_dtype():
+    dt = np.dtype(np.float64)
+    assert dt == from_json(to_json(dt))
+    dt = np.dtype(int)
+    assert dt == from_json(to_json(dt))
+    dt = np.dtype(object)
+    assert dt == from_json(to_json(dt))
+    dt = np.dtype("b")
+    assert dt == from_json(to_json(dt))

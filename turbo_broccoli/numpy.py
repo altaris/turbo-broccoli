@@ -29,6 +29,26 @@ from turbo_broccoli.environment import (
 )
 
 
+def _json_to_dtype(dct: dict) -> np.dtype:
+    """
+    Converts a JSON document to a numpy dtype. See `to_json` for the
+    specification `dct` is expected to follow. Note that the key `__numpy__`
+    should not be present.
+    """
+    DECODERS = {
+        1: _json_to_dtype_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_dtype_v1(dct: dict) -> np.dtype:
+    """
+    Converts a JSON document to a numpy dtype object following the v1
+    specification.
+    """
+    return np.lib.format.descr_to_dtype(dct["dtype"])
+
+
 def _json_to_ndarray(dct: dict) -> np.ndarray:
     """
     Converts a JSON document to a numpy array. See `to_json` for the
@@ -85,6 +105,7 @@ def _json_to_number(dct: dict) -> np.number:
     """
     DECODERS = {
         1: _json_to_number_v1,
+        2: _json_to_number_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -97,6 +118,22 @@ def _json_to_number_v1(dct: dict) -> np.number:
         dct["value"],
         dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
     )[0]
+
+
+def _json_to_number_v2(dct: dict) -> np.number:
+    """
+    Converts a JSON document to a numpy number following the v2 specification.
+    """
+    return np.frombuffer(dct["value"], dtype=dct["dtype"])[0]
+
+
+def _dtype_to_json(d: np.dtype) -> dict:
+    """Serializes a `numpy` array."""
+    return {
+        "__type__": "dtype",
+        "__version__": 1,
+        "dtype": np.lib.format.dtype_to_descr(d),
+    }
 
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
@@ -155,9 +192,9 @@ def _number_to_json(num: np.number) -> dict:
 
     return {
         "__type__": "number",
-        "__version__": 1,
+        "__version__": 2,
         "value": bytes(np.array(num).data),
-        "dtype": np.lib.format.dtype_to_descr(num.dtype),
+        "dtype": num.dtype,
     }
 
 
@@ -170,6 +207,7 @@ def from_json(dct: dict) -> Any:
     DECODERS = {
         "ndarray": _json_to_ndarray,
         "number": _json_to_number,
+        "dtype": _json_to_dtype,
     }
     try:
         type_name = dct["__numpy__"]["__type__"]
@@ -204,7 +242,7 @@ def to_json(obj: Any) -> dict:
                     "__type__": "ndarray",
                     "__version__": 2,
                     "data": <ASCII encoded byte string>,
-                    "dtype": <str>,
+                    "dtype": <dtype_to_descr string>,
                     "shape": <int tuple>,
                 }
             }
@@ -244,9 +282,21 @@ def to_json(obj: Any) -> dict:
             {
                 "__numpy__": {
                     "__type__": "number",
-                    "__version__": 1,
+                    "__version__": 2,
                     "value": <float>,
-                    "dtype": <str>,
+                    "dtype": {...},
+                }
+            }
+
+        where the `dtype` document follows the specification below.
+
+    * `numpy.dtype`:
+
+            {
+                "__numpy__": {
+                    "__type__": "dtype",
+                    "__version__": 1,
+                    "dtype": <dtype_to_descr string>,
                 }
             }
 
@@ -254,6 +304,7 @@ def to_json(obj: Any) -> dict:
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (np.ndarray, _ndarray_to_json),
         (np.number, _number_to_json),
+        (np.dtype, _dtype_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
