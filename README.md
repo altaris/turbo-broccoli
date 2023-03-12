@@ -198,7 +198,6 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
     | `SpectralEmbedding`         | `csr_matrix`              |
     | `KernelDensity`             | `KDTree`                  |
     | `SplineTransformer`         | `BSpline`                 |
-    | `SimpleImputer`             | `dtype`                   |
   * Some classes have AttributeErrors?
     | Class                         | Attribute      |
     | ----------------------------- | -------------- |

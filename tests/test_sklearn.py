@@ -1586,9 +1586,9 @@ def test_simpleimputer():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html
     """
-    # x_train = np.array([[np.nan, 1, 3], [4, 0, np.nan], [8, 1, 0]])
-    # x_test = np.array([[5, 1, np.nan], [np.nan, 2, 3], [2, 4, 0]])
-    # _fit_transform_x_test(SimpleImputer(), x_train, x_test)
+    x_train = np.array([[np.nan, 1, 3], [4, 0, np.nan], [8, 1, 0]])
+    x_test = np.array([[5, 1, np.nan], [np.nan, 2, 3], [2, 4, 0]])
+    _fit_transform_x_test(SimpleImputer(), x_train, x_test)
 
 
 def test_knnimputer():
