@@ -156,7 +156,9 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
   directly. Wrap them in your own custom module class.
 
-* **EXPERIMENTAL** `sklearn` estimators (i.e. that descent from
+- `scipy.sparse.csr_matrix`
+
+- **EXPERIMENTAL** `sklearn` estimators (i.e. that descent from
   [`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
   To make sure which class is supported, take a look at the [unit
   tests](https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py)

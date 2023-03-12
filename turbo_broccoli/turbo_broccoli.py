@@ -55,6 +55,13 @@ except ModuleNotFoundError:
 
 
 try:
+    import turbo_broccoli.scipy
+
+    HAS_SCIPY = True
+except ModuleNotFoundError:
+    HAS_SCIPY = False
+
+try:
     import turbo_broccoli.sklearn
 
     HAS_SKLEARN = True
@@ -90,6 +97,8 @@ class TurboBroccoliDecoder(json.JSONDecoder):
             DECODERS["__secret__"] = turbo_broccoli.secret.from_json
         if HAS_TENSORFLOW:
             DECODERS["__tensorflow__"] = turbo_broccoli.tensorflow.from_json
+        if HAS_SCIPY:
+            DECODERS["__scipy__"] = turbo_broccoli.scipy.from_json
         if HAS_SKLEARN:
             DECODERS["__sklearn__"] = turbo_broccoli.sklearn.from_json
         for t, f in DECODERS.items():
@@ -124,6 +133,8 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             ENCODERS.append(turbo_broccoli.secret.to_json)
         if HAS_TENSORFLOW:
             ENCODERS.append(turbo_broccoli.tensorflow.to_json)
+        if HAS_SCIPY:
+            ENCODERS.append(turbo_broccoli.scipy.to_json)
         if HAS_SKLEARN:
             ENCODERS.append(turbo_broccoli.sklearn.to_json)
         for f in ENCODERS:
