@@ -197,32 +197,31 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
     | `PoissonRegressor`          | `HalfPoissonLoss`         |
     | `GammaRegressor`            | `HalfGammaLoss`           |
     | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
-    | `SpectralEmbedding`         | `csr_matrix`              |
     | `KernelDensity`             | `KDTree`                  |
     | `SplineTransformer`         | `BSpline`                 |
   * Some classes have AttributeErrors?
     | Class                         | Attribute      |
     | ----------------------------- | -------------- |
     | `IsotonicRegression`          | `f_`           |
+    | `KernelPCA`                   | `_centerer`    |
     | `KNeighborsClassifier`        | `_y`           |
     | `KNeighborsRegressor`         | `_y`           |
     | `KNeighborsTransformer`       | `_tree`        |
-    | `RadiusNeighborsClassifier`   | `_tree`        |
-    | `RadiusNeighborsRegressor`    | `_tree`        |
-    | `RadiusNeighborsTransformer`  | `_tree`        |
-    | `LocalOutlierFactor`          | `_lrd`         |
-    | `PowerTransformer`            | `_scaler`      |
     | `LabelPropagation`            | `X_`           |
     | `LabelSpreading`              | `X_`           |
+    | `LocalOutlierFactor`          | `_lrd`         |
+    | `MissingIndicator`            | `_precomputed` |
     | `NuSVC`                       | `_sparse`      |
     | `NuSVR`                       | `_sparse`      |
     | `OneClassSVM`                 | `_sparse`      |
+    | `PowerTransformer`            | `_scaler`      |
+    | `RadiusNeighborsClassifier`   | `_tree`        |
+    | `RadiusNeighborsRegressor`    | `_tree`        |
+    | `RadiusNeighborsTransformer`  | `_tree`        |
     | `SVC`                         | `_sparse`      |
     | `SVR`                         | `_sparse`      |
-    | `MissingIndicator`            | `_precomputed` |
   * Other errors:
     * `FastICA`: I'm not sure why...
-    * `KernelPCA`: `'KernelPCA' object has no attribute '_centerer'`.
     * `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis
       (...), numpy.newaxis (None) and integer or boolean arrays are valid
       indices`.

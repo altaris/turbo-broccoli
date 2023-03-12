@@ -1061,11 +1061,11 @@ def test_spectralembedding():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.manifold.SpectralEmbedding.html
     """
-    # x, _ = load_digits(return_X_y=True)
-    # e = SpectralEmbedding(n_components=2)
-    # xe = e.fit_transform(x[:100])
-    # e2 = _to_json_and_back(e)
-    # assert_array_equal(xe, e2.embedding_)
+    x, _ = load_digits(return_X_y=True)
+    e = SpectralEmbedding(n_components=2)
+    xe = e.fit_transform(x[:100])
+    e2 = _to_json_and_back(e)
+    assert_array_equal(xe, e2.embedding_)
 
 
 def test_tsne():
