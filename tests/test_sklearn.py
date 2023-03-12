@@ -235,6 +235,33 @@ def test_bisectingkmeans():
     # assert_array_equal(e.predict(y), e2.predict(y))
 
 
+def test_minibatchkmeans():
+    """
+    https://scikit-learn.org/stable/modules/generated/sklearn.cluster.MiniBatchKMeans.html
+    """
+    x = np.array(
+        [
+            [1, 2],
+            [1, 4],
+            [1, 0],
+            [4, 2],
+            [4, 0],
+            [4, 4],
+            [4, 5],
+            [0, 1],
+            [2, 2],
+            [3, 2],
+            [5, 5],
+            [1, -1],
+        ]
+    )
+    z = [[0, 0], [4, 4]]
+    e = MiniBatchKMeans(
+        n_clusters=2, random_state=0, batch_size=6, max_iter=10, n_init="auto"
+    )
+    _fit_predict_x_z_test(e, x, z)
+
+
 def test_meanshift():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.cluster.MeanShift.html

@@ -174,10 +174,10 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
   * Everything that is parametrized by an arbitrary object/callable/estimator:
     `FunctionTransformer`, `TransformedTargetRegressor`.
   * Everything that stores a random state (in the form of a `RandomState`
-    object): `MiniBatchKMeans`, `BisectingKMeans`,
-    `MiniBatchDictionaryLearning`, `LatentDirichletAllocation`,
-    `NeighborhoodComponentsAnalysis`, `MLPClassifier`, `MLPRegressor`,
-    `SparseRandomProjection`, `GaussianRandomProjection`.
+    object): `BisectingKMeans`, `MiniBatchDictionaryLearning`,
+    `LatentDirichletAllocation`, `NeighborhoodComponentsAnalysis`,
+    `MLPClassifier`, `MLPRegressor`, `SparseRandomProjection`,
+    `GaussianRandomProjection`.
   * Everything with trees and forest since `Tree` objects are not JSON
     serializable: `ExtraTreesClassifier`, `ExtraTreesRegressor`,
     `RandomForestClassifier`, `RandomForestRegressor`, `RandomTreesEmbedding`,
