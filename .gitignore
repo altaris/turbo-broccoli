@@ -173,3 +173,4 @@ cython_debug/
 docs/
 out/
 playground.py
+*.test.py
