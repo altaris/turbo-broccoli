@@ -80,8 +80,27 @@ was produced by calling `_f(*args, **kwargs)`, then
 _f(*args2, **kwargs2)
 ```
 
-will still return the same result. Therefore, this wrapper isn't recommended if
-you intend to call `f` many times with different arguments.
+will still return the same result. If you want to keep a different file for
+each `args`/`kwargs`, set `check_args` to `True` as in
+
+```py
+_f = produces_document(f, "out/result.json")
+_f(*args, **kwargs)
+```
+
+In this case, the arguments must be TurboBroccoli/JSON-izable, i.e. the
+document
+
+```
+{
+    "args": args,
+    "kwargs": kwargs,
+}
+```
+
+must be TurboBroccoli/JSON-izable. The resulting file is no longer
+`out/result.json` but rather `out/result.json/<hash>` where `hash` is the MD5
+hash of the serialization of the `args`/`kwargs` document above.
 
 ## Supported types
 
