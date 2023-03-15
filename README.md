@@ -27,6 +27,9 @@ obj = {
     "an_array": np.array([[1, 2], [3, 4]], dtype="float32")
 }
 json.dumps(obj, cls=tb.TurboBroccoliEncoder)
+
+# or even simpler:
+tb.to_json(obj)
 ```
 
 produces the following string (modulo indentation):
@@ -52,6 +55,9 @@ For deserialization, simply use
 
 ```py
 json.loads(json_string, cls=tb.TurboBroccoliDecoder)
+
+# or even simpler:
+tb.from_json(json_string)
 ```
 
 ## Supported types

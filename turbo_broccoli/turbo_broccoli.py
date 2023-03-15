@@ -157,3 +157,13 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             d = turbo_broccoli.collections._namedtuple_to_json(o)
             return super().encode({"__collections__": d})
         return super().encode(o)
+
+
+def from_json(doc: str) -> Any:
+    """Converts a JSON document back to a Python object."""
+    return json.loads(doc, cls=TurboBroccoliDecoder)
+
+
+def to_json(obj: Any) -> str:
+    """Converts an object to JSON."""
+    return json.dumps(obj, cls=TurboBroccoliEncoder)

@@ -14,11 +14,13 @@ from turbo_broccoli.environment import (
     set_max_nbytes,
     set_pandas_format,
 )
+from turbo_broccoli.guard import produces_document
 from turbo_broccoli.turbo_broccoli import (
     TurboBroccoliDecoder,
     TurboBroccoliEncoder,
+    from_json,
+    to_json,
 )
-from turbo_broccoli.guard import produces_document
 
 try:
     __version__ = get_distribution("turbo-broccoli").version
