@@ -15,6 +15,29 @@ from typing import Any, Callable, Dict, Union
 from .turbo_broccoli import TurboBroccoliDecoder, TurboBroccoliEncoder, to_json
 
 
+def guarded_call(
+    function: Callable[..., Dict[str, Any]],
+    path: Union[str, Path],
+    *args,
+    **kwargs,
+) -> Dict[str, Any]:
+    """
+    Convenience function:
+
+    ```py
+    guarded_call(f, "out/result.json", *args, **kwargs)
+    ```
+    is equivalent to
+
+    ```py
+    _f = produces_document(f, "out/result.json")
+    _f(*args, **kwargs)
+    ```
+    """
+    _f = produces_document(function, path)
+    return _f(*args, **kwargs)
+
+
 def produces_document(
     function: Callable[..., Dict[str, Any]],
     path: Union[str, Path],

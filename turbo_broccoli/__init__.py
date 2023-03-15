@@ -14,7 +14,7 @@ from turbo_broccoli.environment import (
     set_max_nbytes,
     set_pandas_format,
 )
-from turbo_broccoli.guard import produces_document
+from turbo_broccoli.guard import guarded_call, produces_document
 from turbo_broccoli.turbo_broccoli import (
     TurboBroccoliDecoder,
     TurboBroccoliEncoder,

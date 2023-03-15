@@ -26,8 +26,9 @@ lint:
 
 .PHONY: test
 test:
-	@-mkdir -p out/test
+	-mkdir -p out/test
 	TB_ARTIFACT_PATH="out/test" pytest -v
+	-rm -r out/test
 
 .PHONY: test-clean
 test-clean:

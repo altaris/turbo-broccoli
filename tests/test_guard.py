@@ -2,7 +2,21 @@
 """Test suite for `tdt.produces_document`"""
 
 import json
-from turbo_broccoli import produces_document
+from turbo_broccoli import guarded_call, produces_document
+
+
+def test_guarded_call():
+    def f(a: int):
+        return {"a": a}
+
+    path = "out/test_guarded_call.json"
+    x = guarded_call(f, path, 1)
+    with open(path, "r", encoding="utf-8") as fp:
+        y = json.load(fp)
+    assert isinstance(x, dict)
+    assert x == y
+    assert x != f(2)
+    assert x == guarded_call(f, path, 2)  # Intended behavior
 
 
 def test_produces_document():
