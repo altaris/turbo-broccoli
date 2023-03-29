@@ -69,6 +69,14 @@ except ModuleNotFoundError:
     HAS_SKLEARN = False
 
 
+try:
+    import turbo_broccoli.bokeh
+
+    HAS_BOKEH = True
+except ModuleNotFoundError:
+    HAS_BOKEH = False
+
+
 class TurboBroccoliDecoder(json.JSONDecoder):
     """
     TurboBroccoli's custom JSON decoder class. See the README for the list of
@@ -82,8 +90,6 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         """Deserialization hook"""
         DECODERS: Dict[str, Callable[[dict], Any]] = {
             "__bytes__": turbo_broccoli.bytes.from_json,
-            "__collections__": turbo_broccoli.collections.from_json,
-            "__dataclass__": turbo_broccoli.dataclass.from_json,
         }
         if HAS_KERAS:
             DECODERS["__keras__"] = turbo_broccoli.keras.from_json
@@ -101,6 +107,11 @@ class TurboBroccoliDecoder(json.JSONDecoder):
             DECODERS["__scipy__"] = turbo_broccoli.scipy.from_json
         if HAS_SKLEARN:
             DECODERS["__sklearn__"] = turbo_broccoli.sklearn.from_json
+        if HAS_BOKEH:
+            DECODERS["__bokeh__"] = turbo_broccoli.bokeh.from_json
+        # Intentionally put last
+        DECODERS["__collections__"] = turbo_broccoli.collections.from_json
+        DECODERS["__dataclass__"] = turbo_broccoli.dataclass.from_json
         for t, f in DECODERS.items():
             if t in dct:
                 return f(dct)
@@ -117,9 +128,6 @@ class TurboBroccoliEncoder(json.JSONEncoder):
 
         ENCODERS: List[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
-            turbo_broccoli.collections.to_json,
-            turbo_broccoli.dataclass.to_json,
-            turbo_broccoli.generic.to_json,
         ]
         if HAS_KERAS:
             ENCODERS.append(turbo_broccoli.keras.to_json)
@@ -137,6 +145,14 @@ class TurboBroccoliEncoder(json.JSONEncoder):
             ENCODERS.append(turbo_broccoli.scipy.to_json)
         if HAS_SKLEARN:
             ENCODERS.append(turbo_broccoli.sklearn.to_json)
+        if HAS_BOKEH:
+            ENCODERS.append(turbo_broccoli.bokeh.to_json)
+        # Intentionally put last
+        ENCODERS += [
+            turbo_broccoli.collections.to_json,
+            turbo_broccoli.dataclass.to_json,
+            turbo_broccoli.generic.to_json,
+        ]
         for f in ENCODERS:
             try:
                 return f(o)

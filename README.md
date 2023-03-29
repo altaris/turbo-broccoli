@@ -281,6 +281,8 @@ hash of the serialization of the `args`/`kwargs` document above.
     * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
     * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
 
+- [Bokeh figures](https://docs.bokeh.org/en/latest) and
+  [models](https://docs.bokeh.org/en/latest/docs/reference/models.html).
 
 ## Secrets
 

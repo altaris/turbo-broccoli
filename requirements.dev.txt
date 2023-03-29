@@ -1,4 +1,5 @@
 black
+bokeh
 loguru
 mypy
 numpy
