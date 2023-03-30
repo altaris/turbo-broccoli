@@ -25,6 +25,12 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install -r requirements.dev.txt
 
+      - name: Version fix
+        run: |
+          pip3 uninstall -y pycuda
+          pip3 install numpy==1.19.4
+          pip3 install pycuda==2019.1
+
       - name: Run pdoc
         run: pdoc -o docs turbo_broccoli
 
