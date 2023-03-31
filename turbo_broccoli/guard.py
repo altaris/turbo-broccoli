@@ -9,13 +9,11 @@ try:
 except ModuleNotFoundError:
     import logging  # type: ignore
 
-import json
 from typing import Any, Callable, Dict, Optional, Union
 
 from .turbo_broccoli import (
-    TurboBroccoliDecoder,
-    TurboBroccoliEncoder,
-    from_json,
+    load_json,
+    save_json,
     to_json,
 )
 
@@ -61,8 +59,7 @@ class GuardedBlockHandler:
 
     def _load(self):
         """Loads the results and logs"""
-        with open(self.output_file, mode="r", encoding="utf-8") as fp:
-            self.result = from_json(fp.read())
+        self.result = load_json(self.output_file)
         if self.name:
             logging.debug(f"Skipped guarded block '{self.name}'")
 
@@ -70,8 +67,7 @@ class GuardedBlockHandler:
         """Saves the results (if not `None`) and logs"""
         if self.result is None:
             return
-        with open(self.output_file, mode="w", encoding="utf-8") as fp:
-            fp.write(to_json(self.result))
+        save_json(self.result, self.output_file)
         if self.name is not None:
             logging.debug(
                 f"Saved guarded block '{self.name}'s results to "
@@ -166,16 +162,14 @@ def produces_document(
             path.mkdir(parents=True, exist_ok=True)
             path = path / f"{h}.json"
         try:
-            with open(path, "r", encoding="utf-8") as fp:
-                obj = json.load(fp, cls=TurboBroccoliDecoder)
+            obj = load_json(path)
             logging.debug(
                 f"Skipped call to guarded method '{function.__name__}'"
             )
             return obj
         except:  # pylint: disable=bare-except
             obj = function(*args, **kwargs)
-            with open(path, "w", encoding="utf-8") as fp:
-                json.dump(obj, fp, cls=TurboBroccoliEncoder)
+            save_json(obj, path)
             return obj
 
     path = path if isinstance(path, Path) else Path(path)

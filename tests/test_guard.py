@@ -1,9 +1,12 @@
 # pylint: disable=missing-function-docstring
 """Test suite for `tdt.produces_document`"""
 
-import json
-
-from turbo_broccoli import GuardedBlockHandler, guarded_call, produces_document
+from turbo_broccoli import (
+    GuardedBlockHandler,
+    guarded_call,
+    produces_document,
+    load_json,
+)
 
 
 def test_guarded_bloc_handler():
@@ -14,8 +17,7 @@ def test_guarded_bloc_handler():
         h.result = 42
     for _ in h.guard():
         h.result = 43
-    with open(path, "r", encoding="utf-8") as fp:
-        y = json.load(fp)
+    y = load_json(path)
     assert h.result == 42
     assert h.result == y
 
@@ -26,8 +28,7 @@ def test_guarded_call():
 
     path = "out/test_guarded_call.json"
     x = guarded_call(f, path, 1)
-    with open(path, "r", encoding="utf-8") as fp:
-        y = json.load(fp)
+    y = load_json(path)
     assert isinstance(x, dict)
     assert x == y
     assert x != f(2)
@@ -41,8 +42,7 @@ def test_produces_document():
     path = "out/test_produces_document.json"
     _f = produces_document(f, path, check_args=False)
     x = _f(1)
-    with open(path, "r", encoding="utf-8") as fp:
-        y = json.load(fp)
+    y = load_json(path)
     assert isinstance(x, dict)
     assert x == y
     assert x != f(2)

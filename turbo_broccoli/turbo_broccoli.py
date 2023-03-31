@@ -2,7 +2,8 @@
 __docformat__ = "google"
 
 import json
-from typing import Any, Callable, Dict, List
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Union
 
 
 import turbo_broccoli.bytes
@@ -176,10 +177,22 @@ class TurboBroccoliEncoder(json.JSONEncoder):
 
 
 def from_json(doc: str) -> Any:
-    """Converts a JSON document back to a Python object."""
+    """Converts a JSON document string back to a Python object"""
     return json.loads(doc, cls=TurboBroccoliDecoder)
 
 
+def load_json(path: Union[str, Path]) -> Any:
+    """Loads and deserializes a JSON file using Turbo Broccoli"""
+    with open(path, mode="r", encoding="utf-8") as fp:
+        return json.load(fp, cls=TurboBroccoliDecoder)
+
+
+def save_json(obj: Any, path: Union[str, Path]) -> None:
+    """Serializes and saves a JSON-serializable object"""
+    with open(path, mode="w", encoding="utf-8") as fp:
+        json.dump(obj, fp, cls=TurboBroccoliEncoder)
+
+
 def to_json(obj: Any) -> str:
-    """Converts an object to JSON."""
+    """Converts an object to JSON"""
     return json.dumps(obj, cls=TurboBroccoliEncoder)
