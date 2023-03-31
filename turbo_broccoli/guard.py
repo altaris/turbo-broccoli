@@ -1,8 +1,8 @@
 """Guarded call"""
 
-from pathlib import Path
 import hashlib
 from functools import partial
+from pathlib import Path
 
 try:
     from loguru import logger as logging
@@ -10,9 +10,83 @@ except ModuleNotFoundError:
     import logging  # type: ignore
 
 import json
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable, Dict, Optional, Union
 
-from .turbo_broccoli import TurboBroccoliDecoder, TurboBroccoliEncoder, to_json
+from .turbo_broccoli import (
+    TurboBroccoliDecoder,
+    TurboBroccoliEncoder,
+    from_json,
+    to_json,
+)
+
+
+class GuardedBlockHandler:
+    """
+    A guarded block handler allows to guard an entire block of code. Use it as
+    follows:
+
+        ```py
+        h = GuardedBlockHandler("foo.json")
+        for _ in h.guard():
+            # This whole block will be skipped if foo.json exists
+            # If not, don't forget to set the results:
+            h.result = ...
+        # In any case, the results of the block are available in h.result
+        ```
+
+    The handler's `result` is `None` by default. If left to `None`, no output
+    file is created. This allows for scenarios like
+
+        ```py
+        h = GuardedBlockHandler("foo.json")
+        for _ in h.guard():
+            ... # Guarded code
+            if success:
+                h.result = ...
+        ```
+
+    So if the guarded code did not succeed, then `foo.json` is not created,
+    and so the next time, it will be run again.
+    """
+
+    name: Optional[str]
+    result: Any = None
+    output_file: Path
+
+    def __init__(
+        self, output_path: Union[str, Path], name: Optional[str] = None
+    ) -> None:
+        self.output_file = Path(output_path)
+        self.name = name
+
+    def _load(self):
+        """Loads the results and logs"""
+        with open(self.output_file, mode="r", encoding="utf-8") as fp:
+            self.result = from_json(fp.read())
+        if self.name:
+            logging.debug(f"Skipped guarded block '{self.name}'")
+
+    def _save(self):
+        """Saves the results (if not `None`) and logs"""
+        if self.result is None:
+            return
+        with open(self.output_file, mode="w", encoding="utf-8") as fp:
+            fp.write(to_json(self.result))
+        if self.name is not None:
+            logging.debug(
+                f"Saved guarded block '{self.name}'s results to "
+                f"'{self.output_file}'"
+            )
+
+    def guard(self):
+        """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
+        if self.output_file.is_file():
+            self._load()
+        else:
+            try:
+                yield
+            finally:
+                self._save()
 
 
 def guarded_call(

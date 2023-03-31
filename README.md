@@ -68,13 +68,13 @@ result at a specified path and when possible, loads it instead of calling `f`.
 For example:
 
 ```py
-_f = produces_document(f, "out/result.json")
+_f = produces_document(f, "foo.json")
 _f(*args, **kwargs)
 ```
 
-will only call `f` if the `out/result.json` does not exist, and otherwise,
-loads and returns `out/result.json`. However, if `out/result.json` exists and
-was produced by calling `_f(*args, **kwargs)`, then
+will only call `f` if the `foo.json` does not exist, and otherwise, loads and
+returns `foo.json`. However, if `foo.json` exists and was produced by calling
+`_f(*args, **kwargs)`, then
 
 ```py
 _f(*args2, **kwargs2)
@@ -84,7 +84,7 @@ will still return the same result. If you want to keep a different file for
 each `args`/`kwargs`, set `check_args` to `True` as in
 
 ```py
-_f = produces_document(f, "out/result.json")
+_f = produces_document(f, "foo.json")
 _f(*args, **kwargs)
 ```
 
@@ -99,8 +99,25 @@ document
 ```
 
 must be TurboBroccoli/JSON-izable. The resulting file is no longer
-`out/result.json` but rather `out/result.json/<hash>` where `hash` is the MD5
+`foo.json` but rather `foo.json/<hash>` where `hash` is the MD5
 hash of the serialization of the `args`/`kwargs` document above.
+
+If instead of a function you wish to guard an entire block of code, use
+`GuardedBlockHandler`:
+
+```py
+from turbo_broccoli import GuardedBlockHandler
+h = GuardedBlockHandler("foo.json")
+for _ in h.guard():
+    # This whole block will be skipped if foo.json exists
+    # If not, don't forget to set the results:
+    h.result = ...
+# In any case, the results of the block are now available in h.result
+```
+
+I know the syntax isn't the prettiest. It would be more natural to use a `with
+h.guard():` syntax but python doesn't allow for context managers that don't
+yield...
 
 ## Supported types
 

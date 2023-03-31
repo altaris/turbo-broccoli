@@ -2,7 +2,22 @@
 """Test suite for `tdt.produces_document`"""
 
 import json
-from turbo_broccoli import guarded_call, produces_document
+
+from turbo_broccoli import GuardedBlockHandler, guarded_call, produces_document
+
+
+def test_guarded_bloc_handler():
+    path = "out/test_guarded_bloc_handler.json"
+    h = GuardedBlockHandler(path)
+    for _ in h.guard():
+        h.result = 41
+        h.result = 42
+    for _ in h.guard():
+        h.result = 43
+    with open(path, "r", encoding="utf-8") as fp:
+        y = json.load(fp)
+    assert h.result == 42
+    assert h.result == y
 
 
 def test_guarded_call():
