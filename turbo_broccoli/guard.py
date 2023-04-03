@@ -24,9 +24,9 @@ class GuardedBlockHandler:
     follows:
 
         ```py
-        h = GuardedBlockHandler("foo.json")
+        h = GuardedBlockHandler("out/foo.json")
         for _ in h.guard():
-            # This whole block will be skipped if foo.json exists
+            # This whole block will be skipped if out/foo.json exists
             # If not, don't forget to set the results:
             h.result = ...
         # In any case, the results of the block are available in h.result
@@ -36,15 +36,18 @@ class GuardedBlockHandler:
     file is created. This allows for scenarios like
 
         ```py
-        h = GuardedBlockHandler("foo.json")
+        h = GuardedBlockHandler("out/foo.json")
         for _ in h.guard():
             ... # Guarded code
             if success:
                 h.result = ...
         ```
 
-    So if the guarded code did not succeed, then `foo.json` is not created,
+    So if the guarded code did not succeed, then `out/foo.json` is not created,
     and so the next time, it will be run again.
+
+    Note that the parent directory of the output file (in this case, `out/`)
+    will be created if it does not exist.
     """
 
     name: Optional[str]
@@ -80,17 +83,18 @@ class GuardedBlockHandler:
             self._load()
         else:
             try:
+                self.output_file.parent.mkdir(parents=True, exist_ok=True)
                 yield
             finally:
                 self._save()
 
 
 def guarded_call(
-    function: Callable[..., Dict[str, Any]],
+    function: Callable[..., Any],
     path: Union[str, Path],
     *args,
     **kwargs,
-) -> Dict[str, Any]:
+) -> Any:
     """
     Convenience function:
 
@@ -103,16 +107,19 @@ def guarded_call(
     _f = produces_document(f, "out/result.json")
     _f(*args, **kwargs)
     ```
+
+    Note that the parent directory of the output file (in this case, `out/`)
+    will be created if it does not exist.
     """
     _f = produces_document(function, path)
     return _f(*args, **kwargs)
 
 
 def produces_document(
-    function: Callable[..., Dict[str, Any]],
+    function: Callable[..., Any],
     path: Union[str, Path],
     check_args: bool = False,
-) -> Callable[..., Dict[str, Any]]:
+) -> Callable[..., Any]:
     """
     Consider an expensive function `f` that returns a TurboBroccoli/JSON-izable
     `dict`. Wrapping/decorating `f` using `produces_document` essentially saves
@@ -125,8 +132,10 @@ def produces_document(
     ```
 
     will only call `f` if the `out/result.json` does not exist, and otherwise,
-    loads and returns `out/result.json`. However, if `out/result.json` exists
-    and was produced by calling `_f(*args, **kwargs)`, then
+    loads and returns `out/result.json`. Note that the parent directory of the
+    output file (in this case, `out/`) will be created if it does not
+    exist.However, if `out/result.json` exists and was produced by calling
+    `_f(*args, **kwargs)`, then
 
     ```py
     _f(*args2, **kwargs2)
@@ -151,8 +160,8 @@ def produces_document(
     ```
 
     must be TurboBroccoli/JSON-izable. The resulting file is no longer
-    `out/result.json` but rather `out/result.json/<hash>` where `hash` is the
-    MD5 hash of the serialization of the `args`/`kwargs` document above.
+    `out/result.json` but rather `out/result.json/<hash>.json` where `hash` is
+    the MD5 hash of the serialization of the `args`/`kwargs` document above.
     """
 
     def _wrapped(path: Path, *args, **kwargs) -> Dict[str, Any]:
@@ -161,6 +170,8 @@ def produces_document(
             h = hashlib.md5(s.encode("utf-8")).hexdigest()
             path.mkdir(parents=True, exist_ok=True)
             path = path / f"{h}.json"
+        else:
+            path.parent.mkdir(parents=True, exist_ok=True)
         try:
             obj = load_json(path)
             logging.debug(
