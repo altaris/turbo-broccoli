@@ -10,7 +10,8 @@ jobs:
   pdoc:
 
     # https://github.com/JohnSnowLabs/spark-nlp/issues/5943
-    runs-on: ubuntu-20.04
+    # https://docs.github.com/en/actions/using-jobs/choosing-the-runner-for-a-job
+    runs-on: macos-latest
 
     steps:
 
