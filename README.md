@@ -188,6 +188,7 @@ yield...
   1. the following dtypes are not supported: `complex`, `object`, `timedelta`
   2. the column / series names must be strings and not numbers. The following
      is not acceptable:
+
      ```py
      df = pd.DataFrame([[1, 2], [3, 4]])
      ```
@@ -205,18 +206,18 @@ yield...
   CPU and gradients are lost; `torch.nn.Module`, don't forget to register your
   module type using
   [`turbo_broccoli.register_pytorch_module_type`]((https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type)):
-     ```py
-     # Serialization
-     class MyModule(torch.nn.Module):
-        ...
+    ```py
+    # Serialization
+    class MyModule(torch.nn.Module):
+      ...
 
-     module = MyModule()  # Must be instantiable without arguments
-     doc = json.dumps(x, cls=tb.TurboBroccoliEncoder)
+    module = MyModule()  # Must be instantiable without arguments
+    doc = json.dumps(x, cls=tb.TurboBroccoliEncoder)
 
-     # Deserialization
-     tb.register_pytorch_module_type(MyModule)
-     module = json.loads(doc, cls=tb.TurboBroccoliDecoder)
-     ```
+    # Deserialization
+    tb.register_pytorch_module_type(MyModule)
+    module = json.loads(doc, cls=tb.TurboBroccoliDecoder)
+    ```
   **WARNING**: It is not possible to register and deserialize [standard pytorch
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
   directly. Wrap them in your own custom module class.
@@ -251,40 +252,44 @@ yield...
     `IsolationForest`, `AdaBoostClassifier`, `AdaBoostRegressor`,
     `DecisionTreeClassifier`, `DecisionTreeRegressor`.
   * Other classes that have non JSON-serializable attributes:
-    | Class                       | Non-serializable attr.    |
-    | --------------------------- | ------------------------- |
-    | `Birch`                     | `_CFNode`                 |
-    | `GaussianProcessRegressor`  | `Sum`                     |
-    | `GaussianProcessClassifier` | `Product`                 |
-    | `Perceptron`                | `Hinge`                   |
-    | `SGDClassifier`             | `Hinge`                   |
-    | `SGDOneClassSVM`            | `Hinge`                   |
-    | `PoissonRegressor`          | `HalfPoissonLoss`         |
-    | `GammaRegressor`            | `HalfGammaLoss`           |
-    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
-    | `KernelDensity`             | `KDTree`                  |
-    | `SplineTransformer`         | `BSpline`                 |
+
+      | Class                       | Non-serializable attr.    |
+      | --------------------------- | ------------------------- |
+      | `Birch`                     | `_CFNode`                 |
+      | `GaussianProcessRegressor`  | `Sum`                     |
+      | `GaussianProcessClassifier` | `Product`                 |
+      | `Perceptron`                | `Hinge`                   |
+      | `SGDClassifier`             | `Hinge`                   |
+      | `SGDOneClassSVM`            | `Hinge`                   |
+      | `PoissonRegressor`          | `HalfPoissonLoss`         |
+      | `GammaRegressor`            | `HalfGammaLoss`           |
+      | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
+      | `KernelDensity`             | `KDTree`                  |
+      | `SplineTransformer`         | `BSpline`                 |
+
   * Some classes have AttributeErrors?
-    | Class                         | Attribute      |
-    | ----------------------------- | -------------- |
-    | `IsotonicRegression`          | `f_`           |
-    | `KernelPCA`                   | `_centerer`    |
-    | `KNeighborsClassifier`        | `_y`           |
-    | `KNeighborsRegressor`         | `_y`           |
-    | `KNeighborsTransformer`       | `_tree`        |
-    | `LabelPropagation`            | `X_`           |
-    | `LabelSpreading`              | `X_`           |
-    | `LocalOutlierFactor`          | `_lrd`         |
-    | `MissingIndicator`            | `_precomputed` |
-    | `NuSVC`                       | `_sparse`      |
-    | `NuSVR`                       | `_sparse`      |
-    | `OneClassSVM`                 | `_sparse`      |
-    | `PowerTransformer`            | `_scaler`      |
-    | `RadiusNeighborsClassifier`   | `_tree`        |
-    | `RadiusNeighborsRegressor`    | `_tree`        |
-    | `RadiusNeighborsTransformer`  | `_tree`        |
-    | `SVC`                         | `_sparse`      |
-    | `SVR`                         | `_sparse`      |
+
+      | Class                         | Attribute      |
+      | ----------------------------- | -------------- |
+      | `IsotonicRegression`          | `f_`           |
+      | `KernelPCA`                   | `_centerer`    |
+      | `KNeighborsClassifier`        | `_y`           |
+      | `KNeighborsRegressor`         | `_y`           |
+      | `KNeighborsTransformer`       | `_tree`        |
+      | `LabelPropagation`            | `X_`           |
+      | `LabelSpreading`              | `X_`           |
+      | `LocalOutlierFactor`          | `_lrd`         |
+      | `MissingIndicator`            | `_precomputed` |
+      | `NuSVC`                       | `_sparse`      |
+      | `NuSVR`                       | `_sparse`      |
+      | `OneClassSVM`                 | `_sparse`      |
+      | `PowerTransformer`            | `_scaler`      |
+      | `RadiusNeighborsClassifier`   | `_tree`        |
+      | `RadiusNeighborsRegressor`    | `_tree`        |
+      | `RadiusNeighborsTransformer`  | `_tree`        |
+      | `SVC`                         | `_sparse`      |
+      | `SVR`                         | `_sparse`      |
+
   * Other errors:
     * `FastICA`: I'm not sure why...
     * `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis

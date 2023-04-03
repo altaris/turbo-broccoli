@@ -23,25 +23,25 @@ class GuardedBlockHandler:
     A guarded block handler allows to guard an entire block of code. Use it as
     follows:
 
-        ```py
-        h = GuardedBlockHandler("out/foo.json")
-        for _ in h.guard():
-            # This whole block will be skipped if out/foo.json exists
-            # If not, don't forget to set the results:
-            h.result = ...
-        # In any case, the results of the block are available in h.result
-        ```
+    ```py
+    h = GuardedBlockHandler("out/foo.json")
+    for _ in h.guard():
+        # This whole block will be skipped if out/foo.json exists
+        # If not, don't forget to set the results:
+        h.result = ...
+    # In any case, the results of the block are available in h.result
+    ```
 
     The handler's `result` is `None` by default. If left to `None`, no output
     file is created. This allows for scenarios like
 
-        ```py
-        h = GuardedBlockHandler("out/foo.json")
-        for _ in h.guard():
-            ... # Guarded code
-            if success:
-                h.result = ...
-        ```
+    ```py
+    h = GuardedBlockHandler("out/foo.json")
+    for _ in h.guard():
+        ... # Guarded code
+        if success:
+            h.result = ...
+    ```
 
     So if the guarded code did not succeed, then `out/foo.json` is not created,
     and so the next time, it will be run again.
