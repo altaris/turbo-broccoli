@@ -11,7 +11,18 @@ from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
 
 
 def to_json(obj: Any) -> dict:
-    """Serializes a generic object into JSON by cases."""
+    """
+    Serializes a generic object into JSON by cases. The return dict has the
+    following structure:
+
+        {
+            "__generic__": {
+                "__version__": 1,
+                "data": {...},
+            },
+        }
+
+    """
     if not (
         hasattr(obj, "__turbo_broccoli__")
         and isinstance(obj.__turbo_broccoli__, Iterable)

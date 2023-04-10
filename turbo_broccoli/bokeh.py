@@ -112,7 +112,7 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
+    - `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
 
         {
             "__bokeh__": {
@@ -123,7 +123,7 @@ def to_json(obj: Any) -> dict:
             }
         }
 
-    * `bokeh.core.serialization.Buffer`: (for internal use)
+    - `bokeh.core.serialization.Buffer`: (for internal use)
 
         {
             "__bokeh__": {

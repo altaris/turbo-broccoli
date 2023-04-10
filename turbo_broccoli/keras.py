@@ -345,7 +345,7 @@ def to_json(obj: Any) -> dict:
     depends on the precise type of `obj`. Most keras object will simply be
     serialized using `keras.utils.serialize_keras_object`. Here are the exceptions:
 
-    * `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is
+    - `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is
       `json`, the document will look like
 
             {

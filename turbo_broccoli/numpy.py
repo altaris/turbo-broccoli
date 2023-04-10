@@ -236,7 +236,7 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `numpy.ndarray`: An array is processed differently depending on its size
+    - `numpy.ndarray`: An array is processed differently depending on its size
       and on the `TB_MAX_NBYTES` environment variable. If the array is
       small, i.e. `arr.nbytes <= TB_MAX_NBYTES`, then it is directly
       stored in the resulting JSON document as
@@ -281,7 +281,7 @@ def to_json(obj: Any) -> dict:
       to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
       `TB_ARTIFACT_PATH` must point to an existing directory.
 
-    * `numpy.number`:
+    - `numpy.number`:
 
             {
                 "__numpy__": {
@@ -294,7 +294,7 @@ def to_json(obj: Any) -> dict:
 
         where the `dtype` document follows the specification below.
 
-    * `numpy.dtype`:
+    - `numpy.dtype`:
 
             {
                 "__numpy__": {

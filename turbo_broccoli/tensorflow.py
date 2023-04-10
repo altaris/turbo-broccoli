@@ -213,43 +213,49 @@ def to_json(obj: Any) -> dict:
     The return dict has the following structure
 
         {
-            "__tensorflow__": {...},
+            "__tensorflow__": {...}
         }
 
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `tf.RaggedTensor`: Not supported.
+    - `tf.RaggedTensor`: Not supported.
 
-    * `tf.SparseTensor`:
+    - `tf.SparseTensor`:
 
             {
-                "__type__": "sparse_tensor",
-                "__version__": 1,
-                "indices": {...},
-                "values": {...},
-                "shape": {...},
+                "__tensorflow__": {
+                    "__type__": "sparse_tensor",
+                    "__version__": 1,
+                    "indices": {...},
+                    "values": {...},
+                    "shape": {...},
+                }
             }
 
       where the first two `{...}` placeholders result in the serialization of
       `tf.Tensor` (see below).
 
-    * other `tf.Tensor` subtypes:
+    - other `tf.Tensor` subtypes:
 
             {
-                "__type__": "tensor",
-                "__version__": 1,
-                "dtype": <str>,
-                "numpy": {...},
+                "__tensorflow__": {
+                    "__type__": "tensor",
+                    "__version__": 1,
+                    "dtype": <str>,
+                    "numpy": {...},
+                }
             }
 
       or, if the `safetensors` package is available:
 
             {
-                "__type__": "tensor",
-                "__version__": 2,
-                "dtype": <str>,
-                "data": {...},
+                "__tensorflow__": {
+                    "__type__": "tensor",
+                    "__version__": 2,
+                    "dtype": <str>,
+                    "data": {...},
+                }
             }
 
       On the other hand, if the `safetensors` package is available, and if the
@@ -260,7 +266,7 @@ def to_json(obj: Any) -> dict:
       a random UUID4 as filename. The resulting JSON document looks like
 
             {
-                "__numpy__": {
+                "__tensorflow__": {
                     "__type__": "tensor",
                     "__version__": 2,
                     "id": <UUID4 str>,
@@ -271,14 +277,16 @@ def to_json(obj: Any) -> dict:
       to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
       `TB_ARTIFACT_PATH` must point to an existing directory.
 
-    * `tf.Variable`:
+    - `tf.Variable`:
 
             {
-                "__type__": "tensor",
-                "__version__": 2,
-                "name": <str>,
-                "value": {...},
-                "trainable": <bool>,
+                "__tensorflow__": {
+                    "__type__": "tensor",
+                    "__version__": 2,
+                    "name": <str>,
+                    "value": {...},
+                    "trainable": <bool>,
+                }
             }
 
       where `{...}` is the document produced by serializing the value tensor of

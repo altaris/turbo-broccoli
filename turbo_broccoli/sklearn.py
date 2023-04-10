@@ -204,8 +204,8 @@ def _json_to_sklearn_tree_v1(dct: dict) -> BaseEstimator:
     Converts a JSON document to a sklearn tree following the v1 specification.
 
     See also:
-        * https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_tree.pxd
-        * https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_classes.py#L349
+        - https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_tree.pxd
+        - https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_classes.py#L349
     """
     obj = Tree(dct["n_features"], dct["n_classes"], dct["n_outputs"])
     for k in _SKLEARN_TREE_ATTRIBUTES:

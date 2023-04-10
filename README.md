@@ -62,12 +62,14 @@ tb.from_json(json_string)
 
 ## Supported types
 
-- `bytes`
+### Basic types
 
-- `collections.deque`, `collections.namedtuple`
+- [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json)
 
-- Dataclasses. Serialization is straightforward:
+- [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json):
+  `collections.deque`, `collections.namedtuple`
 
+- [Dataclasses](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json): serialization is straightforward:
   ```py
   @dataclass
   class C:
@@ -76,178 +78,204 @@ tb.from_json(json_string)
 
   doc = json.dumps({"c": C(a=1, b="Hello")}, cls=tb.TurboBroccoliEncoder)
   ```
-
   For deserialization, first register the class:
-
   ```py
   tb.register_dataclass_type(C)
   json.loads(doc, cls=tb.TurboBroccoliDecoder)
   ```
 
-- _Generic object_, **serialization only**. A generic object is an object that
-  has the `__turbo_broccoli__` attribute. This attribute is expected to be a
-  list of attributes whose values will be serialized. For example,
+### [Generic objects](https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json)
 
-  ```py
-  class C:
-      __turbo_broccoli__ = ["a"]
-      a: int
-      b: int
+**serialization only**. A generic object is an object that
+has the `__turbo_broccoli__` attribute. This attribute is expected to be a list
+of attributes whose values will be serialized. For example,
+```py
+class C:
+    __turbo_broccoli__ = ["a"]
+    a: int
+    b: int
 
-  x = C()
-  x.a, x.b = 42, 43
-  json.dumps(x, cls=tb.TurboBroccoliEncoder)
-  ```
-
-  produces the following string (modulo indentation):
-
-  ```json
-  {
-    "__generic__": {
-      "__version__": 1,
-      "data": {
-        "a": 42
-      }
+x = C()
+x.a, x.b = 42, 43
+json.dumps(x, cls=tb.TurboBroccoliEncoder)
+```
+produces the following string (modulo indentation):
+```json
+{
+  "__generic__": {
+    "__version__": 1,
+    "data": {
+      "a": 42
     }
   }
-  ```
+}
+```
 
-  Registered attributes can of course have any type supported by Turbo
-  Broccoli, such as numpy arrays. Registered attributes can be `@property`
-  methods.
+Registered attributes can of course have any type supported by Turbo Broccoli,
+such as numpy arrays. Registered attributes can be `@property` methods.
 
-- [`keras.Model`](https://keras.io/api/models/model/); standard subclasses of
-  [`keras.layers.Layer`](https://keras.io/api/layers/),
+### [Keras](https://altaris.github.io/turbo-broccoli/turbo_broccoli/keras.html#to_json)
+
+- [`keras.Model`](https://keras.io/api/models/model/);
+
+- standard subclasses of [`keras.layers.Layer`](https://keras.io/api/layers/),
   [`keras.losses.Loss`](https://keras.io/api/losses/),
   [`keras.metrics.Metric`](https://keras.io/api/metrics/), and
-  [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/)
+  [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/).
 
-- `numpy.number`, `numpy.ndarray` with numerical dtype
+### [Numpy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/numpy.html#to_json)
 
-- `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
+`numpy.number`, `numpy.ndarray` with numerical dtype, and `numpy.dtype`.
 
-  1. the following dtypes are not supported: `complex`, `object`, `timedelta`
-  2. the column / series names must be strings and not numbers. The following
-     is not acceptable:
+### [Pandas](https://altaris.github.io/turbo-broccoli/turbo_broccoli/pandas.html#to_json)
 
-     ```py
-     df = pd.DataFrame([[1, 2], [3, 4]])
-     ```
-     because
-     ```py
-     print([c for c in df.columns])
-     # [0, 1]
-     print([type(c) for c in df.columns])
-     # [int, int]
-     ```
+`pandas.DataFrame` and `pandas.Series`, but with the following limitations:
 
-- `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`
+- the following dtypes are not supported: `complex`, `object`, `timedelta`
 
-- `torch.Tensor`, **WARNING**: loaded tensors are automatically placed on the
-  CPU and gradients are lost; `torch.nn.Module`, don't forget to register your
+- the column / series names must be strings and not numbers. The following
+  is not acceptable:
+  ```py
+  df = pd.DataFrame([[1, 2], [3, 4]])
+  ```
+  because
+  ```py
+  print([c for c in df.columns])
+  # [0, 1]
+  print([type(c) for c in df.columns])
+  # [int, int]
+  ```
+
+### [Tensorflow](https://altaris.github.io/turbo-broccoli/turbo_broccoli/tensorflow.html#to_json)
+
+`tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`.
+
+### [Pytorch](https://altaris.github.io/turbo-broccoli/turbo_broccoli/pytorch.html#to_json)
+
+- `torch.Tensor`, **Warning**: loaded tensors are automatically placed on the
+  CPU and gradients are lost;
+
+- `torch.nn.Module`, don't forget to register your
   module type using
-  [`turbo_broccoli.register_pytorch_module_type`]((https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type)):
-    ```py
-    # Serialization
-    class MyModule(torch.nn.Module):
-      ...
+  [`turbo_broccoli.register_pytorch_module_type`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type):
+  ```py
+  # Serialization
+  class MyModule(torch.nn.Module):
+    ...
 
-    module = MyModule()  # Must be instantiable without arguments
-    doc = json.dumps(x, cls=tb.TurboBroccoliEncoder)
+  module = MyModule()  # Must be instantiable without arguments
+  doc = json.dumps(x, cls=tb.TurboBroccoliEncoder)
 
-    # Deserialization
-    tb.register_pytorch_module_type(MyModule)
-    module = json.loads(doc, cls=tb.TurboBroccoliDecoder)
-    ```
-  **WARNING**: It is not possible to register and deserialize [standard pytorch
+  # Deserialization
+  tb.register_pytorch_module_type(MyModule)
+  module = json.loads(doc, cls=tb.TurboBroccoliDecoder)
+  ```
+  **Warning**: It is not possible to register and deserialize [standard pytorch
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
   directly. Wrap them in your own custom module class.
 
-- `scipy.sparse.csr_matrix`
+### [Scipy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json)
 
-- **EXPERIMENTAL** `sklearn` estimators (i.e. that descent from
-  [`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
-  To make sure which class is supported, take a look at the [unit
-  tests](https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py)
-  Doesn't work with:
-  * All CV classes because the `score_` attribute is a dict indexed with
-    `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
-  * All estimator classes that have mandatory arguments: `ClassifierChain`,
-    `ColumnTransformer`, `FeatureUnion`, `GridSearchCV`,
-    `MultiOutputClassifier`, `MultiOutputRegressor`, `OneVsOneClassifier`,
-    `OneVsRestClassifier`, `OutputCodeClassifier`, `Pipeline`,
-    `RandomizedSearchCV`, `RegressorChain`, `RFE`, `RFECV`, `SelectFromModel`,
-    `SelfTrainingClassifier`, `SequentialFeatureSelector`, `SparseCoder`,
-    `StackingClassifier`, `StackingRegressor`, `VotingClassifier`,
-    `VotingRegressor`.
-  * Everything that is parametrized by an arbitrary object/callable/estimator:
-    `FunctionTransformer`, `TransformedTargetRegressor`.
-  * Everything that stores a random state (in the form of a `RandomState`
-    object): `BisectingKMeans`, `MiniBatchDictionaryLearning`,
-    `LatentDirichletAllocation`, `NeighborhoodComponentsAnalysis`,
-    `MLPClassifier`, `MLPRegressor`, `SparseRandomProjection`,
-    `GaussianRandomProjection`.
-  * Everything with trees and forest since `Tree` objects are not JSON
-    serializable: `ExtraTreesClassifier`, `ExtraTreesRegressor`,
-    `RandomForestClassifier`, `RandomForestRegressor`, `RandomTreesEmbedding`,
-    `IsolationForest`, `AdaBoostClassifier`, `AdaBoostRegressor`,
-    `DecisionTreeClassifier`, `DecisionTreeRegressor`.
-  * Other classes that have non JSON-serializable attributes:
+Just `scipy.sparse.csr_matrix`. ^^"
 
-      | Class                       | Non-serializable attr.    |
-      | --------------------------- | ------------------------- |
-      | `Birch`                     | `_CFNode`                 |
-      | `GaussianProcessRegressor`  | `Sum`                     |
-      | `GaussianProcessClassifier` | `Product`                 |
-      | `Perceptron`                | `Hinge`                   |
-      | `SGDClassifier`             | `Hinge`                   |
-      | `SGDOneClassSVM`            | `Hinge`                   |
-      | `PoissonRegressor`          | `HalfPoissonLoss`         |
-      | `GammaRegressor`            | `HalfGammaLoss`           |
-      | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
-      | `KernelDensity`             | `KDTree`                  |
-      | `SplineTransformer`         | `BSpline`                 |
+### [Scikit-learn](https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json)
 
-  * Some classes have AttributeErrors?
+`sklearn` estimators (i.e. that descent from
+[`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
+To make sure which class is supported, take a look at the [unit
+tests](https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py)
+Doesn't work with:
 
-      | Class                         | Attribute      |
-      | ----------------------------- | -------------- |
-      | `IsotonicRegression`          | `f_`           |
-      | `KernelPCA`                   | `_centerer`    |
-      | `KNeighborsClassifier`        | `_y`           |
-      | `KNeighborsRegressor`         | `_y`           |
-      | `KNeighborsTransformer`       | `_tree`        |
-      | `LabelPropagation`            | `X_`           |
-      | `LabelSpreading`              | `X_`           |
-      | `LocalOutlierFactor`          | `_lrd`         |
-      | `MissingIndicator`            | `_precomputed` |
-      | `NuSVC`                       | `_sparse`      |
-      | `NuSVR`                       | `_sparse`      |
-      | `OneClassSVM`                 | `_sparse`      |
-      | `PowerTransformer`            | `_scaler`      |
-      | `RadiusNeighborsClassifier`   | `_tree`        |
-      | `RadiusNeighborsRegressor`    | `_tree`        |
-      | `RadiusNeighborsTransformer`  | `_tree`        |
-      | `SVC`                         | `_sparse`      |
-      | `SVR`                         | `_sparse`      |
+- All CV classes because the `score_` attribute is a dict indexed with
+  `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
 
-  * Other errors:
-    * `FastICA`: I'm not sure why...
-    * `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis
-      (...), numpy.newaxis (None) and integer or boolean arrays are valid
-      indices`.
-    * `GradientBoostingClassifier`: `Exception: dtype object is not covered`.
-    * `GradientBoostingRegressor`: `Exception: dtype object is not covered`.
-    * `HistGradientBoostingClassifier`: Problems with deserialization of
-      `_BinMapper` object?
-    * `PassiveAggressiveClassifier`: some unknown label type error...
-    * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
-    * `KBinsDiscretizer`: `Exception: dtype object is not covered`.
+- All estimator classes that have mandatory arguments: `ClassifierChain`,
+  `ColumnTransformer`, `FeatureUnion`, `GridSearchCV`,
+  `MultiOutputClassifier`, `MultiOutputRegressor`, `OneVsOneClassifier`,
+  `OneVsRestClassifier`, `OutputCodeClassifier`, `Pipeline`,
+  `RandomizedSearchCV`, `RegressorChain`, `RFE`, `RFECV`, `SelectFromModel`,
+  `SelfTrainingClassifier`, `SequentialFeatureSelector`, `SparseCoder`,
+  `StackingClassifier`, `StackingRegressor`, `VotingClassifier`,
+  `VotingRegressor`.
 
-- [Bokeh figures](https://docs.bokeh.org/en/latest) and
-  [models](https://docs.bokeh.org/en/latest/docs/reference/models.html).
+- Everything that is parametrized by an arbitrary object/callable/estimator:
+  `FunctionTransformer`, `TransformedTargetRegressor`.
 
-## Secrets
+- Everything that stores a random state (in the form of a `RandomState`
+  object): `BisectingKMeans`, `MiniBatchDictionaryLearning`,
+  `LatentDirichletAllocation`, `NeighborhoodComponentsAnalysis`,
+  `MLPClassifier`, `MLPRegressor`, `SparseRandomProjection`,
+  `GaussianRandomProjection`.
+
+- Everything with trees and forest since `Tree` objects are not JSON
+  serializable: `ExtraTreesClassifier`, `ExtraTreesRegressor`,
+  `RandomForestClassifier`, `RandomForestRegressor`, `RandomTreesEmbedding`,
+  `IsolationForest`, `AdaBoostClassifier`, `AdaBoostRegressor`,
+  `DecisionTreeClassifier`, `DecisionTreeRegressor`.
+
+- Other classes that have non JSON-serializable attributes:
+
+    | Class                       | Non-serializable attr.    |
+    | --------------------------- | ------------------------- |
+    | `Birch`                     | `_CFNode`                 |
+    | `GaussianProcessRegressor`  | `Sum`                     |
+    | `GaussianProcessClassifier` | `Product`                 |
+    | `Perceptron`                | `Hinge`                   |
+    | `SGDClassifier`             | `Hinge`                   |
+    | `SGDOneClassSVM`            | `Hinge`                   |
+    | `PoissonRegressor`          | `HalfPoissonLoss`         |
+    | `GammaRegressor`            | `HalfGammaLoss`           |
+    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
+    | `KernelDensity`             | `KDTree`                  |
+    | `SplineTransformer`         | `BSpline`                 |
+
+- Some classes have `AttributeErrors`?
+
+    | Class                         | Attribute      |
+    | ----------------------------- | -------------- |
+    | `IsotonicRegression`          | `f_`           |
+    | `KernelPCA`                   | `_centerer`    |
+    | `KNeighborsClassifier`        | `_y`           |
+    | `KNeighborsRegressor`         | `_y`           |
+    | `KNeighborsTransformer`       | `_tree`        |
+    | `LabelPropagation`            | `X_`           |
+    | `LabelSpreading`              | `X_`           |
+    | `LocalOutlierFactor`          | `_lrd`         |
+    | `MissingIndicator`            | `_precomputed` |
+    | `NuSVC`                       | `_sparse`      |
+    | `NuSVR`                       | `_sparse`      |
+    | `OneClassSVM`                 | `_sparse`      |
+    | `PowerTransformer`            | `_scaler`      |
+    | `RadiusNeighborsClassifier`   | `_tree`        |
+    | `RadiusNeighborsRegressor`    | `_tree`        |
+    | `RadiusNeighborsTransformer`  | `_tree`        |
+    | `SVC`                         | `_sparse`      |
+    | `SVR`                         | `_sparse`      |
+
+- Other errors:
+
+  - `FastICA`: I'm not sure why...
+
+  - `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis
+    (...), numpy.newaxis (None) and integer or boolean arrays are valid
+    indices`.
+
+  - `GradientBoostingClassifier`, `GradientBoostingRegressor`: `Exception:
+    dtype object is not covered`.
+
+  - `HistGradientBoostingClassifier`: Problems with deserialization of
+    `_BinMapper` object?
+
+  - `PassiveAggressiveClassifier`: some unknown label type error...
+
+  - `KBinsDiscretizer`: `Exception: dtype object is not covered`.
+
+### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json)
+
+Bokeh [figures](https://docs.bokeh.org/en/latest) and
+[models](https://docs.bokeh.org/en/latest/docs/reference/models.html).
+
+## [Secrets](https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json)
 
 Basic Python types can be wrapped in their corresponding secret type according
 to the following table
@@ -262,7 +290,6 @@ to the following table
 
 The secret value can be recovered with the `get_secret_value` method. At
 serialization, the this value will be encrypted. For example,
-
 ```py
 # See https://pynacl.readthedocs.io/en/latest/secret/#key
 import nacl.secret
@@ -281,10 +308,8 @@ x = {
 }
 json.dumps(x, cls=tb.TurboBroccoliEncoder)
 ```
-
 produces the following string (modulo indentation and modulo the encrypted
 content):
-
 ```json
 {
   "user": "alice",
@@ -308,7 +333,7 @@ provided, the secret values are replaced by a
 `turbo_broccoli.secret.LockedSecret`. Internally, Turbo Broccoli uses
 [`pynacl`](https://pynacl.readthedocs.io/en/latest/)'s
 [`SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
-**WARNING**: In the case of `SecretDict` and `SecretList`, the values contained
+**Warning**: In the case of `SecretDict` and `SecretList`, the values contained
 within must be JSON-serializable **without** Turbo Broccoli. See also the
 `TB_SHARED_KEY` environment variable below.
 
@@ -325,14 +350,11 @@ by modifying `os.environ`. Rather, use the methods of
   During serialization, Turbo Broccoli may create artifacts to which the JSON
   object will point to. The artifacts will be stored in `TB_ARTIFACT_PATH`. For
   example, if `arr` is a big numpy array,
-
   ```py
   obj = {"an_array": arr}
   json.dumps(obj, cls=tb.TurboBroccoliEncoder)
   ```
-
   will generate the following string (modulo indentation and id)
-
   ```json
   {
       "an_array": {
@@ -344,7 +366,6 @@ by modifying `os.environ`. Rather, use the methods of
       }
   }
   ```
-
   and a `70692d08-c4cf-4231-b3f0-0969ea552d5a` file has been created in
   `TB_ARTIFACT_PATH`.
 
@@ -373,20 +394,32 @@ by modifying `os.environ`. Rather, use the methods of
   `bytes,numpy.ndarray`. Excludable types are:
 
   - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
+
   - `bytes`,
+
   - `collections`, `collections.deque`, `collections.namedtuple`,
+
   - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
+
   - `generic`,
+
   - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
     `keras.optimizer`,
+
   - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
+
   - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
     `pandas.dataframe` will crash any deserialization of `pandas.series`,
+
   - `pytorch`, `pytorch.tensor`, `pytorch.module`,
+
   - `scipy`, `scipy.csr_matrix`,
+
   - `secret`,
+
   - `sklearn`, `sklearn.estimator`, `sklearn.estimator.<estimator name>` (case
     sensitive, see the list of supported sklearn estimators), `sklearn.tree`,
+
   - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
     `tensorflow.variable`.
 
@@ -411,12 +444,14 @@ and
 ## Dependencies
 
 - `python3.9` or newer;
+
 - `requirements.txt` for runtime dependencies;
+
 - `requirements.dev.txt` for development dependencies.
+
 - `make` (optional);
 
 Simply run
-
 ```sh
 virtualenv venv -p python3.9
 . ./venv/bin/activate
@@ -428,14 +463,12 @@ pip install -r requirements.dev.txt
 ## Documentation
 
 Simply run
-
 ```sh
 make docs
 ```
 
 This will generate the HTML doc of the project, and the index file should be at
 `docs/index.html`. To have it directly in your browser, run
-
 ```sh
 make docs-browser
 ```
@@ -443,11 +476,9 @@ make docs-browser
 ## Code quality
 
 Don't forget to run
-
 ```sh
 make
 ```
-
 to format the code following [black](https://pypi.org/project/black/),
 typecheck it using [mypy](http://mypy-lang.org/), and check it against coding
 standards using [pylint](https://pylint.org/).
@@ -455,11 +486,9 @@ standards using [pylint](https://pylint.org/).
 ## Unit tests
 
 Run
-
 ```sh
 make test
 ```
-
 to have [pytest](https://docs.pytest.org/) run the unit tests in `tests/`.
 
 # Credits

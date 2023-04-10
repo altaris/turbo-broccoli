@@ -151,7 +151,7 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `pandas.DataFrame`: A dataframe is processed differently depending on its
+    - `pandas.DataFrame`: A dataframe is processed differently depending on its
       size and on the `TB_MAX_NBYTES` environment variable. If the dataframe is
       small, i.e. at most `TB_MAX_NBYTES` bytes, then it is directly stored in
       the resulting JSON document as
@@ -190,7 +190,7 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
-    * `pandas.Series`: A series will be converted to a dataframe before being
+    - `pandas.Series`: A series will be converted to a dataframe before being
       serialized. The final document will look like this
 
             {

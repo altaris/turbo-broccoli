@@ -110,27 +110,27 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
 
-    * `collections.deque`:
+    - `collections.deque`:
 
-        {
-            "__collections__": {
-                "__type__": "deque,
-                "__version__": 1,
-                "data": [...],
-                "maxlen": <int or None>,
+            {
+                "__collections__": {
+                    "__type__": "deque,
+                    "__version__": 1,
+                    "data": [...],
+                    "maxlen": <int or None>,
+                }
             }
-        }
 
-    * `collections.namedtuple`
+    - `collections.namedtuple`
 
-        {
-            "__collections__": {
-                "__type__": "namedtuple,
-                "__version__": 1,
-                "class": <str>,
-                "data": {...},
+            {
+                "__collections__": {
+                    "__type__": "namedtuple,
+                    "__version__": 1,
+                    "class": <str>,
+                    "data": {...},
+                }
             }
-        }
 
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [

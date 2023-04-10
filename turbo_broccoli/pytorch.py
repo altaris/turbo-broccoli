@@ -132,6 +132,39 @@ def to_json(obj: Any) -> dict:
 
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
+
+    - Tensor:
+
+            {
+                "__pytorch__": {
+                    "__type__": "tensor",
+                    "__version__": 1,
+                    "data": <bytes>,
+                }
+            }
+
+      or if the underlying data is too large resulting in an artifact being
+      created:
+
+            {
+                "__pytorch__": {
+                    "__type__": "tensor",
+                    "__version__": 1,
+                    "id": <UUID4 str>,
+                }
+            }
+
+    - Module:
+
+            {
+                "__pytorch__": {
+                    "__type__": "module",
+                    "__version__": 1,
+                    "class": <class name>,
+                    "state": {...},
+                }
+            }
+
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (torch.nn.Module, _module_to_json),
