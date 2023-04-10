@@ -12,6 +12,7 @@ except ModuleNotFoundError:
 from typing import Any, Callable, Dict, Generator, Iterable, Optional, Union
 
 from .turbo_broccoli import load_json, save_json, to_json
+from .environment import get_artifact_path, set_artifact_path
 
 
 class GuardedBlockHandler:
@@ -151,12 +152,16 @@ class GuardedBlockHandler:
 
     def guard(self, iterable: Optional[Iterable[Any]] = None) -> Generator:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
+        self.output_path.parent.mkdir(parents=True, exist_ok=True)
+        old_artifact_path = get_artifact_path()
+        set_artifact_path(self.output_path.parent)
         if iterable is None:
             for _ in self._guard_no_iter():
                 yield
         else:
             for x in self._guard_iter(iterable):
                 yield x
+        set_artifact_path(old_artifact_path)
 
 
 def guarded_call(
@@ -235,23 +240,25 @@ def produces_document(
     """
 
     def _wrapped(path: Path, *args, **kwargs) -> Dict[str, Any]:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        old_artifact_path = get_artifact_path()
+        set_artifact_path(path.parent)
         if check_args:
             s = to_json({"args": args, "kwargs": kwargs})
             h = hashlib.md5(s.encode("utf-8")).hexdigest()
             path.mkdir(parents=True, exist_ok=True)
             path = path / f"{h}.json"
-        else:
-            path.parent.mkdir(parents=True, exist_ok=True)
         try:
             obj = load_json(path)
             logging.debug(
                 f"Skipped call to guarded method '{function.__name__}'"
             )
-            return obj
         except:  # pylint: disable=bare-except
             obj = function(*args, **kwargs)
             save_json(obj, path)
-            return obj
+        finally:
+            set_artifact_path(old_artifact_path)
+        return obj
 
     path = path if isinstance(path, Path) else Path(path)
     return partial(_wrapped, path)
