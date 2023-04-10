@@ -8,6 +8,23 @@ except ModuleNotFoundError:
 _WARNED_ABOUT_SAFETENSORS = False
 
 
+class DeserializationError(Exception):
+    """Raised whenever something went wrong during deserialization"""
+
+
+class SerializationError(Exception):
+    """Raised whenever something went wrong during serialization"""
+
+
+class TypeNotSupported(Exception):
+    """
+    `to_json` will raise that if they are fed types they cannot manage. This is
+    fine, the dispatch in
+    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these
+    and moves on to the next registered `to_json` method.
+    """
+
+
 def warn_about_safetensors():
     """
     If safetensors is not installed, logs a warning message. This method may be

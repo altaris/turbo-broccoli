@@ -3,10 +3,16 @@ __docformat__ = "google"
 
 from typing import Any, Callable, List, Tuple
 
-from bokeh.plotting import figure as Figure
+from bokeh.core.serialization import (
+    Buffer,
+    Deserializer,
+    Serialized,
+    Serializer,
+)
 from bokeh.models import Model
-from bokeh.core.serialization import Buffer
-from bokeh.core.serialization import Deserializer, Serialized, Serializer
+from bokeh.plotting import figure as Figure
+
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _buffer_to_json(obj: Buffer) -> dict:
@@ -83,7 +89,7 @@ def from_json(dct: dict) -> Any:
     try:
         return DECODERS[dct["__bokeh__"]["__type__"]](dct["__bokeh__"])
     except KeyError as exc:
-        raise TypeError("Not a valid figure document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -130,4 +136,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__bokeh__": f(obj)}
-    raise TypeError("Not a supported figure type")
+    raise TypeNotSupported()

@@ -10,6 +10,7 @@ import turbo_broccoli.bytes
 import turbo_broccoli.collections
 import turbo_broccoli.dataclass
 import turbo_broccoli.generic
+from turbo_broccoli.utils import TypeNotSupported
 
 try:
     import turbo_broccoli.keras
@@ -157,7 +158,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         for f in ENCODERS:
             try:
                 return f(o)
-            except TypeError:
+            except TypeNotSupported:
                 pass
         return super().default(o)
 

@@ -7,6 +7,7 @@ from turbo_broccoli.environment import (
     get_registered_dataclass_type,
     is_nodecode,
 )
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _json_to_dataclass_v2(dct: dict) -> Any:
@@ -33,7 +34,7 @@ def from_json(dct: dict) -> Any:
             dct["__dataclass__"]
         )
     except KeyError as exc:
-        raise TypeError("Not a valid dataclass document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -59,4 +60,4 @@ def to_json(obj: Any) -> dict:
                 "data": obj.__dict__,
             },
         }
-    raise TypeError("Not a supported type")
+    raise TypeNotSupported()

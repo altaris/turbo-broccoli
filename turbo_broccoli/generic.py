@@ -7,6 +7,8 @@ __docformat__ = "google"
 
 from typing import Any, Iterable
 
+from turbo_broccoli.utils import TypeNotSupported
+
 
 def to_json(obj: Any) -> dict:
     """Serializes a generic object into JSON by cases."""
@@ -14,7 +16,7 @@ def to_json(obj: Any) -> dict:
         hasattr(obj, "__turbo_broccoli__")
         and isinstance(obj.__turbo_broccoli__, Iterable)
     ):
-        raise TypeError("Not a generic object")
+        raise TypeNotSupported()
     return {
         "__generic__": {
             "__version__": 1,

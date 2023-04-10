@@ -5,6 +5,8 @@ from typing import Any, Callable, List, Tuple
 
 from scipy.sparse import csr_matrix
 
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+
 
 def _csr_matrix_to_json(m: csr_matrix) -> dict:
     """Converts a csr_matrix into a JSON document."""
@@ -54,7 +56,7 @@ def from_json(dct: dict) -> Any:
     try:
         return DECODERS[dct["__scipy__"]["__type__"]](dct["__scipy__"])
     except KeyError as exc:
-        raise TypeError("Not a valid scipy document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -77,4 +79,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__scipy__": f(obj)}
-    raise TypeError("Not a supported scipy type")
+    raise TypeNotSupported()

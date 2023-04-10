@@ -27,6 +27,7 @@ from turbo_broccoli.environment import (
     get_max_nbytes,
     is_nodecode,
 )
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _json_to_dtype(dct: dict) -> np.dtype:
@@ -215,7 +216,7 @@ def from_json(dct: dict) -> Any:
             return None
         return DECODERS[type_name](dct["__numpy__"])
     except KeyError as exc:
-        raise TypeError("Not a valid numpy document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -309,4 +310,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__numpy__": f(obj)}
-    raise TypeError("Not a supported numpy type")
+    raise TypeNotSupported()

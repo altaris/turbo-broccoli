@@ -5,7 +5,7 @@
 import setuptools
 
 name = "turbo_broccoli"
-version = "2.3.3"
+version = "2.3.4"
 
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()

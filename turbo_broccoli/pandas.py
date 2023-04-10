@@ -6,12 +6,14 @@ from typing import Any, Callable, List, Tuple
 from uuid import uuid4
 
 import pandas as pd
+
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
     get_pandas_format,
     is_nodecode,
 )
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _dataframe_to_json(df: pd.DataFrame) -> dict:
@@ -129,7 +131,7 @@ def from_json(dct: dict) -> Any:
             return None
         return DECODERS[type_name](dct["__pandas__"])
     except KeyError as exc:
-        raise TypeError("Not a valid pandas document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -226,4 +228,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__pandas__": f(obj)}
-    raise TypeError("Not a supported pandas type")
+    raise TypeNotSupported()

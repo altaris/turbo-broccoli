@@ -1,11 +1,11 @@
 """bytes (de)serialization utilities."""
 __docformat__ = "google"
 
+from base64 import b64decode, b64encode
 from typing import Any, Optional
 
-from base64 import b64decode, b64encode
-
 from turbo_broccoli.environment import is_nodecode
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _bytes_from_json_v1(dct: dict) -> bytes:
@@ -29,7 +29,7 @@ def from_json(dct: dict) -> Optional[bytes]:
     try:
         return DECODERS[dct["__bytes__"]["__version__"]](dct["__bytes__"])
     except KeyError as exc:
-        raise TypeError("Not a valid bytes document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -53,4 +53,4 @@ def to_json(obj: Any) -> dict:
                 "data": b64encode(obj).decode("ascii"),
             },
         }
-    raise TypeError("Not a valid bytes object")
+    raise TypeNotSupported()

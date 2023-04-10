@@ -8,6 +8,8 @@ __docformat__ = "google"
 
 from typing import Any, Callable, List, Tuple
 
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+
 
 def _XXX_to_json(obj: Any) -> dict:
     """Converts a XXX into a JSON document."""
@@ -50,7 +52,7 @@ def from_json(dct: dict) -> Any:
     try:
         return DECODERS[dct["__XXX__"]["__type__"]](dct["__XXX__"])
     except KeyError as exc:
-        raise TypeError("Not a valid XXX document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -73,4 +75,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__XXX__": f(obj)}
-    raise TypeError("Not a supported XXX type")
+    raise TypeNotSupported()

@@ -12,6 +12,7 @@ from turbo_broccoli.environment import (
     get_max_nbytes,
     get_registered_pytorch_module_type,
 )
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _json_to_module(dct: dict) -> torch.nn.Module:
@@ -108,7 +109,7 @@ def from_json(dct: dict) -> Any:
     try:
         return DECODERS[dct["__pytorch__"]["__type__"]](dct["__pytorch__"])
     except KeyError as exc:
-        raise TypeError("Not a valid pytorch document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -132,4 +133,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__pytorch__": f(obj)}
-    raise TypeError("Not a supported tensor type")
+    raise TypeNotSupported()

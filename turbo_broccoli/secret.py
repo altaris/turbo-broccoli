@@ -8,6 +8,7 @@ from typing import Any, NoReturn
 from nacl.secret import SecretBox
 
 from turbo_broccoli.environment import get_shared_key
+from turbo_broccoli.utils import TypeNotSupported
 
 
 class Secret:
@@ -123,7 +124,7 @@ def to_json(obj: Secret) -> dict:
         }
     """
     if not isinstance(obj, Secret):
-        raise TypeError("Not a valid secret type")
+        raise TypeNotSupported()
     key = get_shared_key()
     if key is None:
         raise RuntimeError(

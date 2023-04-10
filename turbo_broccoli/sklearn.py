@@ -44,6 +44,8 @@ from sklearn import (
 from sklearn.base import BaseEstimator
 from sklearn.tree._tree import Tree
 
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+
 _SKLEARN_SUBMODULES = [
     # calibration,
     cluster,
@@ -220,7 +222,7 @@ def from_json(dct: dict) -> BaseEstimator:
     try:
         return DECODERS[dct["__sklearn__"]["__type__"]](dct["__sklearn__"])
     except KeyError as exc:
-        raise TypeError("Not a valid sklearn document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: BaseEstimator) -> dict:
@@ -250,4 +252,4 @@ def to_json(obj: BaseEstimator) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__sklearn__": f(obj)}
-    raise TypeError("Not a supported sklearn type")
+    raise TypeNotSupported()

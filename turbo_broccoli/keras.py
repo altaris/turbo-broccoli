@@ -6,11 +6,13 @@ from typing import Any, Callable, List, Tuple
 from uuid import uuid4
 
 from tensorflow import keras
+
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_keras_format,
     is_nodecode,
 )
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
@@ -322,7 +324,7 @@ def from_json(dct: dict) -> Any:
             return None
         return DECODERS[type_name](dct["__keras__"])
     except KeyError as exc:
-        raise TypeError("Not a valid Keras document") from exc
+        raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
@@ -383,4 +385,4 @@ def to_json(obj: Any) -> dict:
     for t, f in ENCODERS:
         if isinstance(obj, t):
             return {"__keras__": f(obj)}
-    raise TypeError("Not a supported Keras type")
+    raise TypeNotSupported()
