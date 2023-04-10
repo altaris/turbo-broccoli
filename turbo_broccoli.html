@@ -27,10 +27,10 @@
   <li><a href="#installation">Installation</a></li>
   <li><a href="#usage">Usage</a>
   <ul>
-    <li><a href="#guarded-calls">Guarded calls</a></li>
     <li><a href="#supported-types">Supported types</a></li>
-    <li><a href="#secrets">Secrets</a></li>
+    <li><a href="#secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></a></li>
     <li><a href="#environment-variables">Environment variables</a></li>
+    <li><a href="#guarded-calls">Guarded calls</a></li>
   </ul></li>
   <li><a href="#contributing">Contributing</a>
   <ul>
@@ -151,74 +151,15 @@ objects.</p>
 </code></pre>
 </div>
 
-<h2 id="guarded-calls">Guarded calls</h2>
-
-<p>Consider an expensive function <code>f</code> that returns a TurboBroccoli/JSON-izable
-<code>dict</code>. Wrapping/decorating <code>f</code> using <code>produces_document</code> essentially saves the
-result at a specified path and when possible, loads it instead of calling <code>f</code>.
-For example:</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">_f</span> <span class="o">=</span> <span class="n">produces_document</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;foo.json&quot;</span><span class="p">)</span>
-<span class="n">_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<p>will only call <code>f</code> if the <code>foo.json</code> does not exist, and otherwise, loads and
-returns <code>foo.json</code>. However, if <code>foo.json</code> exists and was produced by calling
-<code>_f(*args, **kwargs)</code>, then</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">_f</span><span class="p">(</span><span class="o">*</span><span class="n">args2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs2</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<p>will still return the same result. If you want to keep a different file for
-each <code>args</code>/<code>kwargs</code>, set <code>check_args</code> to <code>True</code> as in</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">_f</span> <span class="o">=</span> <span class="n">produces_document</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;foo.json&quot;</span><span class="p">)</span>
-<span class="n">_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<p>In this case, the arguments must be TurboBroccoli/JSON-izable, i.e. the
-document</p>
-
-<pre><code>{
-    "args": args,
-    "kwargs": kwargs,
-}
-</code></pre>
-
-<p>must be TurboBroccoli/JSON-izable. The resulting file is no longer
-<code>foo.json</code> but rather <code>foo.json/&lt;hash&gt;</code> where <code>hash</code> is the MD5
-hash of the serialization of the <code>args</code>/<code>kwargs</code> document above.</p>
-
-<p>If instead of a function you wish to guard an entire block of code, use
-<code>GuardedBlockHandler</code>:</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span> <span class="nn">turbo_broccoli</span> <span class="kn">import</span> <span class="n">GuardedBlockHandler</span>
-<span class="n">h</span> <span class="o">=</span> <span class="n">GuardedBlockHandler</span><span class="p">(</span><span class="s2">&quot;foo.json&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">h</span><span class="o">.</span><span class="n">guard</span><span class="p">():</span>
-    <span class="c1"># This whole block will be skipped if foo.json exists</span>
-    <span class="c1"># If not, don&#39;t forget to set the results:</span>
-    <span class="n">h</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="o">...</span>
-<span class="c1"># In any case, the results of the block are now available in h.result</span>
-</code></pre>
-</div>
-
-<p>I know the syntax isn't the prettiest. It would be more natural to use a <code>with
-h.guard():</code> syntax but python doesn't allow for context managers that don't
-yield...</p>
-
 <h2 id="supported-types">Supported types</h2>
 
+<h3 id="basic-types">Basic types</h3>
+
 <ul>
-<li><p><code>bytes</code></p></li>
-<li><p><code>collections.deque</code>, <code>collections.namedtuple</code></p></li>
-<li><p>Dataclasses. Serialization is straightforward:</p>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json"><code>bytes</code></a></p></li>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json">Collections</a>:
+<code>collections.deque</code>, <code>collections.namedtuple</code></p></li>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json">Dataclasses</a>: serialization is straightforward:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="nd">@dataclass</span>
@@ -237,15 +178,19 @@ yield...</p>
 <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliDecoder</span><span class="p">)</span>
 </code></pre>
 </div></li>
-<li><p>_Generic object_, <strong>serialization only</strong>. A generic object is an object that
-has the <code>__turbo_broccoli__</code> attribute. This attribute is expected to be a
-list of attributes whose values will be serialized. For example,</p>
+</ul>
+
+<h3 id="generic-objectshttpsaltarisgithubioturbo-broccoliturbo_broccoligenerichtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json">Generic objects</a></h3>
+
+<p><strong>serialization only</strong>. A generic object is an object that
+has the <code>__turbo_broccoli__</code> attribute. This attribute is expected to be a list
+of attributes whose values will be serialized. For example,</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
-  <span class="n">__turbo_broccoli__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
-  <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
-  <span class="n">b</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">__turbo_broccoli__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
+    <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">b</span><span class="p">:</span> <span class="nb">int</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
 <span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">43</span>
@@ -267,19 +212,29 @@ list of attributes whose values will be serialized. For example,</p>
 </code></pre>
 </div>
 
-<p>Registered attributes can of course have any type supported by Turbo
-Broccoli, such as numpy arrays. Registered attributes can be <code>@property</code>
-methods.</p></li>
-<li><p><a href="https://keras.io/api/models/model/"><code>keras.Model</code></a>; standard subclasses of
-<a href="https://keras.io/api/layers/"><code>keras.layers.Layer</code></a>,
+<p>Registered attributes can of course have any type supported by Turbo Broccoli,
+such as numpy arrays. Registered attributes can be <code>@property</code> methods.</p>
+
+<h3 id="kerashttpsaltarisgithubioturbo-broccoliturbo_broccolikerashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/keras.html#to_json">Keras</a></h3>
+
+<ul>
+<li><p><a href="https://keras.io/api/models/model/"><code>keras.Model</code></a>;</p></li>
+<li><p>standard subclasses of <a href="https://keras.io/api/layers/"><code>keras.layers.Layer</code></a>,
 <a href="https://keras.io/api/losses/"><code>keras.losses.Loss</code></a>,
 <a href="https://keras.io/api/metrics/"><code>keras.metrics.Metric</code></a>, and
-<a href="https://keras.io/api/optimizers/"><code>keras.optimizers.Optimizer</code></a></p></li>
-<li><p><code>numpy.number</code>, <code>numpy.ndarray</code> with numerical dtype</p></li>
-<li><p><code>pandas.DataFrame</code> and <code>pandas.Series</code>, but with the following limitations:</p>
+<a href="https://keras.io/api/optimizers/"><code>keras.optimizers.Optimizer</code></a>.</p></li>
+</ul>
 
-<ol>
-<li>the following dtypes are not supported: <code>complex</code>, <code>object</code>, <code>timedelta</code></li>
+<h3 id="numpyhttpsaltarisgithubioturbo-broccoliturbo_broccolinumpyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/numpy.html#to_json">Numpy</a></h3>
+
+<p><code>numpy.number</code>, <code>numpy.ndarray</code> with numerical dtype, and <code>numpy.dtype</code>.</p>
+
+<h3 id="pandashttpsaltarisgithubioturbo-broccoliturbo_broccolipandashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/pandas.html#to_json">Pandas</a></h3>
+
+<p><code>pandas.DataFrame</code> and <code>pandas.Series</code>, but with the following limitations:</p>
+
+<ul>
+<li><p>the following dtypes are not supported: <code>complex</code>, <code>object</code>, <code>timedelta</code></p></li>
 <li><p>the column / series names must be strings and not numbers. The following
 is not acceptable:</p>
 
@@ -297,17 +252,25 @@ is not acceptable:</p>
 <span class="c1"># [int, int]</span>
 </code></pre>
 </div></li>
-</ol></li>
-<li><p><code>tensorflow.Tensor</code> with numerical dtype, but not <code>tensorflow.RaggedTensor</code></p></li>
-<li><p><code>torch.Tensor</code>, <strong>WARNING</strong>: loaded tensors are automatically placed on the
-CPU and gradients are lost; <code>torch.nn.Module</code>, don't forget to register your
+</ul>
+
+<h3 id="tensorflowhttpsaltarisgithubioturbo-broccoliturbo_broccolitensorflowhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/tensorflow.html#to_json">Tensorflow</a></h3>
+
+<p><code>tensorflow.Tensor</code> with numerical dtype, but not <code>tensorflow.RaggedTensor</code>.</p>
+
+<h3 id="pytorchhttpsaltarisgithubioturbo-broccoliturbo_broccolipytorchhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/pytorch.html#to_json">Pytorch</a></h3>
+
+<ul>
+<li><p><code>torch.Tensor</code>, <strong>Warning</strong>: loaded tensors are automatically placed on the
+CPU and gradients are lost;</p></li>
+<li><p><code>torch.nn.Module</code>, don't forget to register your
 module type using
-<a href="(https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type)"><code>turbo_broccoli.register_pytorch_module_type</code></a>:</p>
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type"><code>turbo_broccoli.register_pytorch_module_type</code></a>:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="c1"># Serialization</span>
 <span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-  <span class="o">...</span>
+<span class="o">...</span>
 
 <span class="n">module</span> <span class="o">=</span> <span class="n">MyModule</span><span class="p">()</span>  <span class="c1"># Must be instantiable without arguments</span>
 <span class="n">doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
@@ -318,39 +281,46 @@ module type using
 </code></pre>
 </div>
 
-<p><strong>WARNING</strong>: It is not possible to register and deserialize <a href="https://pytorch.org/docs/stable/nn.html#containers">standard pytorch
+<p><strong>Warning</strong>: It is not possible to register and deserialize <a href="https://pytorch.org/docs/stable/nn.html#containers">standard pytorch
 module containers</a>
 directly. Wrap them in your own custom module class.</p></li>
-<li><p><code>scipy.sparse.csr_matrix</code></p></li>
-<li><p><strong>EXPERIMENTAL</strong> <code>sklearn</code> estimators (i.e. that descent from
+</ul>
+
+<h3 id="scipyhttpsaltarisgithubioturbo-broccoliturbo_broccoliscipyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json">Scipy</a></h3>
+
+<p>Just <code>scipy.sparse.csr_matrix</code>. ^^"</p>
+
+<h3 id="scikit-learnhttpsaltarisgithubioturbo-broccoliturbo_broccolisklearnhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json">Scikit-learn</a></h3>
+
+<p><code>sklearn</code> estimators (i.e. that descent from
 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html"><code>sklean.base.BaseEstimator</code></a>).
 To make sure which class is supported, take a look at the <a href="https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py">unit
 tests</a>
 Doesn't work with:</p>
 
 <ul>
-<li>All CV classes because the <code>score_</code> attribute is a dict indexed with
-<code>np.int64</code>, which <code>json.JSONEncoder._iterencode_dict</code> rejects.</li>
-<li>All estimator classes that have mandatory arguments: <code>ClassifierChain</code>,
+<li><p>All CV classes because the <code>score_</code> attribute is a dict indexed with
+<code>np.int64</code>, which <code>json.JSONEncoder._iterencode_dict</code> rejects.</p></li>
+<li><p>All estimator classes that have mandatory arguments: <code>ClassifierChain</code>,
 <code>ColumnTransformer</code>, <code>FeatureUnion</code>, <code>GridSearchCV</code>,
 <code>MultiOutputClassifier</code>, <code>MultiOutputRegressor</code>, <code>OneVsOneClassifier</code>,
 <code>OneVsRestClassifier</code>, <code>OutputCodeClassifier</code>, <code>Pipeline</code>,
 <code>RandomizedSearchCV</code>, <code>RegressorChain</code>, <code>RFE</code>, <code>RFECV</code>, <code>SelectFromModel</code>,
 <code>SelfTrainingClassifier</code>, <code>SequentialFeatureSelector</code>, <code>SparseCoder</code>,
 <code>StackingClassifier</code>, <code>StackingRegressor</code>, <code>VotingClassifier</code>,
-<code>VotingRegressor</code>.</li>
-<li>Everything that is parametrized by an arbitrary object/callable/estimator:
-<code>FunctionTransformer</code>, <code>TransformedTargetRegressor</code>.</li>
-<li>Everything that stores a random state (in the form of a <code>RandomState</code>
+<code>VotingRegressor</code>.</p></li>
+<li><p>Everything that is parametrized by an arbitrary object/callable/estimator:
+<code>FunctionTransformer</code>, <code>TransformedTargetRegressor</code>.</p></li>
+<li><p>Everything that stores a random state (in the form of a <code>RandomState</code>
 object): <code>BisectingKMeans</code>, <code>MiniBatchDictionaryLearning</code>,
 <code>LatentDirichletAllocation</code>, <code>NeighborhoodComponentsAnalysis</code>,
 <code>MLPClassifier</code>, <code>MLPRegressor</code>, <code>SparseRandomProjection</code>,
-<code>GaussianRandomProjection</code>.</li>
-<li>Everything with trees and forest since <code>Tree</code> objects are not JSON
+<code>GaussianRandomProjection</code>.</p></li>
+<li><p>Everything with trees and forest since <code>Tree</code> objects are not JSON
 serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code>,
 <code>RandomForestClassifier</code>, <code>RandomForestRegressor</code>, <code>RandomTreesEmbedding</code>,
 <code>IsolationForest</code>, <code>AdaBoostClassifier</code>, <code>AdaBoostRegressor</code>,
-<code>DecisionTreeClassifier</code>, <code>DecisionTreeRegressor</code>.</li>
+<code>DecisionTreeClassifier</code>, <code>DecisionTreeRegressor</code>.</p></li>
 <li><p>Other classes that have non JSON-serializable attributes:</p>
 
 <table>
@@ -407,7 +377,7 @@ serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code
 </tr>
 </tbody>
 </table></li>
-<li><p>Some classes have AttributeErrors?</p>
+<li><p>Some classes have <code>AttributeErrors</code>?</p>
 
 <table>
 <thead>
@@ -491,24 +461,28 @@ serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code
 </tr>
 </tbody>
 </table></li>
-<li><p>Other errors:</p></li>
-<li><code>FastICA</code>: I'm not sure why...</li>
-<li><code>BaggingClassifier</code>: <code>IndexError: only integers, slices (:), ellipsis
+<li><p>Other errors:</p>
+
+<ul>
+<li><p><code>FastICA</code>: I'm not sure why...</p></li>
+<li><p><code>BaggingClassifier</code>: <code>IndexError: only integers, slices (:), ellipsis
 (...), numpy.newaxis (None) and integer or boolean arrays are valid
-indices</code>.</li>
-<li><code>GradientBoostingClassifier</code>: <code>Exception: dtype object is not covered</code>.
-* <code>GradientBoostingRegressor</code>: <code>Exception: dtype object is not covered</code>.</li>
-<li><code>HistGradientBoostingClassifier</code>: Problems with deserialization of
-<code>_BinMapper</code> object?</li>
-<li><code>PassiveAggressiveClassifier</code>: some unknown label type error...</li>
-<li><code>KBinsDiscretizer</code>: <code>Exception: dtype object is not covered</code>.</li>
-<li><code>KBinsDiscretizer</code>: <code>Exception: dtype object is not covered</code>.</li>
+indices</code>.</p></li>
+<li><p><code>GradientBoostingClassifier</code>, <code>GradientBoostingRegressor</code>: <code>Exception:
+dtype object is not covered</code>.</p></li>
+<li><p><code>HistGradientBoostingClassifier</code>: Problems with deserialization of
+<code>_BinMapper</code> object?</p></li>
+<li><p><code>PassiveAggressiveClassifier</code>: some unknown label type error...</p></li>
+<li><p><code>KBinsDiscretizer</code>: <code>Exception: dtype object is not covered</code>.</p></li>
 </ul></li>
-<li><p><a href="https://docs.bokeh.org/en/latest">Bokeh figures</a> and
-<a href="https://docs.bokeh.org/en/latest/docs/reference/models.html">models</a>.</p></li>
 </ul>
 
-<h2 id="secrets">Secrets</h2>
+<h3 id="bokehhttpsaltarisgithubioturbo-broccoliturbo_broccolibokehhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json">Bokeh</a></h3>
+
+<p>Bokeh <a href="https://docs.bokeh.org/en/latest">figures</a> and
+<a href="https://docs.bokeh.org/en/latest/docs/reference/models.html">models</a>.</p>
+
+<h2 id="secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></h2>
 
 <p>Basic Python types can be wrapped in their corresponding secret type according
 to the following table</p>
@@ -594,7 +568,7 @@ provided, the secret values are replaced by a
 <code><a href="turbo_broccoli/secret.html#LockedSecret">turbo_broccoli.secret.LockedSecret</a></code>. Internally, Turbo Broccoli uses
 <a href="https://pynacl.readthedocs.io/en/latest/"><code>pynacl</code></a>'s
 <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>SecretBox</code></a>.
-<strong>WARNING</strong>: In the case of <code>SecretDict</code> and <code>SecretList</code>, the values contained
+<strong>Warning</strong>: In the case of <code>SecretDict</code> and <code>SecretList</code>, the values contained
 within must be JSON-serializable <strong>without</strong> Turbo Broccoli. See also the
 <code>TB_SHARED_KEY</code> environment variable below.</p>
 
@@ -659,17 +633,23 @@ Comma-separated list of types to not deserialize, for example
 <code>bytes,numpy.ndarray</code>. Excludable types are:</p>
 
 <ul>
-<li><code>bytes</code>,</li>
-<li><code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</li>
-<li><code>collections.deque</code>, <code>collections.namedtuple</code>,</li>
-<li><code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
-<code>keras.optimizer</code>,</li>
-<li><code>numpy.ndarray</code>, <code>numpy.number</code>,</li>
-<li><code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>WARNING: excluding
-<code>pandas.dataframe</code> will crash any deserialization of <code>pandas.series</code></strong></li>
-<li><code>tensorflow.sparse_tensor</code>, <code>tensorflow.tensor</code>, <code>tensorflow.variable</code>.
-<strong>WARNING</strong>: excluding <code>numpy.ndarray</code> will may crash deserialization of
-Tensorflow and Pandas types.</li>
+<li><p><code>bokeh</code>, <code>bokeh.buffer</code>, <code>bokeh.generic</code>,</p></li>
+<li><p><code>bytes</code>,</p></li>
+<li><p><code>collections</code>, <code>collections.deque</code>, <code>collections.namedtuple</code>,</p></li>
+<li><p><code>dataclass</code>, <code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</p></li>
+<li><p><code>generic</code>,</p></li>
+<li><p><code>keras</code>, <code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
+<code>keras.optimizer</code>,</p></li>
+<li><p><code>numpy</code>, <code>numpy.ndarray</code>, <code>numpy.number</code>, <code>numpy.dtype</code>,</p></li>
+<li><p><code>pandas</code>, <code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>Warning</strong>: excluding
+<code>pandas.dataframe</code> will crash any deserialization of <code>pandas.series</code>,</p></li>
+<li><p><code>pytorch</code>, <code>pytorch.tensor</code>, <code>pytorch.module</code>,</p></li>
+<li><p><code>scipy</code>, <code>scipy.csr_matrix</code>,</p></li>
+<li><p><code>secret</code>,</p></li>
+<li><p><code>sklearn</code>, <code>sklearn.estimator</code>, <code>sklearn.estimator.&lt;estimator name&gt;</code> (case
+sensitive, see the list of supported sklearn estimators), <code>sklearn.tree</code>,</p></li>
+<li><p><code>tensorflow</code>, <code>tensorflow.sparse_tensor</code>, <code>tensorflow.tensor</code>,
+<code>tensorflow.variable</code>.</p></li>
 </ul></li>
 <li><p><code>TB_SHARED_KEY</code> (default: empty; see also
 <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_shared_key"><code>turbo_broccoli.set_shared_key</code></a>,
@@ -680,15 +660,23 @@ An exception is raised when attempting to serialize a secret type while no
 key is set.</p></li>
 </ul>
 
+<h2 id="guarded-calls">Guarded calls</h2>
+
+<p>This is so cool. Check out
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler"><code>turbo_broccoli.GuardedBlockHandler</code></a>,
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#guarded_call"><code>turbo_broccoli.guarded_call</code></a>,
+and
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document"><code>turbo_broccoli.produces_document</code></a>.</p>
+
 <h1 id="contributing">Contributing</h1>
 
 <h2 id="dependencies">Dependencies</h2>
 
 <ul>
-<li><code>python3.9</code> or newer;</li>
-<li><code>requirements.txt</code> for runtime dependencies;</li>
-<li><code>requirements.dev.txt</code> for development dependencies.</li>
-<li><code>make</code> (optional);</li>
+<li><p><code>python3.9</code> or newer;</p></li>
+<li><p><code>requirements.txt</code> for runtime dependencies;</p></li>
+<li><p><code>requirements.dev.txt</code> for development dependencies.</p></li>
+<li><p><code>make</code> (optional);</p></li>
 </ul>
 
 <p>Simply run</p>
@@ -753,22 +741,22 @@ standards using <a href="https://pylint.org/">pylint</a>.</p>
 <h1 id="v210"><code>v2.1.0</code></h1>
 
 <ul>
-<li><code>sklearn</code> (de)serialization of most estimator classes, see <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types">the list of
+<li><p><code>sklearn</code> (de)serialization of most estimator classes, see <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types">the list of
 supported
 types</a>
-for more details.</li>
-<li>Guarded methods and guarded calls, see
+for more details.</p></li>
+<li><p>Guarded methods and guarded calls, see
 <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#guarded-calls">here</a>
-for some basic usage.</li>
+for some basic usage.</p></li>
 </ul>
 
 <h1 id="v200"><code>v2.0.0</code></h1>
 
 <ul>
-<li><code>turbo-broccoli</code> now uses <a href="https://huggingface.co/docs/safetensors/index">Huggingface's
+<li><p><code>turbo-broccoli</code> now uses <a href="https://huggingface.co/docs/safetensors/index">Huggingface's
 <code>safetensors</code></a> to store
-<code>np.ndarray</code> and <code>tf.Tensor</code>.</li>
-<li>Added support for <code>torch.Tensor</code>, also serialized using <code>safetensors</code>.</li>
+<code>np.ndarray</code> and <code>tf.Tensor</code>.</p></li>
+<li><p>Added support for <code>torch.Tensor</code>, also serialized using <code>safetensors</code>.</p></li>
 </ul>
 </div>
 
