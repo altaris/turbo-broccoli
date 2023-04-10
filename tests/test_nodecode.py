@@ -1,17 +1,18 @@
+# pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
 """Decode exclusion tests"""
 
 from collections import deque
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from turbo_broccoli.environment import set_nodecode
-
 from common import from_json, to_json
-from test_dataclass import C, D
 from test_keras import _build_model
 from test_pandas import _assert_equal as assert_equal_pd
+
+from turbo_broccoli.environment import register_dataclass_type, set_nodecode
 
 
 def _basic_dict() -> dict:
@@ -34,10 +35,24 @@ def test_nodecode_bytes():
 
 
 def test_nodecode_dataclass():
+    @dataclass
+    class C:
+        a_byte_str: bytes
+        a_list: list
+        a_str: str
+        an_int: int
+
+    @dataclass
+    class D:
+        a_dataclass: C
+        a_float: float
+
+    register_dataclass_type(C)
+    register_dataclass_type(D)
     set_nodecode("dataclass.C")
     c = C(a_byte_str=b"", a_list=[], a_str="", an_int=0)
-    x = {"dcc": c, "dcd": D(a_dataclass=c, a_float=1.2), **_basic_dict()}
-    y = {"dcc": None, "dcd": D(a_dataclass=None, a_float=1.2), **_basic_dict()}
+    x = {"c": c, "d": D(a_dataclass=c, a_float=1.2), **_basic_dict()}
+    y = {"c": None, "d": D(a_dataclass=None, a_float=1.2), **_basic_dict()}
     assert y == from_json(to_json(x))
     set_nodecode("")
 
