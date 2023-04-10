@@ -31,6 +31,10 @@ class GuardedBlockHandler:
     # In any case, the results of the block are available in h.result
     ```
 
+    (I know the syntax isn't the prettiest. It would be more natural to use a
+    `with h.guard():` syntax but python doesn't allow for context managers that
+    don't yield...)
+
     The handler's `result` is `None` by default. If left to `None`, no output
     file is created. This allows for scenarios like
 
@@ -47,6 +51,16 @@ class GuardedBlockHandler:
 
     Note that the parent directory of the output file (in this case, `out/`)
     will be created if it does not exist.
+
+    Bonus: if you don't need to use `h.result` after the block, you can be even
+    more concise:
+
+    ```py
+    for h in GuardedBlockHandler("out/foo.json").guard():
+        ...
+    ```
+
+    i.e. `GuardedBlockHandler.guard` yields itself.
 
     ### Guarded loop
 
@@ -124,7 +138,7 @@ class GuardedBlockHandler:
                 logging.debug(f"Skipped guarded block '{self.name}'")
         else:
             try:
-                yield
+                yield self
             finally:
                 if self.result is not None:
                     self.output_path.parent.mkdir(parents=True, exist_ok=True)

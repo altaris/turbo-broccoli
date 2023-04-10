@@ -60,65 +60,6 @@ json.loads(json_string, cls=tb.TurboBroccoliDecoder)
 tb.from_json(json_string)
 ```
 
-## Guarded calls
-
-Consider an expensive function `f` that returns a TurboBroccoli/JSON-izable
-`dict`. Wrapping/decorating `f` using `produces_document` essentially saves the
-result at a specified path and when possible, loads it instead of calling `f`.
-For example:
-
-```py
-_f = produces_document(f, "foo.json")
-_f(*args, **kwargs)
-```
-
-will only call `f` if the `foo.json` does not exist, and otherwise, loads and
-returns `foo.json`. However, if `foo.json` exists and was produced by calling
-`_f(*args, **kwargs)`, then
-
-```py
-_f(*args2, **kwargs2)
-```
-
-will still return the same result. If you want to keep a different file for
-each `args`/`kwargs`, set `check_args` to `True` as in
-
-```py
-_f = produces_document(f, "foo.json")
-_f(*args, **kwargs)
-```
-
-In this case, the arguments must be TurboBroccoli/JSON-izable, i.e. the
-document
-
-```
-{
-    "args": args,
-    "kwargs": kwargs,
-}
-```
-
-must be TurboBroccoli/JSON-izable. The resulting file is no longer
-`foo.json` but rather `foo.json/<hash>` where `hash` is the MD5
-hash of the serialization of the `args`/`kwargs` document above.
-
-If instead of a function you wish to guard an entire block of code, use
-[`GuardedBlockHandler`](https://altaris.github.io/turbo_broccoli/guard.html#GuardedBlockHandler):
-
-```py
-from turbo_broccoli import GuardedBlockHandler
-h = GuardedBlockHandler("foo.json")
-for _ in h.guard():
-    # This whole block will be skipped if foo.json exists
-    # If not, don't forget to set the results:
-    h.result = ...
-# In any case, the results of the block are now available in h.result
-```
-
-I know the syntax isn't the prettiest. It would be more natural to use a `with
-h.guard():` syntax but python doesn't allow for context managers that don't
-yield...
-
 ## Supported types
 
 - `bytes`
@@ -450,6 +391,14 @@ by modifying `os.environ`. Rather, use the methods of
   `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
   An exception is raised when attempting to serialize a secret type while no
   key is set.
+
+## Guarded calls
+
+This is so cool. Check out
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler),
+[`turbo_broccoli.guarded_call`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#guarded_call),
+and
+[`turbo_broccoli.produces_document`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document).
 
 # Contributing
 
