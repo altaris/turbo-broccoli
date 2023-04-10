@@ -103,7 +103,7 @@ must be TurboBroccoli/JSON-izable. The resulting file is no longer
 hash of the serialization of the `args`/`kwargs` document above.
 
 If instead of a function you wish to guard an entire block of code, use
-`GuardedBlockHandler`:
+[`GuardedBlockHandler`](https://altaris.github.io/turbo_broccoli/guard.html#GuardedBlockHandler):
 
 ```py
 from turbo_broccoli import GuardedBlockHandler

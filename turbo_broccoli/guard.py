@@ -9,19 +9,18 @@ try:
 except ModuleNotFoundError:
     import logging  # type: ignore
 
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, Generator, Iterable, Optional, Union
 
-from .turbo_broccoli import (
-    load_json,
-    save_json,
-    to_json,
-)
+from .turbo_broccoli import load_json, save_json, to_json
 
 
 class GuardedBlockHandler:
     """
-    A guarded block handler allows to guard an entire block of code. Use it as
-    follows:
+    A guarded block handler allows to guard an entire block/loop of code.
+
+    ### Guarded block
+
+    Use it as follows:
 
     ```py
     h = GuardedBlockHandler("out/foo.json")
@@ -48,45 +47,99 @@ class GuardedBlockHandler:
 
     Note that the parent directory of the output file (in this case, `out/`)
     will be created if it does not exist.
+
+    ### Guarded loop
+
+    If an iterable `l` is passed to `h.guard`, then `for _ in h.guard(l):`
+    iterates over `l`, and after every iteration, an artifact is created using
+    the current value of `h.result` at `<output_path>/<str(element)>`. For
+    example:
+
+    ```py
+    l = [1, 2, 3]  # The elements of l must be stringable
+    h = GuardedBlockHandler("out/foo")
+    for x in h.guard(l):
+        # At the begining of every iteration, h.result is guaranteed to be a
+        # dict with key str(x) being None. The result of past iterations are
+        # also in h.result
+        h.result[str(x)] = {"bar": x + 1}
+    # now, h.result is {"1": {"bar": 2}, "2": {"bar": 3}, ...}
+    ```
+
+    creates folder `out/foo` in which there will be files `1.json`, `2.json`,
+    `3.json` respectively containing `{"bar": 2}`, `{"bar": 3}`, `{"bar": 4}`.
+    Of course, if any of these files existed prior to running the `for` loop
+    (e.g. `out/foo/2.json`), then the corresponding iteration (in that case `x
+    = 2`) is skipped.
     """
 
     name: Optional[str]
     result: Any = None
-    output_file: Path
+    output_path: Path
 
     def __init__(
         self, output_path: Union[str, Path], name: Optional[str] = None
     ) -> None:
-        self.output_file = Path(output_path)
+        self.output_path = Path(output_path)
         self.name = name
 
-    def _load(self):
-        """Loads the results and logs"""
-        self.result = load_json(self.output_file)
-        if self.name:
-            logging.debug(f"Skipped guarded block '{self.name}'")
+    def _guard_iter(self, iterable: Iterable[Any]) -> Generator:
+        """
+        Internal implementation of a guarded loop. See
+        `turbo_broccoli.guard.GuardedBlockHandler`'s documentation.
+        """
+        self.result = {}
+        for x in iterable:
+            sx = str(x)
+            path = self.output_path / f"{sx}.json"
+            if path.is_file():
+                self.result[sx] = load_json(path)
+                if self.name:
+                    logging.debug(
+                        f"Skipped guarded iteration '{self.name}'[{sx}]"
+                    )
+            else:
+                self.result[sx] = None
+                yield x
+                if self.result[sx] is not None:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    save_json(self.result[sx], path)
+                    if self.name is not None:
+                        logging.debug(
+                            f"Saved guarded iteration '{self.name}'[{sx}] "
+                            f"results to '{path}'"
+                        )
 
-    def _save(self):
-        """Saves the results (if not `None`) and logs"""
-        if self.result is None:
-            return
-        save_json(self.result, self.output_file)
-        if self.name is not None:
-            logging.debug(
-                f"Saved guarded block '{self.name}'s results to "
-                f"'{self.output_file}'"
-            )
-
-    def guard(self):
-        """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
-        if self.output_file.is_file():
-            self._load()
+    def _guard_no_iter(self) -> Generator:
+        """
+        Internal implementation of a guarded block. See
+        `turbo_broccoli.guard.GuardedBlockHandler`'s documentation.
+        """
+        if self.output_path.is_file():
+            self.result = load_json(self.output_path)
+            if self.name:
+                logging.debug(f"Skipped guarded block '{self.name}'")
         else:
             try:
-                self.output_file.parent.mkdir(parents=True, exist_ok=True)
                 yield
             finally:
-                self._save()
+                if self.result is not None:
+                    self.output_path.parent.mkdir(parents=True, exist_ok=True)
+                    save_json(self.result, self.output_path)
+                    if self.name is not None:
+                        logging.debug(
+                            f"Saved guarded block '{self.name}' results to "
+                            f"'{self.output_path}'"
+                        )
+
+    def guard(self, iterable: Optional[Iterable[Any]] = None) -> Generator:
+        """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
+        if iterable is None:
+            for _ in self._guard_no_iter():
+                yield
+        else:
+            for x in self._guard_iter(iterable):
+                yield x
 
 
 def guarded_call(
