@@ -62,7 +62,7 @@ class GuardedBlockHandler:
         # At the begining of every iteration, h.result is guaranteed to be a
         # dict with key str(x) being None. The result of past iterations are
         # also in h.result
-        h.result[str(x)] = {"bar": x + 1}
+        h.result[x] = {"bar": int(x) + 1}
     # now, h.result is {"1": {"bar": 2}, "2": {"bar": 3}, ...}
     ```
 
@@ -71,6 +71,9 @@ class GuardedBlockHandler:
     Of course, if any of these files existed prior to running the `for` loop
     (e.g. `out/foo/2.json`), then the corresponding iteration (in that case `x
     = 2`) is skipped.
+
+    **Warning**: The `x` in the loop above are actually strings! More generally,
+    `h.guard(l)` actually iterates over `map(str, l)`.
     """
 
     name: Optional[str]
@@ -100,7 +103,7 @@ class GuardedBlockHandler:
                     )
             else:
                 self.result[sx] = None
-                yield x
+                yield sx
                 if self.result[sx] is not None:
                     path.parent.mkdir(parents=True, exist_ok=True)
                     save_json(self.result[sx], path)

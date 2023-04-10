@@ -14,28 +14,29 @@ def test_guarded_bloc_handler_iter():
     path = Path("out") / "test_guarded_bloc_handler_iter"
     h = GuardedBlockHandler(path)
     l1, l2 = [1, 2, 3], [2, 3, 4]
+    # l1, l2 = list(map(str, l1)), list(map(str, l2))  # Keys should be str
     # First loop
     for x in h.guard(l1):
         # Initialization of results at each iteration
         assert x in h.result
         assert h.result[x] is None
-        h.result[x] = x
+        h.result[x] = int(x)
     # Second loop over same iterable should be skipped
     for x in h.guard(l1):
         assert False
     # Final value
-    assert h.result == {i: i for i in l1}
+    assert h.result == {str(i): i for i in l1}
     # Check output files individually
     for x in l1:
         p = path / f"{x}.json"
         assert p.is_file()
-        assert load_json(p) == x
+        assert load_json(p) == int(x)
     # Second iteration where some output files already exist
     for x in h.guard(l2):
-        if x <= 3:  # Iterations for files that already exist should be skipped
+        if int(x) <= 3:  # Iterations for files that already exist should be skipped
             assert False
-        h.result[x] = x
-    assert h.result == {i: i for i in l2}
+        h.result[x] = int(x)
+    assert h.result == {str(i): i for i in l2}
 
 
 def test_guarded_bloc_handler_no_iter():
