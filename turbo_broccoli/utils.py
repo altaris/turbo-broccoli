@@ -1,5 +1,8 @@
 """Various utilities and internal methods"""
 
+from turbo_broccoli.environment import is_nodecode
+
+
 try:
     from loguru import logger as logging
 except ModuleNotFoundError:
@@ -23,6 +26,25 @@ class TypeNotSupported(Exception):
     `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these
     and moves on to the next registered `to_json` method.
     """
+
+
+class TypeIsNodecode(Exception):
+    """
+    `from_json` methods raise this if the type shouldn't be decoded. See
+    `turbo_broccoli.environment.set_nodecode`. This is fine,
+    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these
+    and returns `None`.
+    """
+
+
+def raise_if_nodecode(name: str) -> None:
+    """
+    If the (prefixed) type name is set to nodecode
+    (`turbo_broccoli.environment.set_nodecode`), raises a
+    `turbo_broccoli.utils.TypeIsNodecode` exception.
+    """
+    if is_nodecode(name):
+        raise TypeIsNodecode(name)
 
 
 def warn_about_safetensors():

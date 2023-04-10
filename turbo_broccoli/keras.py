@@ -10,9 +10,12 @@ from tensorflow import keras
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_keras_format,
-    is_nodecode,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
@@ -311,6 +314,7 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__keras__`.
     """
+    raise_if_nodecode("keras")
     DECODERS = {
         "model": _json_to_model,  # must be first!
         "layer": _json_to_layer,
@@ -320,8 +324,7 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__keras__"]["__type__"]
-        if is_nodecode("keras." + type_name):
-            return None
+        raise_if_nodecode("keras." + type_name)
         return DECODERS[type_name](dct["__keras__"])
     except KeyError as exc:
         raise DeserializationError() from exc

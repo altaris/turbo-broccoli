@@ -19,9 +19,12 @@ except ModuleNotFoundError:
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
-    is_nodecode,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
@@ -188,6 +191,7 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__tensorflow__`.
     """
+    raise_if_nodecode("tensorflow")
     DECODERS = {
         "sparse_tensor": _json_to_sparse_tensor,
         "tensor": _json_to_tensor,
@@ -195,8 +199,7 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__tensorflow__"]["__type__"]
-        if is_nodecode("tensorflow." + type_name):
-            return None
+        raise_if_nodecode("tensorflow." + type_name)
         return DECODERS[type_name](dct["__tensorflow__"])
     except KeyError as exc:
         raise DeserializationError() from exc

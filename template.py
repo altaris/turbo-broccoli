@@ -1,14 +1,19 @@
 """Write me"""
 __docformat__ = "google"
 
-# TODO: Write module documentation
-# TODO: Replace all the XXX placeholders
+# TODO: Write module documentation
+# TODO: Replace all the XXX placeholders
 # TODO: Register in main module
-# TODO: Document in README
+# TODO: Document in README (Supported types)
+# TODO: Document in README (nodecode types)
 
 from typing import Any, Callable, List, Tuple
 
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _XXX_to_json(obj: Any) -> dict:
@@ -26,6 +31,7 @@ def _json_to_XXX(dct: dict) -> Any:
     """
     # TODO: Rename
     # TODO: Type return
+    # TODO: Check dispatch
     DECODERS = {
         1: _json_to_XXX_v1,
     }
@@ -37,7 +43,8 @@ def _json_to_XXX_v1(dct: dict) -> Any:
     Converts a JSON document to a XXX following the v1 specification.
     """
     # TODO: Rename
-    # TODO: Type argument
+    # TODO: Type return
+    # TODO: Write body =)
 
 
 def from_json(dct: dict) -> Any:
@@ -46,11 +53,15 @@ def from_json(dct: dict) -> Any:
     is expected to follow. In particular, note that `dct` must contain the key
     `__XXX__`.
     """
+    # TODO: Check dispatch
+    raise_if_nodecode("XXX")
     DECODERS = {
         "XXX": _json_to_XXX,
     }
     try:
-        return DECODERS[dct["__XXX__"]["__type__"]](dct["__XXX__"])
+        type_name = dct["__XXX__"]["__type__"]
+        raise_if_nodecode("XXX." + type_name)
+        return DECODERS[type_name](dct["__XXX__"])
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -69,6 +80,8 @@ def to_json(obj: Any) -> dict:
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.
     """
+    # TODO: Write doc
+    # TODO: Check dispatch
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (XXX, _XXX_to_json),
     ]

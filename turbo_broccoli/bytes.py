@@ -4,8 +4,11 @@ __docformat__ = "google"
 from base64 import b64decode, b64encode
 from typing import Any, Optional
 
-from turbo_broccoli.environment import is_nodecode
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _bytes_from_json_v1(dct: dict) -> bytes:
@@ -21,8 +24,7 @@ def from_json(dct: dict) -> Optional[bytes]:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__bytes__`.
     """
-    if is_nodecode("bytes"):
-        return None
+    raise_if_nodecode("bytes")
     DECODERS = {
         1: _bytes_from_json_v1,
     }

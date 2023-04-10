@@ -5,9 +5,12 @@ from typing import Any
 
 from turbo_broccoli.environment import (
     get_registered_dataclass_type,
-    is_nodecode,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _json_to_dataclass_v2(dct: dict) -> Any:
@@ -15,8 +18,6 @@ def _json_to_dataclass_v2(dct: dict) -> Any:
     Converts a JSON document following the v2 specification to a dataclass
     object.
     """
-    if is_nodecode("dataclass." + dct["class"]):
-        return None
     return get_registered_dataclass_type(dct["class"])(**dct["data"])
 
 
@@ -26,10 +27,12 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow, and
     `turbo_broccoli.environment.register_dataclass_type`.
     """
+    raise_if_nodecode("dataclass")
     DECODERS = {
         2: _json_to_dataclass_v2,
     }
     try:
+        raise_if_nodecode("dataclass." + dct["__dataclass__"]["class"])
         return DECODERS[dct["__dataclass__"]["__version__"]](
             dct["__dataclass__"]
         )

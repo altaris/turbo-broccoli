@@ -12,7 +12,11 @@ from turbo_broccoli.environment import (
     get_max_nbytes,
     get_registered_pytorch_module_type,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _json_to_module(dct: dict) -> torch.nn.Module:
@@ -102,12 +106,15 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__pytorch__`.
     """
+    raise_if_nodecode("pytorch")
     DECODERS = {
         "tensor": _json_to_tensor,
         "module": _json_to_module,
     }
     try:
-        return DECODERS[dct["__pytorch__"]["__type__"]](dct["__pytorch__"])
+        type_name = dct["__pytorch__"]["__type__"]
+        raise_if_nodecode("pytorch." + type_name)
+        return DECODERS[type_name](dct["__pytorch__"])
     except KeyError as exc:
         raise DeserializationError() from exc
 

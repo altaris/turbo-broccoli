@@ -33,7 +33,9 @@ def test_guarded_bloc_handler_iter():
         assert load_json(p) == int(x)
     # Second iteration where some output files already exist
     for x in h.guard(l2):
-        if int(x) <= 3:  # Iterations for files that already exist should be skipped
+        if (
+            int(x) <= 3
+        ):  # Iterations for files that already exist should be skipped
             assert False
         h.result[x] = int(x)
     assert h.result == {str(i): i for i in l2}

@@ -25,9 +25,12 @@ except ModuleNotFoundError:
 from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
-    is_nodecode,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _json_to_dtype(dct: dict) -> np.dtype:
@@ -205,6 +208,7 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__numpy__`.
     """
+    raise_if_nodecode("numpy")
     DECODERS = {
         "ndarray": _json_to_ndarray,
         "number": _json_to_number,
@@ -212,8 +216,7 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__numpy__"]["__type__"]
-        if is_nodecode("numpy." + type_name):
-            return None
+        raise_if_nodecode("numpy." + type_name)
         return DECODERS[type_name](dct["__numpy__"])
     except KeyError as exc:
         raise DeserializationError() from exc

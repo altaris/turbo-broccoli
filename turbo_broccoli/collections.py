@@ -4,8 +4,11 @@ __docformat__ = "google"
 from collections import deque, namedtuple
 from typing import Any, Callable, List, Optional, Tuple
 
-from turbo_broccoli.environment import is_nodecode
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _deque_to_json(deq: deque) -> dict:
@@ -87,8 +90,7 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__collections__"]["__type__"]
-        if is_nodecode("collections." + type_name):
-            return None
+        raise_if_nodecode("collections." + type_name)
         return DECODERS[type_name](dct["__collections__"])
     except KeyError as exc:
         raise DeserializationError() from exc

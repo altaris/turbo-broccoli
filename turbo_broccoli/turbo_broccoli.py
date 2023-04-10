@@ -10,7 +10,7 @@ import turbo_broccoli.bytes
 import turbo_broccoli.collections
 import turbo_broccoli.dataclass
 import turbo_broccoli.generic
-from turbo_broccoli.utils import TypeNotSupported
+from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
 
 try:
     import turbo_broccoli.keras
@@ -116,7 +116,10 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         DECODERS["__dataclass__"] = turbo_broccoli.dataclass.from_json
         for t, f in DECODERS.items():
             if t in dct:
-                return f(dct)
+                try:
+                    return f(dct)
+                except TypeIsNodecode:
+                    return None
         return dct
 
 

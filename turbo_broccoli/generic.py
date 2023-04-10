@@ -7,7 +7,7 @@ __docformat__ = "google"
 
 from typing import Any, Iterable
 
-from turbo_broccoli.utils import TypeNotSupported
+from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
 
 
 def to_json(obj: Any) -> dict:
@@ -17,6 +17,7 @@ def to_json(obj: Any) -> dict:
         and isinstance(obj.__turbo_broccoli__, Iterable)
     ):
         raise TypeNotSupported()
+    raise_if_nodecode("generic")
     return {
         "__generic__": {
             "__version__": 1,

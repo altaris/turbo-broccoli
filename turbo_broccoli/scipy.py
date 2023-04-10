@@ -5,7 +5,11 @@ from typing import Any, Callable, List, Tuple
 
 from scipy.sparse import csr_matrix
 
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _csr_matrix_to_json(m: csr_matrix) -> dict:
@@ -50,11 +54,14 @@ def from_json(dct: dict) -> Any:
     `dct` is expected to follow. In particular, note that `dct` must contain
     the key `__csr_matrix__`.
     """
+    raise_if_nodecode("scipy")
     DECODERS = {
         "csr_matrix": _json_to_csr_matrix,
     }
     try:
-        return DECODERS[dct["__scipy__"]["__type__"]](dct["__scipy__"])
+        type_name = dct["__scipy__"]["__type__"]
+        raise_if_nodecode("scipy." + type_name)
+        return DECODERS[type_name](dct["__scipy__"])
     except KeyError as exc:
         raise DeserializationError() from exc
 

@@ -372,17 +372,23 @@ by modifying `os.environ`. Rather, use the methods of
   Comma-separated list of types to not deserialize, for example
   `bytes,numpy.ndarray`. Excludable types are:
 
+  - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
   - `bytes`,
-  - `dataclass.<dataclass_name>` (case sensitive),
-  - `collections.deque`, `collections.namedtuple`,
-  - `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
+  - `collections`, `collections.deque`, `collections.namedtuple`,
+  - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
+  - `generic`,
+  - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
     `keras.optimizer`,
-  - `numpy.ndarray`, `numpy.number`,
-  - `pandas.dataframe`, `pandas.series`, **WARNING: excluding
-    `pandas.dataframe` will crash any deserialization of `pandas.series`**
-  - `tensorflow.sparse_tensor`, `tensorflow.tensor`, `tensorflow.variable`.
-    **WARNING**: excluding `numpy.ndarray` will may crash deserialization of
-    Tensorflow and Pandas types.
+  - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
+  - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
+    `pandas.dataframe` will crash any deserialization of `pandas.series`,
+  - `pytorch`, `pytorch.tensor`, `pytorch.module`,
+  - `scipy`, `scipy.csr_matrix`,
+  - `secret`,
+  - `sklearn`, `sklearn.estimator`, `sklearn.estimator.<estimator name>` (case
+    sensitive, see the list of supported sklearn estimators), `sklearn.tree`,
+  - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
+    `tensorflow.variable`.
 
 - `TB_SHARED_KEY` (default: empty; see also
   [`turbo_broccoli.set_shared_key`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_shared_key),

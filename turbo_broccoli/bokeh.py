@@ -12,7 +12,11 @@ from bokeh.core.serialization import (
 from bokeh.models import Model
 from bokeh.plotting import figure as Figure
 
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _buffer_to_json(obj: Buffer) -> dict:
@@ -82,12 +86,15 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__bokeh__`.
     """
+    raise_if_nodecode("bokeh")
     DECODERS = {
         "buffer": _json_to_buffer,
         "generic": _json_to_generic,
     }
     try:
-        return DECODERS[dct["__bokeh__"]["__type__"]](dct["__bokeh__"])
+        type_name = dct["__bokeh__"]["__type__"]
+        raise_if_nodecode("bokeh." + type_name)
+        return DECODERS[type_name](dct["__bokeh__"])
     except KeyError as exc:
         raise DeserializationError() from exc
 

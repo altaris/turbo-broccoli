@@ -8,7 +8,7 @@ from typing import Any, NoReturn
 from nacl.secret import SecretBox
 
 from turbo_broccoli.environment import get_shared_key
-from turbo_broccoli.utils import TypeNotSupported
+from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
 
 
 class Secret:
@@ -95,6 +95,7 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__secret__`.
     """
+    raise_if_nodecode("secret")
     DECODERS = {
         1: _from_json_v1,
     }

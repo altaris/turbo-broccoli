@@ -11,9 +11,12 @@ from turbo_broccoli.environment import (
     get_artifact_path,
     get_max_nbytes,
     get_pandas_format,
-    is_nodecode,
 )
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 
 def _dataframe_to_json(df: pd.DataFrame) -> dict:
@@ -121,14 +124,14 @@ def from_json(dct: dict) -> Any:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__pandas__`.
     """
+    raise_if_nodecode("pandas")
     DECODERS = {
         "dataframe": _json_to_dataframe,
         "series": _json_to_series,
     }
     try:
         type_name = dct["__pandas__"]["__type__"]
-        if is_nodecode("pandas." + type_name):
-            return None
+        raise_if_nodecode("pandas." + type_name)
         return DECODERS[type_name](dct["__pandas__"])
     except KeyError as exc:
         raise DeserializationError() from exc

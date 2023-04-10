@@ -44,7 +44,11 @@ from sklearn import (
 from sklearn.base import BaseEstimator
 from sklearn.tree._tree import Tree
 
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.utils import (
+    DeserializationError,
+    TypeNotSupported,
+    raise_if_nodecode,
+)
 
 _SKLEARN_SUBMODULES = [
     # calibration,
@@ -215,12 +219,15 @@ def from_json(dct: dict) -> BaseEstimator:
     specification `dct` is expected to follow. In particular, note that `dct`
     must contain the key `__sklearn__`.
     """
+    raise_if_nodecode("sklearn")
     DECODERS = {
         "estimator": _json_to_sklearn_estimator,
         "tree": _json_to_sklearn_tree,
     }
     try:
-        return DECODERS[dct["__sklearn__"]["__type__"]](dct["__sklearn__"])
+        type_name = dct["__sklearn__"]["__type__"]
+        raise_if_nodecode("sklearn." + type_name)
+        return DECODERS[type_name](dct["__sklearn__"])
     except KeyError as exc:
         raise DeserializationError() from exc
 
