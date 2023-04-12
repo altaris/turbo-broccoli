@@ -169,22 +169,18 @@ class TurboBroccoliEncoder(json.JSONEncoder):
 
     def encode(self, o: Any) -> str:
         """
-        Reimplementation of encode just to treat the `namedtuple` case. An
-        object is considered a namedtuple if it is an instance of `tuple` and
-        has the following attributes: `_asdict`, `_field_defaults`, `_fields`,
-        `_make`, `_replace`. In this case,
-        `turbo_broccoli.collections._namedtuple_to_json` is called directly.
+        Reimplementation of encode just to treat exceptional cases that need to
+        be handled before `JSONEncoder.encode`.
         """
-        # TODO: clean
-        try:
-            dct = turbo_broccoli.dict.to_json(o)
-            return super().encode(dct)
-        except TypeNotSupported:
-            pass
-        attrs = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
-        if isinstance(o, tuple) and all(map(lambda a: hasattr(o, a), attrs)):
-            d = turbo_broccoli.collections._namedtuple_to_json(o)
-            return super().encode({"__collections__": d})
+        PRIORITY_ENCODERS: List[Callable[[Any], dict]] = [
+            turbo_broccoli.dict.to_json,
+            turbo_broccoli.collections.to_json,
+        ]
+        for f in PRIORITY_ENCODERS:
+            try:
+                return super().encode(f(o))
+            except TypeNotSupported:
+                pass
         return super().encode(o)
 
 

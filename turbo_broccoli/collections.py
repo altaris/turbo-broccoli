@@ -65,7 +65,7 @@ def _namedtuple_to_json(tup: tuple) -> dict:
     """
     attributes = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
     if not all(map(lambda a: hasattr(tup, a), attributes)):
-        raise DeserializationError(
+        raise TypeNotSupported(
             "This object does not have all the attributes expected from a "
             "namedtuple. The expected attributes are `_asdict`, "
             "`_field_defaults`, `_fields`, `_make`, and `_replace`."
