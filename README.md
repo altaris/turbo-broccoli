@@ -66,6 +66,8 @@ tb.from_json(json_string)
 
 - [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json)
 
+- `dict` with non `str` keys
+
 - [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json):
   `collections.deque`, `collections.namedtuple`
 
@@ -396,6 +398,8 @@ by modifying `os.environ`. Rather, use the methods of
   - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
 
   - `bytes`,
+
+  - `dict`,
 
   - `collections`, `collections.deque`, `collections.namedtuple`,
 

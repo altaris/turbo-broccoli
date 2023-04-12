@@ -10,6 +10,7 @@ import turbo_broccoli.bytes
 import turbo_broccoli.collections
 import turbo_broccoli.dataclass
 import turbo_broccoli.generic
+import turbo_broccoli.dict
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
 
 try:
@@ -91,6 +92,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
     def _hook(self, dct):
         """Deserialization hook"""
         DECODERS: Dict[str, Callable[[dict], Any]] = {
+            "__dict__": turbo_broccoli.dict.from_json,
             "__bytes__": turbo_broccoli.bytes.from_json,
         }
         if HAS_KERAS:
@@ -173,6 +175,12 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         `_make`, `_replace`. In this case,
         `turbo_broccoli.collections._namedtuple_to_json` is called directly.
         """
+        # TODO: clean
+        try:
+            dct = turbo_broccoli.dict.to_json(o)
+            return super().encode(dct)
+        except TypeNotSupported:
+            pass
         attrs = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
         if isinstance(o, tuple) and all(map(lambda a: hasattr(o, a), attrs)):
             d = turbo_broccoli.collections._namedtuple_to_json(o)
