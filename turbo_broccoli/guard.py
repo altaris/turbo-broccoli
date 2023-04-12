@@ -78,7 +78,7 @@ class GuardedBlockHandler:
         # dict with key str(x) being None. The result of past iterations are
         # also in h.result
         h.result[x] = {"bar": int(x) + 1}
-    # now, h.result is {"1": {"bar": 2}, "2": {"bar": 3}, ...}
+    # now, h.result is {1: {"bar": 2}, 2: {"bar": 3}, ...}
     ```
 
     creates folder `out/foo` in which there will be files `1.json`, `2.json`,
@@ -86,9 +86,6 @@ class GuardedBlockHandler:
     Of course, if any of these files existed prior to running the `for` loop
     (e.g. `out/foo/2.json`), then the corresponding iteration (in that case `x
     = 2`) is skipped.
-
-    **Warning**: The `x` in the loop above are actually strings! More generally,
-    `h.guard(l)` actually iterates over `map(str, l)`.
     """
 
     name: Optional[str]
@@ -111,17 +108,17 @@ class GuardedBlockHandler:
             sx = str(x)
             path = self.output_path / f"{sx}.json"
             if path.is_file():
-                self.result[sx] = load_json(path)
+                self.result[x] = load_json(path)
                 if self.name:
                     logging.debug(
                         f"Skipped guarded iteration '{self.name}'[{sx}]"
                     )
             else:
-                self.result[sx] = None
-                yield sx
-                if self.result[sx] is not None:
+                self.result[x] = None
+                yield x
+                if self.result[x] is not None:
                     path.parent.mkdir(parents=True, exist_ok=True)
-                    save_json(self.result[sx], path)
+                    save_json(self.result[x], path)
                     if self.name is not None:
                         logging.debug(
                             f"Saved guarded iteration '{self.name}'[{sx}] "
