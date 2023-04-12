@@ -11,6 +11,7 @@ from turbo_broccoli import (
 
 TEST_PATH = Path("out") / "test"
 
+
 def test_guarded_bloc_handler_iter():
     path = TEST_PATH / "test_guarded_bloc_handler_iter"
     h = GuardedBlockHandler(path)

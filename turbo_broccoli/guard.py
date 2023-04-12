@@ -153,8 +153,8 @@ class GuardedBlockHandler:
         old_artifact_path = get_artifact_path()
         set_artifact_path(self.output_path.parent)
         if iterable is None:
-            for _ in self._guard_no_iter():
-                yield
+            for x in self._guard_no_iter():
+                yield x
         else:
             for x in self._guard_iter(iterable):
                 yield x

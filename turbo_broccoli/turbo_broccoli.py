@@ -198,7 +198,7 @@ def load_json(path: Union[str, Path]) -> Any:
 def save_json(obj: Any, path: Union[str, Path]) -> None:
     """Serializes and saves a JSON-serializable object"""
     with open(path, mode="w", encoding="utf-8") as fp:
-        json.dump(obj, fp, cls=TurboBroccoliEncoder)
+        fp.write(to_json(obj))
 
 
 def to_json(obj: Any) -> str:
