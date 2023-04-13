@@ -138,31 +138,31 @@
 </span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
 </span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    - have a `&quot;__version__&quot;`, `&quot;__type__&quot;`, and a `&quot;id&quot;` field;</span>
 </span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
-</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">    - the value at `&quot;id&quot;` has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e. matches the regexp</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
-</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        ```re</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        [0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}\\..*</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        ```</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
-</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">      in which case that value is `yield`ed.</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    TODO:</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        Implement a smarter way</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">\..*&quot;</span><span class="p">)</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>                <span class="k">yield</span> <span class="n">v</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="k">yield</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;__numpy__&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>            <span class="k">pass</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">    - the value at `&quot;id&quot;` is a UUID4 or has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e.</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a><span class="sd">      matches the regexp</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        ```re</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        ^[0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}(\\..+)?$</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a><span class="sd">        ```</span>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a><span class="sd">      in which case that value is `yield`ed.</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">    TODO:</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">        Implement a smarter way</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>                <span class="sa">r</span><span class="s2">&quot;^[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">(\..+)?$&quot;</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>            <span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>                <span class="k">yield</span> <span class="n">v</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>                    <span class="k">yield</span> <span class="n">a</span>
 </span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
 </span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
 </span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -374,31 +374,31 @@ and returns <code>None</code>.</p>
 </span><span id="artifacts-51"><a href="#artifacts-51"><span class="linenos">51</span></a>
 </span><span id="artifacts-52"><a href="#artifacts-52"><span class="linenos">52</span></a><span class="sd">    - have a `&quot;__version__&quot;`, `&quot;__type__&quot;`, and a `&quot;id&quot;` field;</span>
 </span><span id="artifacts-53"><a href="#artifacts-53"><span class="linenos">53</span></a>
-</span><span id="artifacts-54"><a href="#artifacts-54"><span class="linenos">54</span></a><span class="sd">    - the value at `&quot;id&quot;` has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e. matches the regexp</span>
-</span><span id="artifacts-55"><a href="#artifacts-55"><span class="linenos">55</span></a>
-</span><span id="artifacts-56"><a href="#artifacts-56"><span class="linenos">56</span></a><span class="sd">        ```re</span>
-</span><span id="artifacts-57"><a href="#artifacts-57"><span class="linenos">57</span></a><span class="sd">        [0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}\\..*</span>
-</span><span id="artifacts-58"><a href="#artifacts-58"><span class="linenos">58</span></a><span class="sd">        ```</span>
-</span><span id="artifacts-59"><a href="#artifacts-59"><span class="linenos">59</span></a>
-</span><span id="artifacts-60"><a href="#artifacts-60"><span class="linenos">60</span></a><span class="sd">      in which case that value is `yield`ed.</span>
-</span><span id="artifacts-61"><a href="#artifacts-61"><span class="linenos">61</span></a>
-</span><span id="artifacts-62"><a href="#artifacts-62"><span class="linenos">62</span></a><span class="sd">    TODO:</span>
-</span><span id="artifacts-63"><a href="#artifacts-63"><span class="linenos">63</span></a><span class="sd">        Implement a smarter way</span>
-</span><span id="artifacts-64"><a href="#artifacts-64"><span class="linenos">64</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="artifacts-65"><a href="#artifacts-65"><span class="linenos">65</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-</span><span id="artifacts-66"><a href="#artifacts-66"><span class="linenos">66</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="artifacts-67"><a href="#artifacts-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
-</span><span id="artifacts-68"><a href="#artifacts-68"><span class="linenos">68</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="artifacts-69"><a href="#artifacts-69"><span class="linenos">69</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">\..*&quot;</span><span class="p">)</span>
-</span><span id="artifacts-70"><a href="#artifacts-70"><span class="linenos">70</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-</span><span id="artifacts-71"><a href="#artifacts-71"><span class="linenos">71</span></a>                <span class="k">yield</span> <span class="n">v</span>
-</span><span id="artifacts-72"><a href="#artifacts-72"><span class="linenos">72</span></a>        <span class="k">try</span><span class="p">:</span>
-</span><span id="artifacts-73"><a href="#artifacts-73"><span class="linenos">73</span></a>            <span class="k">yield</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;__numpy__&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-</span><span id="artifacts-74"><a href="#artifacts-74"><span class="linenos">74</span></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-</span><span id="artifacts-75"><a href="#artifacts-75"><span class="linenos">75</span></a>            <span class="k">pass</span>
-</span><span id="artifacts-76"><a href="#artifacts-76"><span class="linenos">76</span></a>        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-</span><span id="artifacts-77"><a href="#artifacts-77"><span class="linenos">77</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-</span><span id="artifacts-78"><a href="#artifacts-78"><span class="linenos">78</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span><span id="artifacts-54"><a href="#artifacts-54"><span class="linenos">54</span></a><span class="sd">    - the value at `&quot;id&quot;` is a UUID4 or has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e.</span>
+</span><span id="artifacts-55"><a href="#artifacts-55"><span class="linenos">55</span></a><span class="sd">      matches the regexp</span>
+</span><span id="artifacts-56"><a href="#artifacts-56"><span class="linenos">56</span></a>
+</span><span id="artifacts-57"><a href="#artifacts-57"><span class="linenos">57</span></a><span class="sd">        ```re</span>
+</span><span id="artifacts-58"><a href="#artifacts-58"><span class="linenos">58</span></a><span class="sd">        ^[0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}(\\..+)?$</span>
+</span><span id="artifacts-59"><a href="#artifacts-59"><span class="linenos">59</span></a><span class="sd">        ```</span>
+</span><span id="artifacts-60"><a href="#artifacts-60"><span class="linenos">60</span></a>
+</span><span id="artifacts-61"><a href="#artifacts-61"><span class="linenos">61</span></a><span class="sd">      in which case that value is `yield`ed.</span>
+</span><span id="artifacts-62"><a href="#artifacts-62"><span class="linenos">62</span></a>
+</span><span id="artifacts-63"><a href="#artifacts-63"><span class="linenos">63</span></a><span class="sd">    TODO:</span>
+</span><span id="artifacts-64"><a href="#artifacts-64"><span class="linenos">64</span></a><span class="sd">        Implement a smarter way</span>
+</span><span id="artifacts-65"><a href="#artifacts-65"><span class="linenos">65</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="artifacts-66"><a href="#artifacts-66"><span class="linenos">66</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="artifacts-67"><a href="#artifacts-67"><span class="linenos">67</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="artifacts-68"><a href="#artifacts-68"><span class="linenos">68</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
+</span><span id="artifacts-69"><a href="#artifacts-69"><span class="linenos">69</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="artifacts-70"><a href="#artifacts-70"><span class="linenos">70</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+</span><span id="artifacts-71"><a href="#artifacts-71"><span class="linenos">71</span></a>                <span class="sa">r</span><span class="s2">&quot;^[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">(\..+)?$&quot;</span>
+</span><span id="artifacts-72"><a href="#artifacts-72"><span class="linenos">72</span></a>            <span class="p">)</span>
+</span><span id="artifacts-73"><a href="#artifacts-73"><span class="linenos">73</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="artifacts-74"><a href="#artifacts-74"><span class="linenos">74</span></a>                <span class="k">yield</span> <span class="n">v</span>
+</span><span id="artifacts-75"><a href="#artifacts-75"><span class="linenos">75</span></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="artifacts-76"><a href="#artifacts-76"><span class="linenos">76</span></a>            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="artifacts-77"><a href="#artifacts-77"><span class="linenos">77</span></a>                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="artifacts-78"><a href="#artifacts-78"><span class="linenos">78</span></a>                    <span class="k">yield</span> <span class="n">a</span>
 </span><span id="artifacts-79"><a href="#artifacts-79"><span class="linenos">79</span></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
 </span><span id="artifacts-80"><a href="#artifacts-80"><span class="linenos">80</span></a>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
 </span><span id="artifacts-81"><a href="#artifacts-81"><span class="linenos">81</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -415,9 +415,10 @@ dicts that:</p>
 
 <ul>
 <li><p>have a <code>"__version__"</code>, <code>"__type__"</code>, and a <code>"id"</code> field;</p></li>
-<li><p>the value at <code>"id"</code> has the form <code>&lt;uuid4&gt;.&lt;...&gt;</code>, i.e. matches the regexp</p>
+<li><p>the value at <code>"id"</code> is a UUID4 or has the form <code>&lt;uuid4&gt;.&lt;...&gt;</code>, i.e.
+matches the regexp</p>
 
-<pre><code>[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}\..*
+<pre><code>^[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}(\..+)?$
 </code></pre>
 
 <p>in which case that value is <code>yield</code>ed.</p></li>
