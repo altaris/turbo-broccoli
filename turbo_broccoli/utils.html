@@ -55,6 +55,9 @@
 
             </li>
             <li>
+                    <a class="function" href="#artifacts">artifacts</a>
+            </li>
+            <li>
                     <a class="function" href="#raise_if_nodecode">raise_if_nodecode</a>
             </li>
             <li>
@@ -83,68 +86,112 @@
 
                         <label class="view-source-button" for="mod-utils-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;Various utilities and internal methods&quot;&quot;&quot;</span>
-</span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
-</span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.environment</span> <span class="kn">import</span> <span class="n">is_nodecode</span>
-</span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="k">try</span><span class="p">:</span>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>    <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="kn">import</span> <span class="nn">logging</span>  <span class="c1"># type: ignore</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">False</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="k">class</span> <span class="nc">DeserializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during deserialization&quot;&quot;&quot;</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="k">class</span> <span class="nc">SerializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during serialization&quot;&quot;&quot;</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="k">class</span> <span class="nc">TypeNotSupported</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a><span class="sd">    `to_json` will raise that if they are fed types they cannot manage. This is</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="sd">    fine, the dispatch in</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="sd">    and moves on to the next registered `to_json` method.</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a><span class="k">class</span> <span class="nc">TypeIsNodecode</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a><span class="sd">    `from_json` methods raise this if the type shouldn&#39;t be decoded. See</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="sd">    `turbo_broccoli.environment.set_nodecode`. This is fine,</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these</span>
-</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">    and returns `None`.</span>
-</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a>
-</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>
-</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a><span class="k">def</span> <span class="nf">raise_if_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a><span class="sd">    If the (prefixed) type name is set to nodecode</span>
-</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a><span class="sd">    (`turbo_broccoli.environment.set_nodecode`), raises a</span>
-</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a><span class="sd">    `turbo_broccoli.utils.TypeIsNodecode` exception.</span>
-</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>    <span class="k">if</span> <span class="n">is_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>        <span class="k">raise</span> <span class="n">TypeIsNodecode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>
-</span><span id="L-49"><a href="#L-49"><span class="linenos">49</span></a>
-</span><span id="L-50"><a href="#L-50"><span class="linenos">50</span></a><span class="k">def</span> <span class="nf">warn_about_safetensors</span><span class="p">():</span>
-</span><span id="L-51"><a href="#L-51"><span class="linenos">51</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a><span class="sd">    If safetensors is not installed, logs a warning message. This method may be</span>
-</span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a><span class="sd">    called multiple times, but the message will only be logged once.</span>
-</span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="k">global</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span>  <span class="c1"># pylint: disable=global-statement</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span><span class="p">:</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a>            <span class="s2">&quot;Serialization of numpy arrays and Tensorflow tensors without &quot;</span>
-</span><span id="L-59"><a href="#L-59"><span class="linenos">59</span></a>            <span class="s2">&quot;safetensors is deprecated. Consider installing safetensors using &quot;</span>
-</span><span id="L-60"><a href="#L-60"><span class="linenos">60</span></a>            <span class="s2">&quot;&#39;pip install safetensors&#39;.&quot;</span>
-</span><span id="L-61"><a href="#L-61"><span class="linenos">61</span></a>        <span class="p">)</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos">62</span></a>        <span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">True</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos">  1</span></a><span class="sd">&quot;&quot;&quot;Various utilities and internal methods&quot;&quot;&quot;</span>
+</span><span id="L-2"><a href="#L-2"><span class="linenos">  2</span></a>
+</span><span id="L-3"><a href="#L-3"><span class="linenos">  3</span></a><span class="kn">import</span> <span class="nn">re</span>
+</span><span id="L-4"><a href="#L-4"><span class="linenos">  4</span></a><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generator</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos">  5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos">  6</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.environment</span> <span class="kn">import</span> <span class="n">is_nodecode</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos">  7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos">  8</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos">  9</span></a>    <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span> <span class="k">as</span> <span class="n">logging</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos"> 10</span></a><span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos"> 11</span></a>    <span class="kn">import</span> <span class="nn">logging</span>  <span class="c1"># type: ignore</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos"> 12</span></a>
+</span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a><span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a>
+</span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="k">class</span> <span class="nc">DeserializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during deserialization&quot;&quot;&quot;</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
+</span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a>
+</span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="k">class</span> <span class="nc">SerializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during serialization&quot;&quot;&quot;</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a>
+</span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="k">class</span> <span class="nc">TypeNotSupported</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">    `to_json` will raise that if they are fed types they cannot manage. This is</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos"> 27</span></a><span class="sd">    fine, the dispatch in</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos"> 28</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos"> 29</span></a><span class="sd">    and moves on to the next registered `to_json` method.</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos"> 30</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos"> 31</span></a>
+</span><span id="L-32"><a href="#L-32"><span class="linenos"> 32</span></a>
+</span><span id="L-33"><a href="#L-33"><span class="linenos"> 33</span></a><span class="k">class</span> <span class="nc">TypeIsNodecode</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos"> 34</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos"> 35</span></a><span class="sd">    `from_json` methods raise this if the type shouldn&#39;t be decoded. See</span>
+</span><span id="L-36"><a href="#L-36"><span class="linenos"> 36</span></a><span class="sd">    `turbo_broccoli.environment.set_nodecode`. This is fine,</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos"> 37</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos"> 38</span></a><span class="sd">    and returns `None`.</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos"> 39</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos"> 40</span></a>
+</span><span id="L-41"><a href="#L-41"><span class="linenos"> 41</span></a>
+</span><span id="L-42"><a href="#L-42"><span class="linenos"> 42</span></a><span class="k">def</span> <span class="nf">artifacts</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos"> 43</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos"> 44</span></a><span class="sd">    Lists all the artifacts names referenced by this JSON document. Obviously,</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos"> 45</span></a><span class="sd">    it should have been deserialized using vanilla `json.load` or `json.loads`,</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos"> 46</span></a><span class="sd">    or using turbo broccoli with adequate nodecodes.</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos"> 47</span></a>
+</span><span id="L-48"><a href="#L-48"><span class="linenos"> 48</span></a><span class="sd">    In reality, this method recursively traverses the document and searches for</span>
+</span><span id="L-49"><a href="#L-49"><span class="linenos"> 49</span></a><span class="sd">    dicts that:</span>
+</span><span id="L-50"><a href="#L-50"><span class="linenos"> 50</span></a>
+</span><span id="L-51"><a href="#L-51"><span class="linenos"> 51</span></a><span class="sd">    - have a `&quot;__version__&quot;`, `&quot;__type__&quot;`, and a `&quot;id&quot;` field;</span>
+</span><span id="L-52"><a href="#L-52"><span class="linenos"> 52</span></a>
+</span><span id="L-53"><a href="#L-53"><span class="linenos"> 53</span></a><span class="sd">    - the value at `&quot;id&quot;` has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e. matches the regexp</span>
+</span><span id="L-54"><a href="#L-54"><span class="linenos"> 54</span></a>
+</span><span id="L-55"><a href="#L-55"><span class="linenos"> 55</span></a><span class="sd">        ```re</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos"> 56</span></a><span class="sd">        [0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}\\..*</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos"> 57</span></a><span class="sd">        ```</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>
+</span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a><span class="sd">      in which case that value is `yield`ed.</span>
+</span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="sd">    TODO:</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">        Implement a smarter way</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">\..*&quot;</span><span class="p">)</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>                <span class="k">yield</span> <span class="n">v</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>            <span class="k">yield</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;__numpy__&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>            <span class="k">pass</span>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="k">def</span> <span class="nf">raise_if_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">    If the (prefixed) type name is set to nodecode</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">    (`turbo_broccoli.environment.set_nodecode`), raises a</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">    `turbo_broccoli.utils.TypeIsNodecode` exception.</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">if</span> <span class="n">is_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a>        <span class="k">raise</span> <span class="n">TypeIsNodecode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="k">def</span> <span class="nf">warn_about_safetensors</span><span class="p">():</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    If safetensors is not installed, logs a warning message. This method may be</span>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">    called multiple times, but the message will only be logged once.</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="k">global</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span>  <span class="c1"># pylint: disable=global-statement</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span><span class="p">:</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>            <span class="s2">&quot;Serialization of numpy arrays and Tensorflow tensors without &quot;</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="s2">&quot;safetensors is deprecated. Consider installing safetensors using &quot;</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>            <span class="s2">&quot;&#39;pip install safetensors&#39;.&quot;</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="p">)</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>        <span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">True</span>
 </span></pre></div>
 
 
@@ -160,8 +207,8 @@
 
     </div>
     <a class="headerlink" href="#DeserializationError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DeserializationError-15"><a href="#DeserializationError-15"><span class="linenos">15</span></a><span class="k">class</span> <span class="nc">DeserializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="DeserializationError-16"><a href="#DeserializationError-16"><span class="linenos">16</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during deserialization&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DeserializationError-17"><a href="#DeserializationError-17"><span class="linenos">17</span></a><span class="k">class</span> <span class="nc">DeserializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="DeserializationError-18"><a href="#DeserializationError-18"><span class="linenos">18</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during deserialization&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -195,8 +242,8 @@
 
     </div>
     <a class="headerlink" href="#SerializationError"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="SerializationError-19"><a href="#SerializationError-19"><span class="linenos">19</span></a><span class="k">class</span> <span class="nc">SerializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="SerializationError-20"><a href="#SerializationError-20"><span class="linenos">20</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during serialization&quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="SerializationError-21"><a href="#SerializationError-21"><span class="linenos">21</span></a><span class="k">class</span> <span class="nc">SerializationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="SerializationError-22"><a href="#SerializationError-22"><span class="linenos">22</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised whenever something went wrong during serialization&quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -230,13 +277,13 @@
 
     </div>
     <a class="headerlink" href="#TypeNotSupported"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TypeNotSupported-23"><a href="#TypeNotSupported-23"><span class="linenos">23</span></a><span class="k">class</span> <span class="nc">TypeNotSupported</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="TypeNotSupported-24"><a href="#TypeNotSupported-24"><span class="linenos">24</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="TypeNotSupported-25"><a href="#TypeNotSupported-25"><span class="linenos">25</span></a><span class="sd">    `to_json` will raise that if they are fed types they cannot manage. This is</span>
-</span><span id="TypeNotSupported-26"><a href="#TypeNotSupported-26"><span class="linenos">26</span></a><span class="sd">    fine, the dispatch in</span>
-</span><span id="TypeNotSupported-27"><a href="#TypeNotSupported-27"><span class="linenos">27</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these</span>
-</span><span id="TypeNotSupported-28"><a href="#TypeNotSupported-28"><span class="linenos">28</span></a><span class="sd">    and moves on to the next registered `to_json` method.</span>
-</span><span id="TypeNotSupported-29"><a href="#TypeNotSupported-29"><span class="linenos">29</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TypeNotSupported-25"><a href="#TypeNotSupported-25"><span class="linenos">25</span></a><span class="k">class</span> <span class="nc">TypeNotSupported</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="TypeNotSupported-26"><a href="#TypeNotSupported-26"><span class="linenos">26</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TypeNotSupported-27"><a href="#TypeNotSupported-27"><span class="linenos">27</span></a><span class="sd">    `to_json` will raise that if they are fed types they cannot manage. This is</span>
+</span><span id="TypeNotSupported-28"><a href="#TypeNotSupported-28"><span class="linenos">28</span></a><span class="sd">    fine, the dispatch in</span>
+</span><span id="TypeNotSupported-29"><a href="#TypeNotSupported-29"><span class="linenos">29</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these</span>
+</span><span id="TypeNotSupported-30"><a href="#TypeNotSupported-30"><span class="linenos">30</span></a><span class="sd">    and moves on to the next registered `to_json` method.</span>
+</span><span id="TypeNotSupported-31"><a href="#TypeNotSupported-31"><span class="linenos">31</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -273,13 +320,13 @@ and moves on to the next registered <code>to_json</code> method.</p>
 
     </div>
     <a class="headerlink" href="#TypeIsNodecode"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="TypeIsNodecode-32"><a href="#TypeIsNodecode-32"><span class="linenos">32</span></a><span class="k">class</span> <span class="nc">TypeIsNodecode</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span id="TypeIsNodecode-33"><a href="#TypeIsNodecode-33"><span class="linenos">33</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="TypeIsNodecode-34"><a href="#TypeIsNodecode-34"><span class="linenos">34</span></a><span class="sd">    `from_json` methods raise this if the type shouldn&#39;t be decoded. See</span>
-</span><span id="TypeIsNodecode-35"><a href="#TypeIsNodecode-35"><span class="linenos">35</span></a><span class="sd">    `turbo_broccoli.environment.set_nodecode`. This is fine,</span>
-</span><span id="TypeIsNodecode-36"><a href="#TypeIsNodecode-36"><span class="linenos">36</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these</span>
-</span><span id="TypeIsNodecode-37"><a href="#TypeIsNodecode-37"><span class="linenos">37</span></a><span class="sd">    and returns `None`.</span>
-</span><span id="TypeIsNodecode-38"><a href="#TypeIsNodecode-38"><span class="linenos">38</span></a><span class="sd">    &quot;&quot;&quot;</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="TypeIsNodecode-34"><a href="#TypeIsNodecode-34"><span class="linenos">34</span></a><span class="k">class</span> <span class="nc">TypeIsNodecode</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span id="TypeIsNodecode-35"><a href="#TypeIsNodecode-35"><span class="linenos">35</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="TypeIsNodecode-36"><a href="#TypeIsNodecode-36"><span class="linenos">36</span></a><span class="sd">    `from_json` methods raise this if the type shouldn&#39;t be decoded. See</span>
+</span><span id="TypeIsNodecode-37"><a href="#TypeIsNodecode-37"><span class="linenos">37</span></a><span class="sd">    `turbo_broccoli.environment.set_nodecode`. This is fine,</span>
+</span><span id="TypeIsNodecode-38"><a href="#TypeIsNodecode-38"><span class="linenos">38</span></a><span class="sd">    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these</span>
+</span><span id="TypeIsNodecode-39"><a href="#TypeIsNodecode-39"><span class="linenos">39</span></a><span class="sd">    and returns `None`.</span>
+</span><span id="TypeIsNodecode-40"><a href="#TypeIsNodecode-40"><span class="linenos">40</span></a><span class="sd">    &quot;&quot;&quot;</span>
 </span></pre></div>
 
 
@@ -305,6 +352,83 @@ and returns <code>None</code>.</p>
                                 </dl>
                             </div>
                 </section>
+                <section id="artifacts">
+                            <input id="artifacts-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">artifacts</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">doc</span><span class="p">:</span> <span class="n">Any</span></span><span class="return-annotation">) -> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">,</span> <span class="n">NoneType</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="artifacts-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#artifacts"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="artifacts-43"><a href="#artifacts-43"><span class="linenos">43</span></a><span class="k">def</span> <span class="nf">artifacts</span><span class="p">(</span><span class="n">doc</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+</span><span id="artifacts-44"><a href="#artifacts-44"><span class="linenos">44</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="artifacts-45"><a href="#artifacts-45"><span class="linenos">45</span></a><span class="sd">    Lists all the artifacts names referenced by this JSON document. Obviously,</span>
+</span><span id="artifacts-46"><a href="#artifacts-46"><span class="linenos">46</span></a><span class="sd">    it should have been deserialized using vanilla `json.load` or `json.loads`,</span>
+</span><span id="artifacts-47"><a href="#artifacts-47"><span class="linenos">47</span></a><span class="sd">    or using turbo broccoli with adequate nodecodes.</span>
+</span><span id="artifacts-48"><a href="#artifacts-48"><span class="linenos">48</span></a>
+</span><span id="artifacts-49"><a href="#artifacts-49"><span class="linenos">49</span></a><span class="sd">    In reality, this method recursively traverses the document and searches for</span>
+</span><span id="artifacts-50"><a href="#artifacts-50"><span class="linenos">50</span></a><span class="sd">    dicts that:</span>
+</span><span id="artifacts-51"><a href="#artifacts-51"><span class="linenos">51</span></a>
+</span><span id="artifacts-52"><a href="#artifacts-52"><span class="linenos">52</span></a><span class="sd">    - have a `&quot;__version__&quot;`, `&quot;__type__&quot;`, and a `&quot;id&quot;` field;</span>
+</span><span id="artifacts-53"><a href="#artifacts-53"><span class="linenos">53</span></a>
+</span><span id="artifacts-54"><a href="#artifacts-54"><span class="linenos">54</span></a><span class="sd">    - the value at `&quot;id&quot;` has the form `&lt;uuid4&gt;.&lt;...&gt;`, i.e. matches the regexp</span>
+</span><span id="artifacts-55"><a href="#artifacts-55"><span class="linenos">55</span></a>
+</span><span id="artifacts-56"><a href="#artifacts-56"><span class="linenos">56</span></a><span class="sd">        ```re</span>
+</span><span id="artifacts-57"><a href="#artifacts-57"><span class="linenos">57</span></a><span class="sd">        [0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}\\..*</span>
+</span><span id="artifacts-58"><a href="#artifacts-58"><span class="linenos">58</span></a><span class="sd">        ```</span>
+</span><span id="artifacts-59"><a href="#artifacts-59"><span class="linenos">59</span></a>
+</span><span id="artifacts-60"><a href="#artifacts-60"><span class="linenos">60</span></a><span class="sd">      in which case that value is `yield`ed.</span>
+</span><span id="artifacts-61"><a href="#artifacts-61"><span class="linenos">61</span></a>
+</span><span id="artifacts-62"><a href="#artifacts-62"><span class="linenos">62</span></a><span class="sd">    TODO:</span>
+</span><span id="artifacts-63"><a href="#artifacts-63"><span class="linenos">63</span></a><span class="sd">        Implement a smarter way</span>
+</span><span id="artifacts-64"><a href="#artifacts-64"><span class="linenos">64</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="artifacts-65"><a href="#artifacts-65"><span class="linenos">65</span></a>    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+</span><span id="artifacts-66"><a href="#artifacts-66"><span class="linenos">66</span></a>        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__version__&quot;</span><span class="p">,</span> <span class="s2">&quot;__type__&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="artifacts-67"><a href="#artifacts-67"><span class="linenos">67</span></a>        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">,</span> <span class="n">fields</span><span class="p">)):</span>
+</span><span id="artifacts-68"><a href="#artifacts-68"><span class="linenos">68</span></a>            <span class="n">v</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="artifacts-69"><a href="#artifacts-69"><span class="linenos">69</span></a>            <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[0-9a-f]</span><span class="si">{8}</span><span class="s2">(\-[0-9a-f]</span><span class="si">{4}</span><span class="s2">)</span><span class="si">{3}</span><span class="s2">\-[0-9a-f]</span><span class="si">{12}</span><span class="s2">\..*&quot;</span><span class="p">)</span>
+</span><span id="artifacts-70"><a href="#artifacts-70"><span class="linenos">70</span></a>            <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="artifacts-71"><a href="#artifacts-71"><span class="linenos">71</span></a>                <span class="k">yield</span> <span class="n">v</span>
+</span><span id="artifacts-72"><a href="#artifacts-72"><span class="linenos">72</span></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="artifacts-73"><a href="#artifacts-73"><span class="linenos">73</span></a>            <span class="k">yield</span> <span class="n">doc</span><span class="p">[</span><span class="s2">&quot;__numpy__&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+</span><span id="artifacts-74"><a href="#artifacts-74"><span class="linenos">74</span></a>        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+</span><span id="artifacts-75"><a href="#artifacts-75"><span class="linenos">75</span></a>            <span class="k">pass</span>
+</span><span id="artifacts-76"><a href="#artifacts-76"><span class="linenos">76</span></a>        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">doc</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+</span><span id="artifacts-77"><a href="#artifacts-77"><span class="linenos">77</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+</span><span id="artifacts-78"><a href="#artifacts-78"><span class="linenos">78</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span><span id="artifacts-79"><a href="#artifacts-79"><span class="linenos">79</span></a>    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+</span><span id="artifacts-80"><a href="#artifacts-80"><span class="linenos">80</span></a>        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+</span><span id="artifacts-81"><a href="#artifacts-81"><span class="linenos">81</span></a>            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artifacts</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+</span><span id="artifacts-82"><a href="#artifacts-82"><span class="linenos">82</span></a>                <span class="k">yield</span> <span class="n">a</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Lists all the artifacts names referenced by this JSON document. Obviously,
+it should have been deserialized using vanilla <code>json.load</code> or <code>json.loads</code>,
+or using turbo broccoli with adequate nodecodes.</p>
+
+<p>In reality, this method recursively traverses the document and searches for
+dicts that:</p>
+
+<ul>
+<li><p>have a <code>"__version__"</code>, <code>"__type__"</code>, and a <code>"id"</code> field;</p></li>
+<li><p>the value at <code>"id"</code> has the form <code>&lt;uuid4&gt;.&lt;...&gt;</code>, i.e. matches the regexp</p>
+
+<pre><code>[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}\..*
+</code></pre>
+
+<p>in which case that value is <code>yield</code>ed.</p></li>
+</ul>
+
+<p>TODO:
+    Implement a smarter way</p>
+</div>
+
+
+                </section>
                 <section id="raise_if_nodecode">
                             <input id="raise_if_nodecode-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -316,14 +440,14 @@ and returns <code>None</code>.</p>
 
     </div>
     <a class="headerlink" href="#raise_if_nodecode"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="raise_if_nodecode-41"><a href="#raise_if_nodecode-41"><span class="linenos">41</span></a><span class="k">def</span> <span class="nf">raise_if_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="raise_if_nodecode-42"><a href="#raise_if_nodecode-42"><span class="linenos">42</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="raise_if_nodecode-43"><a href="#raise_if_nodecode-43"><span class="linenos">43</span></a><span class="sd">    If the (prefixed) type name is set to nodecode</span>
-</span><span id="raise_if_nodecode-44"><a href="#raise_if_nodecode-44"><span class="linenos">44</span></a><span class="sd">    (`turbo_broccoli.environment.set_nodecode`), raises a</span>
-</span><span id="raise_if_nodecode-45"><a href="#raise_if_nodecode-45"><span class="linenos">45</span></a><span class="sd">    `turbo_broccoli.utils.TypeIsNodecode` exception.</span>
-</span><span id="raise_if_nodecode-46"><a href="#raise_if_nodecode-46"><span class="linenos">46</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="raise_if_nodecode-47"><a href="#raise_if_nodecode-47"><span class="linenos">47</span></a>    <span class="k">if</span> <span class="n">is_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-</span><span id="raise_if_nodecode-48"><a href="#raise_if_nodecode-48"><span class="linenos">48</span></a>        <span class="k">raise</span> <span class="n">TypeIsNodecode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="raise_if_nodecode-85"><a href="#raise_if_nodecode-85"><span class="linenos">85</span></a><span class="k">def</span> <span class="nf">raise_if_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="raise_if_nodecode-86"><a href="#raise_if_nodecode-86"><span class="linenos">86</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="raise_if_nodecode-87"><a href="#raise_if_nodecode-87"><span class="linenos">87</span></a><span class="sd">    If the (prefixed) type name is set to nodecode</span>
+</span><span id="raise_if_nodecode-88"><a href="#raise_if_nodecode-88"><span class="linenos">88</span></a><span class="sd">    (`turbo_broccoli.environment.set_nodecode`), raises a</span>
+</span><span id="raise_if_nodecode-89"><a href="#raise_if_nodecode-89"><span class="linenos">89</span></a><span class="sd">    `turbo_broccoli.utils.TypeIsNodecode` exception.</span>
+</span><span id="raise_if_nodecode-90"><a href="#raise_if_nodecode-90"><span class="linenos">90</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="raise_if_nodecode-91"><a href="#raise_if_nodecode-91"><span class="linenos">91</span></a>    <span class="k">if</span> <span class="n">is_nodecode</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+</span><span id="raise_if_nodecode-92"><a href="#raise_if_nodecode-92"><span class="linenos">92</span></a>        <span class="k">raise</span> <span class="n">TypeIsNodecode</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -345,19 +469,19 @@ and returns <code>None</code>.</p>
 
     </div>
     <a class="headerlink" href="#warn_about_safetensors"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="warn_about_safetensors-51"><a href="#warn_about_safetensors-51"><span class="linenos">51</span></a><span class="k">def</span> <span class="nf">warn_about_safetensors</span><span class="p">():</span>
-</span><span id="warn_about_safetensors-52"><a href="#warn_about_safetensors-52"><span class="linenos">52</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="warn_about_safetensors-53"><a href="#warn_about_safetensors-53"><span class="linenos">53</span></a><span class="sd">    If safetensors is not installed, logs a warning message. This method may be</span>
-</span><span id="warn_about_safetensors-54"><a href="#warn_about_safetensors-54"><span class="linenos">54</span></a><span class="sd">    called multiple times, but the message will only be logged once.</span>
-</span><span id="warn_about_safetensors-55"><a href="#warn_about_safetensors-55"><span class="linenos">55</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="warn_about_safetensors-56"><a href="#warn_about_safetensors-56"><span class="linenos">56</span></a>    <span class="k">global</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span>  <span class="c1"># pylint: disable=global-statement</span>
-</span><span id="warn_about_safetensors-57"><a href="#warn_about_safetensors-57"><span class="linenos">57</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span><span class="p">:</span>
-</span><span id="warn_about_safetensors-58"><a href="#warn_about_safetensors-58"><span class="linenos">58</span></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-</span><span id="warn_about_safetensors-59"><a href="#warn_about_safetensors-59"><span class="linenos">59</span></a>            <span class="s2">&quot;Serialization of numpy arrays and Tensorflow tensors without &quot;</span>
-</span><span id="warn_about_safetensors-60"><a href="#warn_about_safetensors-60"><span class="linenos">60</span></a>            <span class="s2">&quot;safetensors is deprecated. Consider installing safetensors using &quot;</span>
-</span><span id="warn_about_safetensors-61"><a href="#warn_about_safetensors-61"><span class="linenos">61</span></a>            <span class="s2">&quot;&#39;pip install safetensors&#39;.&quot;</span>
-</span><span id="warn_about_safetensors-62"><a href="#warn_about_safetensors-62"><span class="linenos">62</span></a>        <span class="p">)</span>
-</span><span id="warn_about_safetensors-63"><a href="#warn_about_safetensors-63"><span class="linenos">63</span></a>        <span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">True</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="warn_about_safetensors-95"><a href="#warn_about_safetensors-95"><span class="linenos"> 95</span></a><span class="k">def</span> <span class="nf">warn_about_safetensors</span><span class="p">():</span>
+</span><span id="warn_about_safetensors-96"><a href="#warn_about_safetensors-96"><span class="linenos"> 96</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="warn_about_safetensors-97"><a href="#warn_about_safetensors-97"><span class="linenos"> 97</span></a><span class="sd">    If safetensors is not installed, logs a warning message. This method may be</span>
+</span><span id="warn_about_safetensors-98"><a href="#warn_about_safetensors-98"><span class="linenos"> 98</span></a><span class="sd">    called multiple times, but the message will only be logged once.</span>
+</span><span id="warn_about_safetensors-99"><a href="#warn_about_safetensors-99"><span class="linenos"> 99</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="warn_about_safetensors-100"><a href="#warn_about_safetensors-100"><span class="linenos">100</span></a>    <span class="k">global</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span>  <span class="c1"># pylint: disable=global-statement</span>
+</span><span id="warn_about_safetensors-101"><a href="#warn_about_safetensors-101"><span class="linenos">101</span></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">_WARNED_ABOUT_SAFETENSORS</span><span class="p">:</span>
+</span><span id="warn_about_safetensors-102"><a href="#warn_about_safetensors-102"><span class="linenos">102</span></a>        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+</span><span id="warn_about_safetensors-103"><a href="#warn_about_safetensors-103"><span class="linenos">103</span></a>            <span class="s2">&quot;Serialization of numpy arrays and Tensorflow tensors without &quot;</span>
+</span><span id="warn_about_safetensors-104"><a href="#warn_about_safetensors-104"><span class="linenos">104</span></a>            <span class="s2">&quot;safetensors is deprecated. Consider installing safetensors using &quot;</span>
+</span><span id="warn_about_safetensors-105"><a href="#warn_about_safetensors-105"><span class="linenos">105</span></a>            <span class="s2">&quot;&#39;pip install safetensors&#39;.&quot;</span>
+</span><span id="warn_about_safetensors-106"><a href="#warn_about_safetensors-106"><span class="linenos">106</span></a>        <span class="p">)</span>
+</span><span id="warn_about_safetensors-107"><a href="#warn_about_safetensors-107"><span class="linenos">107</span></a>        <span class="n">_WARNED_ABOUT_SAFETENSORS</span> <span class="o">=</span> <span class="kc">True</span>
 </span></pre></div>
 
 
