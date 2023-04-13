@@ -50,10 +50,11 @@ def artifacts(doc: Any) -> Generator[str, None, None]:
 
     - have a `"__version__"`, `"__type__"`, and a `"id"` field;
 
-    - the value at `"id"` has the form `<uuid4>.<...>`, i.e. matches the regexp
+    - the value at `"id"` is a UUID4 or has the form `<uuid4>.<...>`, i.e.
+      matches the regexp
 
         ```re
-        [0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}\\..*
+        ^[0-9a-f]{8}(\\-[0-9a-f]{4}){3}\\-[0-9a-f]{12}(\\..+)?$
         ```
 
       in which case that value is `yield`ed.
@@ -65,16 +66,15 @@ def artifacts(doc: Any) -> Generator[str, None, None]:
         fields = ["__version__", "__type__", "id"]
         if all(map(lambda f: f in doc, fields)):
             v = doc["id"]
-            r = re.compile(r"[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}\..*")
+            r = re.compile(
+                r"^[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}(\..+)?$"
+            )
             if r.match(v):
                 yield v
-        try:
-            yield doc["__numpy__"]["id"]
-        except KeyError:
-            pass
-        for v in doc.values():
-            for a in artifacts(v):
-                yield a
+        else:
+            for v in doc.values():
+                for a in artifacts(v):
+                    yield a
     elif isinstance(doc, list):
         for x in doc:
             for a in artifacts(x):
