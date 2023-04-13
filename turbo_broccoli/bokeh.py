@@ -114,25 +114,25 @@ def to_json(obj: Any) -> dict:
 
     - `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
 
-        {
-            "__bokeh__": {
-                "__type__": "generic",
-                "__version__": 1,
-                "content": {...},
-                "buffers": [...],
+            {
+                "__bokeh__": {
+                    "__type__": "generic",
+                    "__version__": 1,
+                    "content": {...},
+                    "buffers": [...],
+                }
             }
-        }
 
     - `bokeh.core.serialization.Buffer`: (for internal use)
 
-        {
-            "__bokeh__": {
-                "__type__": "buffer",
-                "__version__": 1,
-                "id": <str>,
-                "data": <bytes>,
+            {
+                "__bokeh__": {
+                    "__type__": "buffer",
+                    "__version__": 1,
+                    "id": <str>,
+                    "data": <bytes>,
+                }
             }
-        }
 
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [

@@ -117,13 +117,12 @@ def to_json(obj: Secret) -> dict:
     Encrypts a JSON **string representation** of a secret document into a
     new JSON document with the following structure:
 
-            {
-                "__secret__": {
-                    "__version__": 1,
-                    "data": <encrypted bytes>,
-                }
+        {
+            "__secret__": {
+                "__version__": 1,
+                "data": <encrypted bytes>,
             }
-
+        }
     """
     if not isinstance(obj, Secret):
         raise TypeNotSupported()

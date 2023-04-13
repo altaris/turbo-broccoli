@@ -82,17 +82,18 @@ def to_json(obj: Any) -> dict:
 
     - [`csr_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix)
 
-        {
-            "__scipy__": {
-                "__type__": "csr_matrix",
-                "__version__": 1,
-                "data": ...,
-                "dtype": ...,
-                "indices": ...,
-                "indptr": ...,
-                "shape": ...,
+            {
+                "__scipy__": {
+                    "__type__": "csr_matrix",
+                    "__version__": 1,
+                    "data": ...,
+                    "dtype": ...,
+                    "indices": ...,
+                    "indptr": ...,
+                    "shape": ...,
+                }
             }
-        }
+
     """
     ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
         (csr_matrix, _csr_matrix_to_json),

@@ -8,7 +8,7 @@ style](https://img.shields.io/badge/style-black-black)](https://pypi.org/project
 [![Documentation](https://badgen.net/badge/documentation/here/green)](https://https://altaris.github.io/turbo-broccoli/turbo_broccoli.html)
 
 JSON (de)serialization extensions, originally aimed at `numpy` and `tensorflow`
-objects.
+objects, but now supporting a wide range of objects.
 
 # Installation
 
@@ -66,7 +66,7 @@ tb.from_json(json_string)
 
 - [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json)
 
-- `dict` with non `str` keys
+- [`dict` with non `str` keys](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json)
 
 - [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json):
   `collections.deque`, `collections.namedtuple`
@@ -399,7 +399,9 @@ by modifying `os.environ`. Rather, use the methods of
 
   - `bytes`,
 
-  - `dict`,
+  - `dict` (this will only disable [Turbo Broccoli's custom
+    serialization](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json)
+    of `dict`s with non `str` keys),
 
   - `collections`, `collections.deque`, `collections.namedtuple`,
 
