@@ -143,25 +143,26 @@
 </span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>
 </span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="sd">    - [`csr_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix)</span>
 </span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">        {</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">            &quot;__scipy__&quot;: {</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">                &quot;__type__&quot;: &quot;csr_matrix&quot;,</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">                &quot;__version__&quot;: 1,</span>
-</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">                &quot;data&quot;: ...,</span>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">                &quot;dtype&quot;: ...,</span>
-</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">                &quot;indices&quot;: ...,</span>
-</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">                &quot;indptr&quot;: ...,</span>
-</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">                &quot;shape&quot;: ...,</span>
-</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">            }</span>
-</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">        }</span>
-</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a>    <span class="n">ENCODERS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>        <span class="p">(</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">_csr_matrix_to_json</span><span class="p">),</span>
-</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>    <span class="p">]</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ENCODERS</span><span class="p">:</span>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__scipy__&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>    <span class="k">raise</span> <span class="n">TypeNotSupported</span><span class="p">()</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="sd">            {</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="sd">                &quot;__scipy__&quot;: {</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">                    &quot;__type__&quot;: &quot;csr_matrix&quot;,</span>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="sd">                    &quot;__version__&quot;: 1,</span>
+</span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a><span class="sd">                    &quot;data&quot;: ...,</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a><span class="sd">                    &quot;dtype&quot;: ...,</span>
+</span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="sd">                    &quot;indices&quot;: ...,</span>
+</span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a><span class="sd">                    &quot;indptr&quot;: ...,</span>
+</span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">                    &quot;shape&quot;: ...,</span>
+</span><span id="L-94"><a href="#L-94"><span class="linenos"> 94</span></a><span class="sd">                }</span>
+</span><span id="L-95"><a href="#L-95"><span class="linenos"> 95</span></a><span class="sd">            }</span>
+</span><span id="L-96"><a href="#L-96"><span class="linenos"> 96</span></a>
+</span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a>    <span class="n">ENCODERS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a>        <span class="p">(</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">_csr_matrix_to_json</span><span class="p">),</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>    <span class="p">]</span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ENCODERS</span><span class="p">:</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__scipy__&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>    <span class="k">raise</span> <span class="n">TypeNotSupported</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -230,25 +231,26 @@ the key <code>__csr_matrix__</code>.</p>
 </span><span id="to_json-83"><a href="#to_json-83"><span class="linenos"> 83</span></a>
 </span><span id="to_json-84"><a href="#to_json-84"><span class="linenos"> 84</span></a><span class="sd">    - [`csr_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix)</span>
 </span><span id="to_json-85"><a href="#to_json-85"><span class="linenos"> 85</span></a>
-</span><span id="to_json-86"><a href="#to_json-86"><span class="linenos"> 86</span></a><span class="sd">        {</span>
-</span><span id="to_json-87"><a href="#to_json-87"><span class="linenos"> 87</span></a><span class="sd">            &quot;__scipy__&quot;: {</span>
-</span><span id="to_json-88"><a href="#to_json-88"><span class="linenos"> 88</span></a><span class="sd">                &quot;__type__&quot;: &quot;csr_matrix&quot;,</span>
-</span><span id="to_json-89"><a href="#to_json-89"><span class="linenos"> 89</span></a><span class="sd">                &quot;__version__&quot;: 1,</span>
-</span><span id="to_json-90"><a href="#to_json-90"><span class="linenos"> 90</span></a><span class="sd">                &quot;data&quot;: ...,</span>
-</span><span id="to_json-91"><a href="#to_json-91"><span class="linenos"> 91</span></a><span class="sd">                &quot;dtype&quot;: ...,</span>
-</span><span id="to_json-92"><a href="#to_json-92"><span class="linenos"> 92</span></a><span class="sd">                &quot;indices&quot;: ...,</span>
-</span><span id="to_json-93"><a href="#to_json-93"><span class="linenos"> 93</span></a><span class="sd">                &quot;indptr&quot;: ...,</span>
-</span><span id="to_json-94"><a href="#to_json-94"><span class="linenos"> 94</span></a><span class="sd">                &quot;shape&quot;: ...,</span>
-</span><span id="to_json-95"><a href="#to_json-95"><span class="linenos"> 95</span></a><span class="sd">            }</span>
-</span><span id="to_json-96"><a href="#to_json-96"><span class="linenos"> 96</span></a><span class="sd">        }</span>
-</span><span id="to_json-97"><a href="#to_json-97"><span class="linenos"> 97</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="to_json-98"><a href="#to_json-98"><span class="linenos"> 98</span></a>    <span class="n">ENCODERS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="to_json-99"><a href="#to_json-99"><span class="linenos"> 99</span></a>        <span class="p">(</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">_csr_matrix_to_json</span><span class="p">),</span>
-</span><span id="to_json-100"><a href="#to_json-100"><span class="linenos">100</span></a>    <span class="p">]</span>
-</span><span id="to_json-101"><a href="#to_json-101"><span class="linenos">101</span></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ENCODERS</span><span class="p">:</span>
-</span><span id="to_json-102"><a href="#to_json-102"><span class="linenos">102</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-</span><span id="to_json-103"><a href="#to_json-103"><span class="linenos">103</span></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__scipy__&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
-</span><span id="to_json-104"><a href="#to_json-104"><span class="linenos">104</span></a>    <span class="k">raise</span> <span class="n">TypeNotSupported</span><span class="p">()</span>
+</span><span id="to_json-86"><a href="#to_json-86"><span class="linenos"> 86</span></a><span class="sd">            {</span>
+</span><span id="to_json-87"><a href="#to_json-87"><span class="linenos"> 87</span></a><span class="sd">                &quot;__scipy__&quot;: {</span>
+</span><span id="to_json-88"><a href="#to_json-88"><span class="linenos"> 88</span></a><span class="sd">                    &quot;__type__&quot;: &quot;csr_matrix&quot;,</span>
+</span><span id="to_json-89"><a href="#to_json-89"><span class="linenos"> 89</span></a><span class="sd">                    &quot;__version__&quot;: 1,</span>
+</span><span id="to_json-90"><a href="#to_json-90"><span class="linenos"> 90</span></a><span class="sd">                    &quot;data&quot;: ...,</span>
+</span><span id="to_json-91"><a href="#to_json-91"><span class="linenos"> 91</span></a><span class="sd">                    &quot;dtype&quot;: ...,</span>
+</span><span id="to_json-92"><a href="#to_json-92"><span class="linenos"> 92</span></a><span class="sd">                    &quot;indices&quot;: ...,</span>
+</span><span id="to_json-93"><a href="#to_json-93"><span class="linenos"> 93</span></a><span class="sd">                    &quot;indptr&quot;: ...,</span>
+</span><span id="to_json-94"><a href="#to_json-94"><span class="linenos"> 94</span></a><span class="sd">                    &quot;shape&quot;: ...,</span>
+</span><span id="to_json-95"><a href="#to_json-95"><span class="linenos"> 95</span></a><span class="sd">                }</span>
+</span><span id="to_json-96"><a href="#to_json-96"><span class="linenos"> 96</span></a><span class="sd">            }</span>
+</span><span id="to_json-97"><a href="#to_json-97"><span class="linenos"> 97</span></a>
+</span><span id="to_json-98"><a href="#to_json-98"><span class="linenos"> 98</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="to_json-99"><a href="#to_json-99"><span class="linenos"> 99</span></a>    <span class="n">ENCODERS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="to_json-100"><a href="#to_json-100"><span class="linenos">100</span></a>        <span class="p">(</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">_csr_matrix_to_json</span><span class="p">),</span>
+</span><span id="to_json-101"><a href="#to_json-101"><span class="linenos">101</span></a>    <span class="p">]</span>
+</span><span id="to_json-102"><a href="#to_json-102"><span class="linenos">102</span></a>    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ENCODERS</span><span class="p">:</span>
+</span><span id="to_json-103"><a href="#to_json-103"><span class="linenos">103</span></a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="to_json-104"><a href="#to_json-104"><span class="linenos">104</span></a>            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;__scipy__&quot;</span><span class="p">:</span> <span class="n">f</span><span class="p">(</span><span class="n">obj</span><span class="p">)}</span>
+</span><span id="to_json-105"><a href="#to_json-105"><span class="linenos">105</span></a>    <span class="k">raise</span> <span class="n">TypeNotSupported</span><span class="p">()</span>
 </span></pre></div>
 
 
@@ -268,7 +270,7 @@ depends on the precise type of <code>obj</code>.</p>
 <ul>
 <li><p><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix"><code>csr_matrix</code></a></p>
 
-<p>{
+<pre><code>{
     "__scipy__": {
         "__type__": "csr_matrix",
         "__version__": 1,
@@ -278,7 +280,8 @@ depends on the precise type of <code>obj</code>.</p>
         "indptr": ...,
         "shape": ...,
     }
-}</p></li>
+}
+</code></pre></li>
 </ul>
 </div>
 
