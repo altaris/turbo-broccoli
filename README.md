@@ -443,6 +443,15 @@ This is so cool. Check out
 and
 [`turbo_broccoli.produces_document`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document).
 
+## CLI
+
+Turbo Broccoli has a few utilities that can be accessed from the CLI.
+
+- `list-artifacts`: Prints all the artifacts filenames or file paths that are
+  referenced by a given json file.
+
+- `rm`: Removes a json file and all the artifacts it references.
+
 # Contributing
 
 ## Dependencies

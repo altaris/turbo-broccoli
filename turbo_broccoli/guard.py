@@ -98,7 +98,9 @@ class GuardedBlockHandler:
         self.output_path = Path(output_path)
         self.name = name
 
-    def _guard_iter(self, iterable: Iterable[Any]) -> Generator:
+    def _guard_iter(
+        self, iterable: Iterable[Any]
+    ) -> Generator[Any, None, None]:
         """
         Internal implementation of a guarded loop. See
         `turbo_broccoli.guard.GuardedBlockHandler`'s documentation.
@@ -125,7 +127,7 @@ class GuardedBlockHandler:
                             f"results to '{path}'"
                         )
 
-    def _guard_no_iter(self) -> Generator:
+    def _guard_no_iter(self) -> Generator[Any, None, None]:
         """
         Internal implementation of a guarded block. See
         `turbo_broccoli.guard.GuardedBlockHandler`'s documentation.
@@ -147,7 +149,9 @@ class GuardedBlockHandler:
                             f"'{self.output_path}'"
                         )
 
-    def guard(self, iterable: Optional[Iterable[Any]] = None) -> Generator:
+    def guard(
+        self, iterable: Optional[Iterable[Any]] = None
+    ) -> Generator[Any, None, None]:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         old_artifact_path = get_artifact_path()
