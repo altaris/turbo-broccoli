@@ -137,17 +137,15 @@ class GuardedBlockHandler:
             if self.name:
                 logging.debug(f"Skipped guarded block '{self.name}'")
         else:
-            try:
-                yield self
-            finally:
-                if self.result is not None:
-                    self.output_path.parent.mkdir(parents=True, exist_ok=True)
-                    save_json(self.result, self.output_path)
-                    if self.name is not None:
-                        logging.debug(
-                            f"Saved guarded block '{self.name}' results to "
-                            f"'{self.output_path}'"
-                        )
+            yield self
+            if self.result is not None:
+                self.output_path.parent.mkdir(parents=True, exist_ok=True)
+                save_json(self.result, self.output_path)
+                if self.name is not None:
+                    logging.debug(
+                        f"Saved guarded block '{self.name}' results to "
+                        f"'{self.output_path}'"
+                    )
 
     def guard(
         self, iterable: Optional[Iterable[Any]] = None
