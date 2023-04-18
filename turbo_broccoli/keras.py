@@ -226,6 +226,7 @@ def _json_to_model(dct: dict) -> Any:
     DECODERS = {
         1: _json_to_model_v1,
         2: _json_to_model_v2,
+        3: _json_to_model_v3,
     }
     return DECODERS[dct["__version__"]](dct)
 
@@ -255,6 +256,16 @@ def _json_to_model_v2(dct: dict) -> Any:
     return keras.models.load_model(
         get_artifact_path() / (dct["id"] + "." + dct["format"])
     )
+
+
+def _json_to_model_v3(dct: dict) -> Any:
+    """
+    Converts a JSON document to a keras model object following the v2
+    specification.
+    """
+    if "model" in dct:
+        return _json_to_model_v1(dct)
+    return keras.models.load_model(get_artifact_path() / dct["id"])
 
 
 def _json_to_optimizer(dct: dict) -> Any:
@@ -299,10 +310,10 @@ def _model_to_json(model: keras.Model) -> dict:
             "weights": model.weights,
         }
     name = str(uuid4())
-    model.save(get_artifact_path() / (name + "." + fmt), save_format=fmt)
+    model.save(get_artifact_path() / name, save_format=fmt)
     return {
         "__type__": "model",
-        "__version__": 2,
+        "__version__": 3,
         "format": fmt,
         "id": name,
     }
@@ -365,7 +376,7 @@ def to_json(obj: Any) -> dict:
             {
                 "__keras__": {
                     "__type__": "model",
-                    "__version__": 2,
+                    "__version__": 3,
                     "format": <str>,
                     "id": <UUID4 str>
                 }
