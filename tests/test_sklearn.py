@@ -10,6 +10,7 @@ import numpy as np
 from common import from_json, to_json
 from numpy.testing import assert_array_equal
 from scipy import sparse
+from sklearn.base import BaseEstimator
 from sklearn.calibration import *
 from sklearn.cluster import *
 from sklearn.compose import *
@@ -33,6 +34,7 @@ from sklearn.kernel_ridge import *
 from sklearn.linear_model import *
 from sklearn.manifold import *
 from sklearn.metrics import *
+from sklearn.metrics.pairwise import pairwise_kernels
 from sklearn.mixture import *
 from sklearn.model_selection import *
 from sklearn.multiclass import *
@@ -46,7 +48,6 @@ from sklearn.random_projection import *
 from sklearn.semi_supervised import *
 from sklearn.svm import *
 from sklearn.tree import *
-from sklearn.metrics.pairwise import pairwise_kernels
 
 
 def _to_json_and_back(obj: BaseEstimator) -> BaseEstimator:

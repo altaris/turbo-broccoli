@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from common import from_json, to_json
+from common import from_json, to_json  # Must be before turbo_broccoli imports
 from test_keras import _build_model
 from test_pandas import _assert_equal as assert_equal_pd
 

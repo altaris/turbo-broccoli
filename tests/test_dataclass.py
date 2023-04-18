@@ -4,9 +4,9 @@
 
 from dataclasses import dataclass
 
-from turbo_broccoli.environment import register_dataclass_type
+from common import from_json, to_json  # Must be before turbo_broccoli imports
 
-from common import from_json, to_json
+from turbo_broccoli.environment import register_dataclass_type
 
 
 @dataclass

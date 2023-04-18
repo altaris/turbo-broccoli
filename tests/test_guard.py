@@ -2,6 +2,11 @@
 """Test suite for guarded blocks/loops"""
 
 from pathlib import Path
+
+# Must be before turbo_broccoli imports
+# pylint: disable=unused-import
+import common
+
 from turbo_broccoli import (
     GuardedBlockHandler,
     guarded_call,

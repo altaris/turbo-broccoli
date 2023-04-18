@@ -4,9 +4,9 @@
 import os
 import torch
 
-from turbo_broccoli.environment import register_pytorch_module_type
+from common import from_json, to_json  # Must be before turbo_broccoli imports
 
-from common import from_json, to_json
+from turbo_broccoli.environment import register_pytorch_module_type
 
 
 class _TestModule(torch.nn.Module):

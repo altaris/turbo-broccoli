@@ -3,8 +3,10 @@
 
 import nacl.secret
 import nacl.utils
-from nacl.exceptions import CryptoError
 import pytest
+from common import from_json, to_json  # Must be before turbo_broccoli imports
+from nacl.exceptions import CryptoError
+
 from turbo_broccoli.environment import set_shared_key
 from turbo_broccoli.secret import (
     LockedSecret,
@@ -15,8 +17,6 @@ from turbo_broccoli.secret import (
     SecretList,
     SecretStr,
 )
-
-from common import from_json, to_json
 
 
 def _new_key() -> bytes:

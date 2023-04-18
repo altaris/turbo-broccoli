@@ -5,9 +5,9 @@ from tensorflow import keras
 import numpy as np
 from numpy.testing import assert_array_equal
 
-from turbo_broccoli.environment import set_keras_format
+from common import from_json, to_json  # Must be before turbo_broccoli imports
 
-from common import from_json, to_json
+from turbo_broccoli.environment import set_keras_format
 
 
 def _assert_model_equal(a, b):
