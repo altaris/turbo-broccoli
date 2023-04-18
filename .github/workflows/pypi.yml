@@ -7,7 +7,7 @@ name: Publish turbo-broccoli to PyPi
 on:
   push:
     tags:
-      - v**
+      - 'v**'
 
 permissions:
   contents: read
