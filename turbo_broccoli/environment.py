@@ -149,13 +149,15 @@ def register_pytorch_module_type(cls: type):
     _PYTORCH_MODULE_TYPES[cls.__name__] = cls
 
 
-def set_artifact_path(path: Union[str, Path]):
-    if isinstance(path, str):
-        path = Path(path)
-    if not (path.exists() and path.is_dir()):
-        raise RuntimeError(
-            f"Path {str(path)} does not point to an existing directory"
-        )
+def set_artifact_path(path: Union[str, Path], create: bool = True):
+    path = Path(path) if isinstance(path, str) else path
+    if not path.exists():
+        if create:
+            path.mkdir(parents=True)
+        else:
+            raise RuntimeError(f"Path '{str(path)}' does not exist")
+    elif not path.is_dir():
+        raise RuntimeError(f"Path '{str(path)}' exists but is not a directory")
     _ENVIRONMENT["TB_ARTIFACT_PATH"] = path
 
 
