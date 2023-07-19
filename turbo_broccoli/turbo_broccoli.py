@@ -1,3 +1,4 @@
+# pylint: disable=bare-except
 """Main module containing the JSON encoder and decoder classes."""
 __docformat__ = "google"
 
@@ -17,21 +18,21 @@ try:
     import turbo_broccoli.keras
 
     HAS_KERAS = True
-except ModuleNotFoundError:
+except:
     HAS_KERAS = False
 
 try:
     import turbo_broccoli.numpy
 
     HAS_NUMPY = True
-except ModuleNotFoundError:
+except:
     HAS_NUMPY = False
 
 try:
     import turbo_broccoli.pandas
 
     HAS_PANDAS = True
-except ModuleNotFoundError:
+except:
     HAS_PANDAS = False
 
 
@@ -39,21 +40,21 @@ try:
     import turbo_broccoli.secret
 
     HAS_SECRET = True
-except ModuleNotFoundError:
+except:
     HAS_SECRET = False
 
 try:
     import turbo_broccoli.tensorflow
 
     HAS_TENSORFLOW = True
-except ModuleNotFoundError:
+except:
     HAS_TENSORFLOW = False
 
 try:
     import turbo_broccoli.pytorch
 
     HAS_PYTORCH = True
-except ModuleNotFoundError:
+except:
     HAS_PYTORCH = False
 
 
@@ -61,14 +62,14 @@ try:
     import turbo_broccoli.scipy
 
     HAS_SCIPY = True
-except ModuleNotFoundError:
+except:
     HAS_SCIPY = False
 
 try:
     import turbo_broccoli.sklearn
 
     HAS_SKLEARN = True
-except ModuleNotFoundError:
+except:
     HAS_SKLEARN = False
 
 
@@ -76,7 +77,7 @@ try:
     import turbo_broccoli.bokeh
 
     HAS_BOKEH = True
-except ModuleNotFoundError:
+except:
     HAS_BOKEH = False
 
 
