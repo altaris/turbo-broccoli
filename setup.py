@@ -5,7 +5,7 @@
 import setuptools
 
 name = "turbo_broccoli"
-version = "2.4.4"
+version = "2.4.5"
 
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
@@ -13,10 +13,9 @@ with open("README.md", "r", encoding="utf-8") as f:
 with open("requirements.txt", "r", encoding="utf-8") as f:
     requirements = f.read().split()
 
-packages = (
-    [name]
-    + [name + "." + p for p in setuptools.find_packages(where="./" + name)]
-)
+packages = [name] + [
+    name + "." + p for p in setuptools.find_packages(where="./" + name)
+]
 
 setuptools.setup(
     author="Cédric Ho Thanh",

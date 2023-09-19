@@ -153,11 +153,12 @@ class GuardedBlockHandler:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
         old_artifact_path = get_artifact_path()
-        set_artifact_path(self.output_path.parent)
         if iterable is None:
+            set_artifact_path(self.output_path.parent)
             for x in self._guard_no_iter():
                 yield x
         else:
+            set_artifact_path(self.output_path)
             for x in self._guard_iter(iterable):
                 yield x
         set_artifact_path(old_artifact_path)
