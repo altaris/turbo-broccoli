@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 from functools import partial
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 from uuid import uuid4
 
 from tensorflow import keras
@@ -383,7 +383,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (keras.Model, _model_to_json),  # must be first
         (
             keras.metrics.Metric,

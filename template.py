@@ -7,7 +7,7 @@ __docformat__ = "google"
 # TODO: Document in README (Supported types)
 # TODO: Document in README (nodecode types)
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 
 from turbo_broccoli.utils import (
     DeserializationError,
@@ -82,7 +82,7 @@ def to_json(obj: Any) -> dict:
     """
     # TODO: Write doc
     # TODO: Check dispatch
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (XXX, _XXX_to_json),
     ]
     for t, f in ENCODERS:

@@ -14,13 +14,13 @@ except ModuleNotFoundError:
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
-_DATACLASSES_TYPES: Dict[str, type] = {}
-_PYTORCH_MODULE_TYPES: Dict[str, type] = {}
+_DATACLASSES_TYPES: dict[str, type] = {}
+_PYTORCH_MODULE_TYPES: dict[str, type] = {}
 
 # The initial values are the defaults
-_ENVIRONMENT: Dict[str, Any] = {
+_ENVIRONMENT: dict[str, Any] = {
     "TB_ARTIFACT_PATH": Path("./"),
     "TB_KERAS_FORMAT": "tf",
     "TB_MAX_NBYTES": 8_000,
@@ -125,7 +125,7 @@ def get_registered_pytorch_module_type(name: str) -> type:
     return _PYTORCH_MODULE_TYPES[name]
 
 
-def get_shared_key() -> Optional[bytes]:
+def get_shared_key() -> bytes | None:
     return _ENVIRONMENT["TB_SHARED_KEY"]
 
 
@@ -149,7 +149,7 @@ def register_pytorch_module_type(cls: type):
     _PYTORCH_MODULE_TYPES[cls.__name__] = cls
 
 
-def set_artifact_path(path: Union[str, Path], create: bool = True):
+def set_artifact_path(path: str | Path, create: bool = True):
     path = Path(path) if isinstance(path, str) else path
     if not path.exists():
         if create:
@@ -179,7 +179,7 @@ def set_max_nbytes(nbytes: int):
     _ENVIRONMENT["TB_MAX_NBYTES"] = nbytes
 
 
-def set_nodecode(types: Union[str, List[str]]):
+def set_nodecode(types: str | list[str]):
     _ENVIRONMENT["TB_NODECODE"] = (
         types.split(",") if isinstance(types, str) else types
     )
@@ -214,7 +214,7 @@ def set_pandas_format(fmt: str):
     _ENVIRONMENT["TB_PANDAS_FORMAT"] = fmt
 
 
-def set_shared_key(key: Optional[Union[str, bytes]]):
+def set_shared_key(key: str | bytes | None):
     """If the provided key is a string, it will be encoded in `utf-8`."""
     if isinstance(key, str):
         key = key.encode("utf-8")

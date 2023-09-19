@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 import json
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 from uuid import uuid4
 
 import pandas as pd
@@ -224,7 +224,7 @@ def to_json(obj: Any) -> dict:
         Series and column names must be strings!
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (pd.DataFrame, _dataframe_to_json),
         (pd.Series, _series_to_json),
     ]

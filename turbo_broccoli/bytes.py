@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 from base64 import b64decode, b64encode
-from typing import Any, Optional
+from typing import Any
 
 from turbo_broccoli.utils import (
     DeserializationError,
@@ -18,7 +18,7 @@ def _bytes_from_json_v1(dct: dict) -> bytes:
     return b64decode(dct["data"])
 
 
-def from_json(dct: dict) -> Optional[bytes]:
+def from_json(dct: dict) -> bytes | None:
     """
     Deserializes a dict into a bytes object. See `to_json` for the
     specification `dct` is expected to follow. In particular, note that `dct`

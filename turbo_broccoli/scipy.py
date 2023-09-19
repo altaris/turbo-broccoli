@@ -1,7 +1,7 @@
 """scipy objects"""
 __docformat__ = "google"
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 
 from scipy.sparse import csr_matrix
 
@@ -95,7 +95,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (csr_matrix, _csr_matrix_to_json),
     ]
     for t, f in ENCODERS:

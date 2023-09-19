@@ -10,7 +10,6 @@ from turbo_broccoli.environment import register_pytorch_module_type
 
 
 class _TestModule(torch.nn.Module):
-
     module: torch.nn.Module
 
     def __init__(self):

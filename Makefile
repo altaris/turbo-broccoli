@@ -18,7 +18,7 @@ docs-browser:
 
 .PHONY: format
 format:
-	black --line-length 79 --target-version py39 $(SRC_PATH) tests/
+	black --line-length 79 --target-version py310 $(SRC_PATH) tests/
 
 .PHONY: lint
 lint:
@@ -36,4 +36,4 @@ test-clean:
 
 .PHONY: typecheck
 typecheck:
-	mypy -p $(SRC_PATH)
+	mypy -p $(SRC_PATH) --check-untyped-defs

@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 from collections import deque, namedtuple
-from typing import Any, Callable, List, Optional, Tuple
+from typing import Any, Callable, Tuple
 
 from turbo_broccoli.utils import (
     DeserializationError,
@@ -21,7 +21,7 @@ def _deque_to_json(deq: deque) -> dict:
     }
 
 
-def _json_to_deque(dct: dict) -> Optional[deque]:
+def _json_to_deque(dct: dict) -> deque | None:
     """
     Converts a JSON document to a deque. See `to_json` for the specification
     `dct` is expected to follow. Note that the key `__collections__` should not
@@ -133,7 +133,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (deque, _deque_to_json),
         (tuple, _namedtuple_to_json),
     ]

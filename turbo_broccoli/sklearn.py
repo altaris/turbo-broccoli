@@ -2,7 +2,7 @@
 __docformat__ = "google"
 
 import re
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Tuple
 
 from sklearn import (
     calibration,
@@ -110,7 +110,7 @@ _SKLEARN_TREE_ATTRIBUTES = [
 ]
 
 
-def _all_base_estimators() -> Dict[str, type]:
+def _all_base_estimators() -> dict[str, type]:
     """
     Returns (hopefully) all classes of sklearn that inherit from
     `BaseEstimator`
@@ -252,7 +252,7 @@ def to_json(obj: BaseEstimator) -> dict:
     where the `attrs` dict contains all the attributes of the estimator as
     specified in the sklearn API documentation.
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (BaseEstimator, _sklearn_estimator_to_json),
         (Tree, _sklearn_tree_to_json),
     ]

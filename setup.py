@@ -5,7 +5,7 @@
 import setuptools
 
 name = "turbo_broccoli"
-version = "2.4.5"
+version = "3.0.0"
 
 with open("README.md", "r", encoding="utf-8") as f:
     long_description = f.read()
@@ -25,8 +25,8 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
     ],
     install_requires=requirements,
     long_description=long_description,
@@ -37,7 +37,7 @@ setuptools.setup(
     project_urls={
         "Issues": "https://github.com/altaris/turbo-broccoli/issues",
     },
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     url="https://github.com/altaris/turbo-broccoli",
     version=version,
 )

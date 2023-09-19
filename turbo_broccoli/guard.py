@@ -9,7 +9,7 @@ try:
 except ModuleNotFoundError:
     import logging  # type: ignore
 
-from typing import Any, Callable, Dict, Generator, Iterable, Optional, Union
+from typing import Any, Callable, Generator, Iterable
 
 from .turbo_broccoli import load_json, save_json, to_json
 from .environment import get_artifact_path, set_artifact_path
@@ -88,12 +88,12 @@ class GuardedBlockHandler:
     = 2`) is skipped.
     """
 
-    name: Optional[str]
+    name: str | None
     result: Any = None
     output_path: Path
 
     def __init__(
-        self, output_path: Union[str, Path], name: Optional[str] = None
+        self, output_path: str | Path, name: str | None = None
     ) -> None:
         self.output_path = Path(output_path)
         self.name = name
@@ -148,7 +148,7 @@ class GuardedBlockHandler:
                     )
 
     def guard(
-        self, iterable: Optional[Iterable[Any]] = None
+        self, iterable: Iterable[Any] | None = None
     ) -> Generator[Any, None, None]:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
         self.output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -166,7 +166,7 @@ class GuardedBlockHandler:
 
 def guarded_call(
     function: Callable[..., Any],
-    path: Union[str, Path],
+    path: str | Path,
     *args,
     **kwargs,
 ) -> Any:
@@ -192,7 +192,7 @@ def guarded_call(
 
 def produces_document(
     function: Callable[..., Any],
-    path: Union[str, Path],
+    path: str | Path,
     check_args: bool = False,
 ) -> Callable[..., Any]:
     """
@@ -239,7 +239,7 @@ def produces_document(
     the MD5 hash of the serialization of the `args`/`kwargs` document above.
     """
 
-    def _wrapped(path: Path, *args, **kwargs) -> Dict[str, Any]:
+    def _wrapped(path: Path, *args, **kwargs) -> dict[str, Any]:
         path.parent.mkdir(parents=True, exist_ok=True)
         old_artifact_path = get_artifact_path()
         set_artifact_path(path.parent)

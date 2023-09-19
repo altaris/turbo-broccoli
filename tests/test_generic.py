@@ -3,6 +3,7 @@
 
 from common import from_json, to_json
 
+
 # pylint: disable=missing-class-docstring
 class C:
     __turbo_broccoli__ = ["a_str", "an_int"]

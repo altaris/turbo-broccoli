@@ -1,7 +1,7 @@
 """Pytorch (de)serialization utilities."""
 __docformat__ = "google"
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 from uuid import uuid4
 
 import safetensors.torch as st
@@ -166,7 +166,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (torch.nn.Module, _module_to_json),
         (torch.Tensor, _tensor_to_json),
     ]

@@ -85,8 +85,8 @@ def _fit_score_test(
     obj: BaseEstimator,
     x_train: np.ndarray,
     x_test: np.ndarray,
-    y_train: Optional[np.ndarray] = None,
-    y_test: Optional[np.ndarray] = None,
+    y_train: np.ndarray | None = None,
+    y_test: np.ndarray | None = None,
 ) -> Tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train, y_train)
     obj2 = _to_json_and_back(obj)
@@ -930,7 +930,7 @@ def test_quantileregressor():
     n_samples, n_features = 10, 2
     rng = np.random.RandomState(0)
     x, y = rng.randn(n_samples, n_features), rng.randn(n_samples)
-    e = QuantileRegressor(quantile=0.8, solver="interior-point")
+    e = QuantileRegressor(quantile=0.8)
     _fit_score_test(e, x, x, y, y)
 
 

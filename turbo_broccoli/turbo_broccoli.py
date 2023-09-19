@@ -4,7 +4,7 @@ __docformat__ = "google"
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable
 
 
 import turbo_broccoli.bytes
@@ -92,7 +92,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
 
     def _hook(self, dct):
         """Deserialization hook"""
-        DECODERS: Dict[str, Callable[[dict], Any]] = {
+        DECODERS: dict[str, Callable[[dict], Any]] = {
             "__dict__": turbo_broccoli.dict.from_json,
             "__bytes__": turbo_broccoli.bytes.from_json,
         }
@@ -133,8 +133,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
     """
 
     def default(self, o: Any) -> Any:
-
-        ENCODERS: List[Callable[[Any], dict]] = [
+        ENCODERS: list[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
         ]
         if HAS_KERAS:
@@ -173,7 +172,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         Reimplementation of encode just to treat exceptional cases that need to
         be handled before `JSONEncoder.encode`.
         """
-        PRIORITY_ENCODERS: List[Callable[[Any], dict]] = [
+        PRIORITY_ENCODERS: list[Callable[[Any], dict]] = [
             turbo_broccoli.dict.to_json,
             turbo_broccoli.collections.to_json,
         ]
@@ -190,13 +189,13 @@ def from_json(doc: str) -> Any:
     return json.loads(doc, cls=TurboBroccoliDecoder)
 
 
-def load_json(path: Union[str, Path]) -> Any:
+def load_json(path: str | Path) -> Any:
     """Loads and deserializes a JSON file using Turbo Broccoli"""
     with open(path, mode="r", encoding="utf-8") as fp:
         return json.load(fp, cls=TurboBroccoliDecoder)
 
 
-def save_json(obj: Any, path: Union[str, Path]) -> None:
+def save_json(obj: Any, path: str | Path) -> None:
     """Serializes and saves a JSON-serializable object"""
     with open(path, mode="w", encoding="utf-8") as fp:
         fp.write(to_json(obj))

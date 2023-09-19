@@ -1,7 +1,7 @@
 """Tensorflow (de)serialization utilities."""
 __docformat__ = "google"
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 from uuid import uuid4
 
 import tensorflow as tf
@@ -293,7 +293,7 @@ def to_json(obj: Any) -> dict:
       the variable.
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (tf.RaggedTensor, _ragged_tensor_to_json),
         (tf.SparseTensor, _sparse_tensor_to_json),
         (tf.Tensor, _tensor_to_json),

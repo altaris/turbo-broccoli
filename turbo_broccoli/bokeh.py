@@ -1,7 +1,7 @@
 """Bokeh objects (de)serialization utilities."""
 __docformat__ = "google"
 
-from typing import Any, Callable, List, Tuple
+from typing import Any, Callable, Tuple
 
 from bokeh.core.serialization import (
     Buffer,
@@ -135,7 +135,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: List[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (Buffer, _buffer_to_json),
         (Figure, _generic_to_json),
         (Model, _generic_to_json),
