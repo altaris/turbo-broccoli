@@ -10,6 +10,7 @@ from typing import Any, Callable
 import turbo_broccoli.bytes
 import turbo_broccoli.collections
 import turbo_broccoli.dataclass
+from turbo_broccoli.environment import get_artifact_path, set_artifact_path
 import turbo_broccoli.generic
 import turbo_broccoli.dict
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
@@ -189,16 +190,48 @@ def from_json(doc: str) -> Any:
     return json.loads(doc, cls=TurboBroccoliDecoder)
 
 
-def load_json(path: str | Path) -> Any:
-    """Loads and deserializes a JSON file using Turbo Broccoli"""
+def load_json(path: str | Path, auto_artifact_path: bool = True) -> Any:
+    """
+    Loads and deserializes a JSON file using Turbo Broccoli
+
+    Args:
+        path (str | Path):
+        auto_artifact_path (bool): If left to `True`, set the artifact path to
+            the target file's parent directory before loading. After loading,
+            the previous artifact path is restored. See also see
+            `turbo_broccoli.environment.set_artifact_path`.
+    """
+    old_artifact_path = get_artifact_path()
+    if auto_artifact_path:
+        set_artifact_path(Path(path).parent)
     with open(path, mode="r", encoding="utf-8") as fp:
-        return json.load(fp, cls=TurboBroccoliDecoder)
+        document = json.load(fp, cls=TurboBroccoliDecoder)
+    if auto_artifact_path:
+        set_artifact_path(old_artifact_path)
+    return document
 
 
-def save_json(obj: Any, path: str | Path) -> None:
-    """Serializes and saves a JSON-serializable object"""
+def save_json(
+    obj: Any, path: str | Path, auto_artifact_path: bool = True
+) -> None:
+    """
+    Serializes and saves a JSON-serializable object
+
+    Args:
+        obj (Any):
+        path (str | Path):
+        auto_artifact_path (bool): If left to `True`, set the artifact path to
+            the target file's parent directory before saving. After saving,
+            the previous artifact path is restored. See also see
+            `turbo_broccoli.environment.set_artifact_path`.
+    """
+    old_artifact_path = get_artifact_path()
+    if auto_artifact_path:
+        set_artifact_path(Path(path).parent)
     with open(path, mode="w", encoding="utf-8") as fp:
         fp.write(to_json(obj))
+    if auto_artifact_path:
+        set_artifact_path(old_artifact_path)
 
 
 def to_json(obj: Any) -> str:
