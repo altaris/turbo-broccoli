@@ -78,7 +78,7 @@ def _module_to_json(module: torch.nn.Module) -> dict:
 
 def _tensor_to_json(tens: torch.Tensor) -> dict:
     """Converts a tensor into a JSON document."""
-    x = tens.detach().cpu()
+    x = tens.detach().cpu().contiguous()
     if x.numel() == 0:  # empty tensor
         return {
             "__type__": "tensor",
