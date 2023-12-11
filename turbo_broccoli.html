@@ -314,16 +314,6 @@ Doesn't work with:</p>
 <code>VotingRegressor</code>.</p></li>
 <li><p>Everything that is parametrized by an arbitrary object/callable/estimator:
 <code>FunctionTransformer</code>, <code>TransformedTargetRegressor</code>.</p></li>
-<li><p>Everything that stores a random state (in the form of a <code>RandomState</code>
-object): <code>BisectingKMeans</code>, <code>MiniBatchDictionaryLearning</code>,
-<code>LatentDirichletAllocation</code>, <code>NeighborhoodComponentsAnalysis</code>,
-<code>MLPClassifier</code>, <code>MLPRegressor</code>, <code>SparseRandomProjection</code>,
-<code>GaussianRandomProjection</code>.</p></li>
-<li><p>Everything with trees and forest since <code>Tree</code> objects are not JSON
-serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code>,
-<code>RandomForestClassifier</code>, <code>RandomForestRegressor</code>, <code>RandomTreesEmbedding</code>,
-<code>IsolationForest</code>, <code>AdaBoostClassifier</code>, <code>AdaBoostRegressor</code>,
-<code>DecisionTreeClassifier</code>, <code>DecisionTreeRegressor</code>.</p></li>
 <li><p>Other classes that have non JSON-serializable attributes:</p>
 
 <table>
@@ -369,10 +359,6 @@ serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code
 <tr>
   <td><code>TweedieRegressor</code></td>
   <td><code>HalfTweedieLossIdentity</code></td>
-</tr>
-<tr>
-  <td><code>KernelDensity</code></td>
-  <td><code>KDTree</code></td>
 </tr>
 <tr>
   <td><code>SplineTransformer</code></td>
@@ -471,12 +457,13 @@ serializable: <code>ExtraTreesClassifier</code>, <code>ExtraTreesRegressor</code
 <li><p><code>BaggingClassifier</code>: <code>IndexError: only integers, slices (:), ellipsis
 (...), numpy.newaxis (None) and integer or boolean arrays are valid
 indices</code>.</p></li>
-<li><p><code>GradientBoostingClassifier</code>, <code>GradientBoostingRegressor</code>: <code>Exception:
+<li><p><code>GradientBoostingClassifier</code>, <code>GradientBoostingRegressor</code>,
+<code>RandomTreesEmbedding</code>, <code>KBinsDiscretizer</code>: <code>Exception:
 dtype object is not covered</code>.</p></li>
 <li><p><code>HistGradientBoostingClassifier</code>: Problems with deserialization of
 <code>_BinMapper</code> object?</p></li>
 <li><p><code>PassiveAggressiveClassifier</code>: some unknown label type error...</p></li>
-<li><p><code>KBinsDiscretizer</code>: <code>Exception: dtype object is not covered</code>.</p></li>
+<li><p><code>BisectingKMeans</code>: <code>TypeError: Object of type function is not JSON serializable</code></p></li>
 </ul></li>
 </ul>
 
