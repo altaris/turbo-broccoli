@@ -203,12 +203,6 @@ Doesn't work with:
 - Everything that is parametrized by an arbitrary object/callable/estimator:
   `FunctionTransformer`, `TransformedTargetRegressor`.
 
-- Everything that stores a random state (in the form of a `RandomState`
-  object): `BisectingKMeans`, `MiniBatchDictionaryLearning`,
-  `LatentDirichletAllocation`, `NeighborhoodComponentsAnalysis`,
-  `MLPClassifier`, `MLPRegressor`, `SparseRandomProjection`,
-  `GaussianRandomProjection`.
-
 - Other classes that have non JSON-serializable attributes:
 
     | Class                       | Non-serializable attr.    |
@@ -268,6 +262,8 @@ Doesn't work with:
 
   - `RandomTreesEmbedding`: need to serialize a `dtype` class (e.g.
     `numpy.float64`)
+
+  - `BisectingKMeans`: `TypeError: Object of type function is not JSON serializable`
 
 ### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json)
 

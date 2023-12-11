@@ -6,6 +6,7 @@ Todo:
 """
 __docformat__ = "google"
 
+import pickle
 from typing import Any, Callable, Tuple
 from uuid import uuid4
 
@@ -131,6 +132,27 @@ def _json_to_number_v2(dct: dict) -> np.number:
     return np.frombuffer(dct["value"], dtype=dct["dtype"])[0]
 
 
+def _json_to_random_state(dct: dict) -> np.number:
+    """
+    Converts a JSON document to a numpy random state. See `to_json` for the
+    specification `dct` is expected to follow. Note that the key `__numpy__`
+    should not be present.
+    """
+    DECODERS = {
+        1: _json_to_random_state_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_random_state_v1(dct: dict) -> np.number:
+    """
+    Converts a JSON document to a numpy random state following the v1
+    specification.
+    """
+    with open(get_artifact_path() / dct["data"], mode="rb") as fp:
+        return pickle.load(fp)
+
+
 def _dtype_to_json(d: np.dtype) -> dict:
     """Serializes a `numpy` array."""
     return {
@@ -202,6 +224,19 @@ def _number_to_json(num: np.number) -> dict:
     }
 
 
+def _random_state_to_json(obj: np.random.RandomState) -> dict:
+    """Pickles a numpy random state"""
+    name, protocol = str(uuid4()), pickle.HIGHEST_PROTOCOL
+    with open(get_artifact_path() / name, mode="wb") as fp:
+        pickle.dump(obj, fp, protocol=protocol)
+    return {
+        "__type__": "random_state",
+        "__version__": 1,
+        "data": name,
+        "protocol": protocol,
+    }
+
+
 def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a numpy object. See `to_json` for the
@@ -213,6 +248,7 @@ def from_json(dct: dict) -> Any:
         "ndarray": _json_to_ndarray,
         "number": _json_to_number,
         "dtype": _json_to_dtype,
+        "random_state": _json_to_random_state,
     }
     try:
         type_name = dct["__numpy__"]["__type__"]
@@ -304,11 +340,26 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
+    - `numpy.random.RandomState`:
+
+            {
+                "__numpy__": {
+                    "__type__": "random_state",
+                    "__version__": 1,
+                    "dtype": <uuid4>,
+                    "protocol": <int>
+                }
+            }
+
+      where the UUID4 points to a pickle file artefact, and the protocol is the
+      pickle protocol.
+
     """
     ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (np.ndarray, _ndarray_to_json),
         (np.number, _number_to_json),
         (np.dtype, _dtype_to_json),
+        (np.random.RandomState, _random_state_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):

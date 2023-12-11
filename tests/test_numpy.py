@@ -56,3 +56,10 @@ def test_numpy_dtype():
     assert dt == from_json(to_json(dt))
     dt = np.dtype("b")
     assert dt == from_json(to_json(dt))
+
+
+def test_numpy_random_state():
+    s1 = np.random.RandomState(seed=0)
+    s2 = from_json(to_json(s1))
+    assert s1.rand() == s2.rand()
+    assert s1.rand() == s2.rand()  # twice on purpose

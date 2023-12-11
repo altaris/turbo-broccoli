@@ -17,7 +17,6 @@ from sklearn.compose import *
 from sklearn.covariance import *
 from sklearn.cross_decomposition import *
 from sklearn.datasets import *
-from sklearn.datasets import load_digits, make_sparse_coded_signal
 from sklearn.decomposition import *
 from sklearn.discriminant_analysis import *
 from sklearn.ensemble import *
@@ -390,12 +389,20 @@ def test_dictionarylearning():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.DictionaryLearning.html
     """
-    x, _, _ = make_sparse_coded_signal(
+    x1, _, _ = make_sparse_coded_signal(
         n_samples=100,
         n_components=15,
         n_features=20,
         n_nonzero_coefs=10,
         random_state=42,
+        data_transposed=False,
+    )
+    x2, _, _ = make_sparse_coded_signal(
+        n_samples=100,
+        n_components=15,
+        n_features=20,
+        n_nonzero_coefs=10,
+        random_state=43,
         data_transposed=False,
     )
     e = DictionaryLearning(
@@ -405,7 +412,7 @@ def test_dictionarylearning():
         random_state=42,
         max_iter=10,
     )
-    _fit_transform_x_test(e, x, x)
+    _fit_transform_x_test(e, x1, x2)
 
 
 def test_fastica():
@@ -442,6 +449,29 @@ def test_minibatchdictionarylearning():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.MiniBatchDictionaryLearning.html
     """
+    x1, _, _ = make_sparse_coded_signal(
+        n_samples=30,
+        n_components=15,
+        n_features=20,
+        n_nonzero_coefs=10,
+        random_state=42,
+    )
+    x2, _, _ = make_sparse_coded_signal(
+        n_samples=30,
+        n_components=15,
+        n_features=20,
+        n_nonzero_coefs=10,
+        random_state=43,
+    )
+    dict_learner = MiniBatchDictionaryLearning(
+        n_components=15,
+        batch_size=3,
+        transform_algorithm="lasso_lars",
+        transform_alpha=0.1,
+        max_iter=20,
+        random_state=42,
+    )
+    _fit_transform_x_test(dict_learner, x1, x2)
 
 
 def test_minibatchnmf():
@@ -531,9 +561,9 @@ def test_latentdirichletallocation():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.LatentDirichletAllocation.html
     """
-    # x, _ = make_multilabel_classification(random_state=0)
-    # e = LatentDirichletAllocation(n_components=5, random_state=0)
-    # _fit_transform_x_test(e, x, x[-2:])
+    x, _ = make_multilabel_classification(random_state=0)
+    e = LatentDirichletAllocation(n_components=5, random_state=0)
+    _fit_transform_x_test(e, x, x[-2:])
 
 
 def test_randomforestclassifier():
@@ -1248,9 +1278,12 @@ def test_neighborhoodcomponentsanalysis():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NeighborhoodComponentsAnalysis.html
     """
-    # x, y = load_iris(return_X_y=True)
-    # e = NeighborhoodComponentsAnalysis(random_state=42)
-    # _fit_transform_x_y_test(e, x, x, y, y)
+    x, y = load_iris(return_X_y=True)
+    e1 = NeighborhoodComponentsAnalysis(random_state=42)
+    x_tr1 = e1.fit_transform(x, y)
+    e2 = _to_json_and_back(e1)
+    x_tr2 = e2.transform(x)
+    assert_array_equal(x_tr1, x_tr2)
 
 
 def test_bernoullirbm():
@@ -1265,24 +1298,24 @@ def test_mlpclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html
     """
-    # x, y = make_classification(n_samples=100, random_state=1)
-    # x_train, x_test, y_train, y_test = train_test_split(
-    #     x, y, stratify=y, random_state=1
-    # )
-    # e = MLPClassifier(random_state=1, max_iter=10)
-    # _fit_score_test(e, x_train, x_test, y_train, y_test)
+    x, y = make_classification(n_samples=100, random_state=1)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, stratify=y, random_state=1
+    )
+    e = MLPClassifier(random_state=1, max_iter=10)
+    _fit_score_test(e, x_train, x_test, y_train, y_test)
 
 
 def test_mlpregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html
     """
-    # x, y = make_classification(n_samples=100, random_state=1)
-    # x_train, x_test, y_train, y_test = train_test_split(
-    #     x, y, stratify=y, random_state=1
-    # )
-    # e = MLPRegressor(random_state=1, max_iter=10)
-    # _fit_score_test(e, x_train, x_test, y_train, y_test)
+    x, y = make_classification(n_samples=100, random_state=1)
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, stratify=y, random_state=1
+    )
+    e = MLPRegressor(random_state=1, max_iter=10)
+    _fit_score_test(e, x_train, x_test, y_train, y_test)
 
 
 def test_binarizer():
@@ -1413,18 +1446,18 @@ def test_sparserandomprojection():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.random_projection.SparseRandomProjection.html
     """
-    # rng = np.random.RandomState(42)
-    # x = rng.rand(25, 3000)
-    # _fit_transform_x_test(SparseRandomProjection(random_state=rng), x, x)
+    rng = np.random.RandomState(42)
+    x = rng.rand(25, 3000)
+    _fit_transform_x_test(SparseRandomProjection(random_state=rng), x, x)
 
 
 def test_gaussianrandomprojection():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.random_projection.GaussianRandomProjection.html
     """
-    # rng = np.random.RandomState(42)
-    # x = rng.rand(25, 3000)
-    # _fit_transform_x_test(GaussianRandomProjection(random_state=rng), x, x)
+    rng = np.random.RandomState(42)
+    x = rng.rand(25, 3000)
+    _fit_transform_x_test(GaussianRandomProjection(random_state=rng), x, x)
 
 
 def test_labelpropagation():
