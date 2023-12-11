@@ -3,7 +3,11 @@ __docformat__ = "google"
 
 import re
 from typing import Any, Callable, Tuple
+from uuid import uuid4
 
+# Sklearn recommends joblib rather than direct pickle
+# https://scikit-learn.org/stable/model_persistence.html#python-specific-serialization
+import joblib
 from sklearn import (
     calibration,
     cluster,
@@ -49,6 +53,8 @@ from turbo_broccoli.utils import (
     TypeNotSupported,
     raise_if_nodecode,
 )
+
+from .environment import get_artifact_path
 
 _SKLEARN_SUBMODULES = [
     # calibration,
@@ -109,6 +115,12 @@ _SKLEARN_TREE_ATTRIBUTES = [
     "weighted_n_node_samples",
 ]
 
+_SUPPORTED_PICKLABLE_TYPES = [
+    tree._tree.Tree,
+    # neighbors.KDTree,
+]
+"""sklearn types that shall be pickled"""
+
 
 def _all_base_estimators() -> dict[str, type]:
     """
@@ -153,6 +165,24 @@ def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
     }
 
 
+def _sklearn_to_raw(obj: Any) -> dict:
+    """
+    Pickles an otherwise unserializable sklearn object. Actually uses the
+    `joblib.dump`.
+
+    TODO:
+        Don't dump to file if the object is small enough. Unfortunately
+        `joblib` can't dump to a string.
+    """
+    name = str(uuid4())
+    joblib.dump(obj, get_artifact_path() / name)
+    return {
+        "__type__": "raw",
+        "__version__": 1,
+        "data": name,
+    }
+
+
 def _sklearn_tree_to_json(obj: Tree) -> dict:
     """Converts a sklearn Tree object into a JSON document."""
     return {
@@ -160,6 +190,25 @@ def _sklearn_tree_to_json(obj: Tree) -> dict:
         "__version__": 1,
         **{a: getattr(obj, a) for a in _SKLEARN_TREE_ATTRIBUTES},
     }
+
+
+def _json_raw_to_sklearn(dct: dict) -> Any:
+    """
+    Unpickles an otherwise unserializable sklearn object. Actually uses the
+    `joblib.load`.
+    """
+    DECODERS = {
+        1: _json_raw_to_sklearn_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_raw_to_sklearn_v1(dct: dict) -> Any:
+    """
+    Converts a JSON document (pointing to a picked sklearn object) to a sklearn
+    object following the v1 specification.
+    """
+    return joblib.load(get_artifact_path() / dct["data"])
 
 
 def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
@@ -222,7 +271,8 @@ def from_json(dct: dict) -> BaseEstimator:
     raise_if_nodecode("sklearn")
     DECODERS = {
         "estimator": _json_to_sklearn_estimator,
-        "tree": _json_to_sklearn_tree,
+        # "tree": _json_to_sklearn_tree, # Doesn't work lol
+        "raw": _json_raw_to_sklearn,
     }
     try:
         type_name = dct["__sklearn__"]["__type__"]
@@ -237,24 +287,43 @@ def to_json(obj: BaseEstimator) -> dict:
     Serializes a sklearn estimator into JSON by cases. See the README for the
     precise list of supported types.
 
-    The return dict has the following structure
+    The return dict has the following structure:
 
-        {
-            "__sklearn__": {
-                "__type__": "estimator",
-                "__version__": 1,
-                "cls": <class name>,
-                "params": <dict returned by get_params(deep=False)>,
-                "attrs": {...}
-            },
-        }
+    * if the object is an estimator:
 
-    where the `attrs` dict contains all the attributes of the estimator as
-    specified in the sklearn API documentation.
+            {
+                "__sklearn__": {
+                    "__type__": "estimator",
+                    "__version__": 1,
+                    "cls": <class name>,
+                    "params": <dict returned by get_params(deep=False)>,
+                    "attrs": {...}
+                },
+            }
+
+      where the `attrs` dict contains all the attributes of the estimator as
+      specified in the sklearn API documentation.
+
+    * otherwise:
+
+            {
+                "__sklearn__": {
+                    "__type__": "raw",
+                    "__version__": 1,
+                    "data": <uuid4>
+                },
+            }
+
+      where the UUID4 value points to an pickle file artifact.
     """
+
     ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+        (t, _sklearn_to_raw) for t in _SUPPORTED_PICKLABLE_TYPES
+    ]
+
+    ENCODERS += [
         (BaseEstimator, _sklearn_estimator_to_json),
-        (Tree, _sklearn_tree_to_json),
+        # (Tree, _sklearn_tree_to_json),  # Doesn't work lol
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):

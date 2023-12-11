@@ -209,12 +209,6 @@ Doesn't work with:
   `MLPClassifier`, `MLPRegressor`, `SparseRandomProjection`,
   `GaussianRandomProjection`.
 
-- Everything with trees and forest since `Tree` objects are not JSON
-  serializable: `ExtraTreesClassifier`, `ExtraTreesRegressor`,
-  `RandomForestClassifier`, `RandomForestRegressor`, `RandomTreesEmbedding`,
-  `IsolationForest`, `AdaBoostClassifier`, `AdaBoostRegressor`,
-  `DecisionTreeClassifier`, `DecisionTreeRegressor`.
-
 - Other classes that have non JSON-serializable attributes:
 
     | Class                       | Non-serializable attr.    |
@@ -271,6 +265,9 @@ Doesn't work with:
   - `PassiveAggressiveClassifier`: some unknown label type error...
 
   - `KBinsDiscretizer`: `Exception: dtype object is not covered`.
+
+  - `RandomTreesEmbedding`: need to serialize a `dtype` class (e.g.
+    `numpy.float64`)
 
 ### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json)
 

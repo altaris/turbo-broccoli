@@ -540,45 +540,45 @@ def test_randomforestclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html
     """
-    # x, y = make_classification(
-    #     n_samples=1000,
-    #     n_features=4,
-    #     n_informative=2,
-    #     n_redundant=0,
-    #     random_state=0,
-    #     shuffle=False,
-    # )
-    # z = [[0, 0, 0, 0]]
-    # e = RandomForestClassifier(max_depth=2, random_state=0)
-    # e.fit(x, y)
-    # e2 = _to_json_and_back(e)
-    # assert_array_equal(e.predict(z), e2.predict(z))
+    x, y = make_classification(
+        n_samples=1000,
+        n_features=4,
+        n_informative=2,
+        n_redundant=0,
+        random_state=0,
+        shuffle=False,
+    )
+    z = [[0, 0, 0, 0]]
+    e = RandomForestClassifier(max_depth=2, random_state=0)
+    e.fit(x, y)
+    e2 = _to_json_and_back(e)
+    assert_array_equal(e.predict(z), e2.predict(z))
 
 
 def test_randomforestregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html
     """
-    # x, y = make_classification(
-    #     n_samples=1000,
-    #     n_features=4,
-    #     n_informative=2,
-    #     n_redundant=0,
-    #     random_state=0,
-    #     shuffle=False,
-    # )
-    # z = [[0, 0, 0, 0]]
-    # e = RandomForestRegressor(max_depth=2, random_state=0)
-    # e.fit(x, y)
-    # e2 = _to_json_and_back(e)
-    # assert_array_equal(e.predict(z), e2.predict(z))
+    x, y = make_classification(
+        n_samples=1000,
+        n_features=4,
+        n_informative=2,
+        n_redundant=0,
+        random_state=0,
+        shuffle=False,
+    )
+    z = [[0, 0, 0, 0]]
+    e = RandomForestRegressor(max_depth=2, random_state=0)
+    e.fit(x, y)
+    e2 = _to_json_and_back(e)
+    assert_array_equal(e.predict(z), e2.predict(z))
 
 
 def test_randomtreesembedding():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomTreesEmbedding.html
     """
-    # x = [[0,0], [1,0], [0,1], [-1,0], [0,-1]]
+    # x = [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]]
     # e = RandomTreesEmbedding(n_estimators=5, random_state=0, max_depth=1)
     # _fit_transform_x_test(e, x, x)
 
@@ -587,20 +587,20 @@ def test_extratreesclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesClassifier.html
     """
-    # x, y = make_classification(n_features=4, random_state=0)
-    # z = [[0, 0, 0, 0]]
-    # e = ExtraTreesClassifier(n_estimators=100, random_state=0)
-    # _fit_predict_x_y_z_test(e, x, y, z)
+    x, y = make_classification(n_features=4, random_state=0)
+    z = [[0, 0, 0, 0]]
+    e = ExtraTreesClassifier(n_estimators=100, random_state=0)
+    _fit_predict_x_y_z_test(e, x, y, z)
 
 
 def test_extratreesregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesRegressor.html
     """
-    # x, y = load_diabetes(return_X_y=True)
-    # x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
-    # e = ExtraTreesRegressor(n_estimators=100, random_state=0)
-    # _fit_score_test(e, x_train, x_test, y_train, y_test)
+    x, y = load_diabetes(return_X_y=True)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
+    e = ExtraTreesRegressor(n_estimators=100, random_state=0)
+    _fit_score_test(e, x_train, x_test, y_train, y_test)
 
 
 def test_baggingclassifier():
@@ -641,8 +641,8 @@ def test_isolationforest():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html
     """
-    # x = [[-1.1], [0.3], [0.5], [100]]
-    # _fit_predict_x_y_test(IsolationForest(random_state=0), x, x)
+    x = [[-1.1], [0.3], [0.5], [100]]
+    _fit_predict_x_z_test(IsolationForest(random_state=0), x, x)
 
 
 def test_gradientboostingclassifier():
@@ -673,36 +673,36 @@ def test_adaboostclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html
     """
-    # x, y = make_classification(
-    #     n_samples=1000,
-    #     n_features=4,
-    #     n_informative=2,
-    #     n_redundant=0,
-    #     random_state=0,
-    #     shuffle=False,
-    # )
-    # z = [[0, 0, 0, 0]]
-    # e = AdaBoostClassifier(n_estimators=100, random_state=0)
-    # e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
-    # assert_array_equal(e.score(x, y), e2.score(x, y))
+    x, y = make_classification(
+        n_samples=1000,
+        n_features=4,
+        n_informative=2,
+        n_redundant=0,
+        random_state=0,
+        shuffle=False,
+    )
+    z = [[0, 0, 0, 0]]
+    e = AdaBoostClassifier(n_estimators=100, random_state=0)
+    e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
+    assert_array_equal(e.score(x, y), e2.score(x, y))
 
 
 def test_adaboostregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostRegressor.html
     """
-    # x, y = make_classification(
-    #     n_samples=1000,
-    #     n_features=4,
-    #     n_informative=2,
-    #     n_redundant=0,
-    #     random_state=0,
-    #     shuffle=False,
-    # )
-    # z = [[0, 0, 0, 0]]
-    # e = AdaBoostRegressor(random_state=0, n_estimators=100)
-    # e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
-    # assert_array_equal(e.score(x, y), e2.score(x, y))
+    x, y = make_classification(
+        n_samples=1000,
+        n_features=4,
+        n_informative=2,
+        n_redundant=0,
+        random_state=0,
+        shuffle=False,
+    )
+    z = [[0, 0, 0, 0]]
+    e = AdaBoostRegressor(random_state=0, n_estimators=100)
+    e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
+    assert_array_equal(e.score(x, y), e2.score(x, y))
 
 
 def test_histgradientboostingclassifier():
@@ -1521,39 +1521,39 @@ def test_decisiontreeclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
     """
-    # iris = load_iris()
-    # x, y = iris.data, iris.target
-    # e = DecisionTreeClassifier(random_state=0)
-    # _fit_score_test(e, x, x, y, y)
+    iris = load_iris()
+    x, y = iris.data, iris.target
+    e = DecisionTreeClassifier(random_state=0)
+    _fit_score_test(e, x, x, y, y)
 
 
 def test_decisiontreeregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html
     """
-    # x, y = load_diabetes(return_X_y=True)
-    # e = DecisionTreeRegressor(random_state=0)
-    # _fit_score_test(e, x, x, y, y)
+    x, y = load_diabetes(return_X_y=True)
+    e = DecisionTreeRegressor(random_state=0)
+    _fit_score_test(e, x, x, y, y)
 
 
 def test_extratreeclassifier():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.ExtraTreeClassifier.html
     """
-    # x, y = load_iris(return_X_y=True)
-    # x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
-    # e = ExtraTreeClassifier(random_state=0)
-    # _fit_score_test(e, x_train, x_test, y_train, y_test)
+    x, y = load_iris(return_X_y=True)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
+    e = ExtraTreeClassifier(random_state=0)
+    _fit_score_test(e, x_train, x_test, y_train, y_test)
 
 
 def test_extratreeregressor():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.ExtraTreeRegressor.html
     """
-    # x, y = load_iris(return_X_y=True)
-    # x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
-    # e = ExtraTreeRegressor(random_state=0)
-    # _fit_score_test(e, x_train, x_test, y_train, y_test)
+    x, y = load_iris(return_X_y=True)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
+    e = ExtraTreeRegressor(random_state=0)
+    _fit_score_test(e, x_train, x_test, y_train, y_test)
 
 
 def test_lineardiscriminantanalysis():
