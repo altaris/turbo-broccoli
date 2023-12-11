@@ -395,7 +395,6 @@ def test_dictionarylearning():
         n_features=20,
         n_nonzero_coefs=10,
         random_state=42,
-        data_transposed=False,
     )
     x2, _, _ = make_sparse_coded_signal(
         n_samples=100,
@@ -403,7 +402,6 @@ def test_dictionarylearning():
         n_features=20,
         n_nonzero_coefs=10,
         random_state=43,
-        data_transposed=False,
     )
     e = DictionaryLearning(
         n_components=15,
@@ -484,7 +482,6 @@ def test_minibatchnmf():
     #     n_features=20,
     #     n_nonzero_coefs=10,
     #     random_state=42,
-    #     data_transposed=False,
     # )
     # e = MiniBatchDictionaryLearning(
     #     n_components=15,
@@ -808,7 +805,7 @@ def test_ardregression():
     https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ARDRegression.html
     """
     x, y, z = [[0, 0], [1, 1], [2, 2]], [0, 1, 2], [[1, 1]]
-    _fit_predict_x_y_z_test(ARDRegression(n_iter=10), x, y, z)
+    _fit_predict_x_y_z_test(ARDRegression(max_iter=10), x, y, z)
 
 
 def test_bayesianridge():
@@ -960,7 +957,7 @@ def test_quantileregressor():
     n_samples, n_features = 10, 2
     rng = np.random.RandomState(0)
     x, y = rng.randn(n_samples, n_features), rng.randn(n_samples)
-    e = QuantileRegressor(quantile=0.8)
+    e = QuantileRegressor(quantile=0.8, solver="highs")
     _fit_score_test(e, x, x, y, y)
 
 
@@ -1491,7 +1488,7 @@ def test_linearsvc():
     https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html
     """
     x, y = make_classification(n_features=4, random_state=0)
-    e = LinearSVC(random_state=0, tol=1e-5)
+    e = LinearSVC(random_state=0, tol=1e-5, dual=True)
     _fit_score_test(e, x, x, y, y)
 
 
@@ -1500,7 +1497,7 @@ def test_linearsvr():
     https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVR.html
     """
     x, y = make_classification(n_features=4, random_state=0)
-    e = LinearSVR(random_state=0, tol=1e-5)
+    e = LinearSVR(random_state=0, tol=1e-5, dual=True)
     _fit_score_test(e, x, x, y, y)
 
 
