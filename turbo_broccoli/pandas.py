@@ -2,6 +2,7 @@
 __docformat__ = "google"
 
 import json
+from io import StringIO
 from typing import Any, Callable, Tuple
 from uuid import uuid4
 
@@ -66,7 +67,7 @@ def _json_to_dataframe_v1(dct: dict) -> pd.DataFrame:
     specification.
     """
     if "data" in dct:
-        df = pd.read_json(json.dumps(dct["data"]))
+        df = pd.read_json(StringIO(json.dumps(dct["data"])))
     else:
         fmt = dct["format"]
         path = get_artifact_path() / dct["id"]
