@@ -216,7 +216,6 @@ Doesn't work with:
     | `PoissonRegressor`          | `HalfPoissonLoss`         |
     | `GammaRegressor`            | `HalfGammaLoss`           |
     | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
-    | `KernelDensity`             | `KDTree`                  |
     | `SplineTransformer`         | `BSpline`                 |
 
 - Some classes have `AttributeErrors`?
@@ -250,18 +249,14 @@ Doesn't work with:
     (...), numpy.newaxis (None) and integer or boolean arrays are valid
     indices`.
 
-  - `GradientBoostingClassifier`, `GradientBoostingRegressor`: `Exception:
+  - `GradientBoostingClassifier`, `GradientBoostingRegressor`,
+    `RandomTreesEmbedding`, `KBinsDiscretizer`: `Exception:
     dtype object is not covered`.
 
   - `HistGradientBoostingClassifier`: Problems with deserialization of
     `_BinMapper` object?
 
   - `PassiveAggressiveClassifier`: some unknown label type error...
-
-  - `KBinsDiscretizer`: `Exception: dtype object is not covered`.
-
-  - `RandomTreesEmbedding`: need to serialize a `dtype` class (e.g.
-    `numpy.float64`)
 
   - `BisectingKMeans`: `TypeError: Object of type function is not JSON serializable`
 

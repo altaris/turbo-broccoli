@@ -117,7 +117,7 @@ _SKLEARN_TREE_ATTRIBUTES = [
 
 _SUPPORTED_PICKLABLE_TYPES = [
     tree._tree.Tree,
-    # neighbors.KDTree,
+    neighbors.KDTree,
 ]
 """sklearn types that shall be pickled"""
 

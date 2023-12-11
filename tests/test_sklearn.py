@@ -1258,11 +1258,11 @@ def test_kerneldensity():
     """
     https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html
     """
-    # rng = np.random.RandomState(42)
-    # x = rng.random_sample((100, 3))
-    # e = KernelDensity(kernel="gaussian", bandwidth=0.5).fit(x)
-    # e2 = _to_json_and_back(e)
-    # assert_array_equal(e.score_samples(x[:3]), e2.score_samples(x[:3]))
+    rng = np.random.RandomState(42)
+    x = rng.random_sample((100, 3))
+    e = KernelDensity(kernel="gaussian", bandwidth=0.5).fit(x)
+    e2 = _to_json_and_back(e)
+    assert_array_equal(e.score_samples(x[:3]), e2.score_samples(x[:3]))
 
 
 def test_localoutlierfactor():
