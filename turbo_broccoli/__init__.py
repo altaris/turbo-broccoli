@@ -19,6 +19,7 @@ from turbo_broccoli.guard import (
     guarded_call,
     produces_document,
 )
+from turbo_broccoli.native import load, save
 from turbo_broccoli.turbo_broccoli import (
     TurboBroccoliDecoder,
     TurboBroccoliEncoder,

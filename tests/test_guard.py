@@ -3,8 +3,10 @@
 
 from pathlib import Path
 
-# Must be before turbo_broccoli imports
 # pylint: disable=unused-import
+# pylint: disable=import-outside-toplevel
+
+# Must be before turbo_broccoli imports
 import common
 
 from turbo_broccoli import (
@@ -58,6 +60,22 @@ def test_guarded_bloc_handler_no_iter():
         assert False
     assert h.result == 42
     assert h.result == load_json(path)
+
+
+def test_guarded_bloc_handler_no_iter_native():
+    import pandas as pd
+
+    path = TEST_PATH / "test_guarded_bloc_handler_no_iter_native.csv"
+    h = GuardedBlockHandler(path)
+    df1 = pd.DataFrame({"A": [1, 2, 3], "B": [1.0, 2.0, 3.0]})
+    for _ in h.guard():
+        h.result = df1
+    for _ in h.guard():  # Block should be skipped
+        assert False
+    df2 = pd.read_csv(path)
+    if "Unnamed: 0" in df2.columns:
+        df2.drop(["Unnamed: 0"], axis=1, inplace=True)
+    assert (df1 == df2).all().all()
 
 
 def test_guarded_call():

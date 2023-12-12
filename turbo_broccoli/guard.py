@@ -13,6 +13,7 @@ from typing import Any, Callable, Generator, Iterable
 
 from .turbo_broccoli import load_json, save_json, to_json
 from .environment import get_artifact_path, set_artifact_path
+from .native import save, load
 
 
 class GuardedBlockHandler:
@@ -47,28 +48,26 @@ class GuardedBlockHandler:
             h.result = ...
     ```
 
-    So if the guarded code did not succeed, then `out/foo.json` is not created,
-    and so the next time, it will be run again.
-
     Note that the parent directory of the output file (in this case, `out/`)
-    will be created if it does not exist.
+    will be created if it does not already exist.
 
-    Bonus: if you don't need to use `h.result` after the block, you can be even
-    more concise:
+    It is also possible to use "native" saving/loading methods:
 
     ```py
-    for h in GuardedBlockHandler("out/foo.json").guard():
+    h = GuardedBlockHandler("out/foo.csv")
+    for _ in h.guard():
         ...
+        h.result = some_pandas_dataframe
     ```
 
-    i.e. `GuardedBlockHandler.guard` yields itself.
+    See `turbo_broccoli.native.save` and `turbo_broccoli.native.load`.
 
     ### Guarded loop
 
     If an iterable `l` is passed to `h.guard`, then `for _ in h.guard(l):`
-    iterates over `l`, and after every iteration, an artifact is created using
-    the current value of `h.result` at `<output_path>/<str(element)>`. For
-    example:
+    iterates over the elements of `l`, and after every iteration, an artifact
+    is created using the current value of `h.result` at
+    `<output_path>/<str(element)>`. For example:
 
     ```py
     l = [1, 2, 3]  # The elements of l must be stringable
@@ -133,14 +132,14 @@ class GuardedBlockHandler:
         `turbo_broccoli.guard.GuardedBlockHandler`'s documentation.
         """
         if self.output_path.is_file():
-            self.result = load_json(self.output_path)
+            self.result = load(self.output_path)
             if self.name:
                 logging.debug(f"Skipped guarded block '{self.name}'")
         else:
             yield self
             if self.result is not None:
                 self.output_path.parent.mkdir(parents=True, exist_ok=True)
-                save_json(self.result, self.output_path)
+                save(self.result, self.output_path)
                 if self.name is not None:
                     logging.debug(
                         f"Saved guarded block '{self.name}' results to "
@@ -185,6 +184,14 @@ def guarded_call(
 
     Note that the parent directory of the output file (in this case, `out/`)
     will be created if it does not exist.
+
+    Using native saving/loading is also possible:
+
+    ```py
+    guarded_call(f, "out/result.csv", *args, **kwargs)
+    ```
+
+    (assuming `f` returns a pandas DataFrame or a pandas Series)
     """
     _f = produces_document(function, path)
     return _f(*args, **kwargs)
@@ -209,7 +216,7 @@ def produces_document(
     will only call `f` if the `out/result.json` does not exist, and otherwise,
     loads and returns `out/result.json`. Note that the parent directory of the
     output file (in this case, `out/`) will be created if it does not
-    exist.However, if `out/result.json` exists and was produced by calling
+    exist. However, if `out/result.json` exists and was produced by calling
     `_f(*args, **kwargs)`, then
 
     ```py
@@ -237,6 +244,15 @@ def produces_document(
     must be TurboBroccoli/JSON-izable. The resulting file is no longer
     `out/result.json` but rather `out/result.json/<hash>.json` where `hash` is
     the MD5 hash of the serialization of the `args`/`kwargs` document above.
+
+    Using native saving/loading is also possible:
+
+    ```py
+    _f = produces_document(f, "out/result.csv")
+    _f(*args, **kwargs)
+    ```
+
+    (assuming `f` returns a pandas DataFrame or a pandas Series)
     """
 
     def _wrapped(path: Path, *args, **kwargs) -> dict[str, Any]:
@@ -249,13 +265,13 @@ def produces_document(
             path.mkdir(parents=True, exist_ok=True)
             path = path / f"{h}.json"
         try:
-            obj = load_json(path)
+            obj = load(path)
             logging.debug(
                 f"Skipped call to guarded method '{function.__name__}'"
             )
         except:  # pylint: disable=bare-except
             obj = function(*args, **kwargs)
-            save_json(obj, path)
+            save(obj, path)
         finally:
             set_artifact_path(old_artifact_path)
         return obj
