@@ -75,3 +75,13 @@ def test_namedtuple_subclass_2():
 
     x = C(1, 2)
     assert x == from_json(to_json(x))
+
+
+def test_set():
+    x = {1, 2, 3, 2}
+    assert x == from_json(to_json(x))
+
+
+def test_set_empty():
+    x = {}
+    assert x == from_json(to_json(x))

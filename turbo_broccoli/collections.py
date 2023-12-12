@@ -55,6 +55,17 @@ def _json_to_namedtuple_v1(dct: dict) -> Any:
     return namedtuple(dct["class"], dct["data"].keys())(**dct["data"])
 
 
+def _json_to_set(dct: dict) -> set:
+    DECODERS = {
+        1: _json_to_set_v1,
+    }
+    return DECODERS[dct["__version__"]](dct)
+
+
+def _json_to_set_v1(dct: dict) -> Any:
+    return set(dct["data"])
+
+
 def _namedtuple_to_json(tup: tuple) -> dict:
     """
     Converts a namedtuple into a JSON document. This method makes sure that the
@@ -78,6 +89,10 @@ def _namedtuple_to_json(tup: tuple) -> dict:
     }
 
 
+def _set_to_json(obj: set) -> dict:
+    return {"__type__": "set", "__version__": 1, "data": list(obj)}
+
+
 def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a Python collection. See `to_json` for the
@@ -87,6 +102,7 @@ def from_json(dct: dict) -> Any:
     DECODERS = {
         "deque": _json_to_deque,
         "namedtuple": _json_to_namedtuple,
+        "set": _json_to_set,
     }
     try:
         type_name = dct["__collections__"]["__type__"]
@@ -132,10 +148,22 @@ def to_json(obj: Any) -> dict:
                 }
             }
 
+    - `set`
+
+            {
+                "__collections__": {
+                    "__type__": "set,
+                    "__version__": 1,
+                    "data": [...],
+                }
+            }
+
+
     """
     ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (deque, _deque_to_json),
         (tuple, _namedtuple_to_json),
+        (set, _set_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
