@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from common import from_json, to_json  # Must be before turbo_broccoli imports
+from common import assert_to_from_json, from_json, to_json
 from test_keras import _build_model
 from test_pandas import _assert_equal as assert_equal_pd
 
@@ -21,9 +21,7 @@ def _basic_dict() -> dict:
 
 def test_nodecode_nothing():
     set_nodecode("")
-    x = _basic_dict()
-    assert x == from_json(to_json(x))
-    set_nodecode("")
+    assert_to_from_json(_basic_dict())
 
 
 def test_nodecode_bytes():

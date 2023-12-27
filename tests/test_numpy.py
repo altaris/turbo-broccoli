@@ -6,7 +6,7 @@ import os
 import numpy as np
 from numpy.testing import assert_equal, assert_array_equal
 
-from common import from_json, to_json
+from common import assert_to_from_json, from_json, to_json
 
 
 def _assert_equal(a, b):
@@ -48,14 +48,10 @@ def test_numpy_large_array():
 
 
 def test_numpy_dtype():
-    dt = np.dtype(np.float64)
-    assert dt == from_json(to_json(dt))
-    dt = np.dtype(int)
-    assert dt == from_json(to_json(dt))
-    dt = np.dtype(object)
-    assert dt == from_json(to_json(dt))
-    dt = np.dtype("b")
-    assert dt == from_json(to_json(dt))
+    assert_to_from_json(np.dtype(np.float64))
+    assert_to_from_json(np.dtype(int))
+    assert_to_from_json(np.dtype(object))
+    assert_to_from_json(np.dtype("b"))
 
 
 def test_numpy_random_state():

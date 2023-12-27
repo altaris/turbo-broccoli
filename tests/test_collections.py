@@ -4,7 +4,7 @@
 from collections import deque, namedtuple
 from typing import NamedTuple
 
-from common import from_json, to_json
+from common import assert_to_from_json, from_json, to_json
 
 
 def _assert_equal(a: deque, b: deque):
@@ -36,20 +36,17 @@ def test_deque_maxlen_trunc():
 
 def test_namedtuple_empty():
     C = namedtuple("C", [])
-    x = C()
-    assert x == from_json(to_json(x))
+    assert_to_from_json(C())
 
 
 def test_namedtuple_normal():
     C = namedtuple("C", ["x", "y"])
-    x = C(1, 2)
-    assert x == from_json(to_json(x))
+    assert_to_from_json(C(1, 2))
 
 
 def test_namedtuple_default():
     C = namedtuple("C", ["x", "y"], defaults=[0, 1])
-    x = C()
-    assert x == from_json(to_json(x))
+    assert_to_from_json(C())
 
 
 def test_namedtuple_subclass_1():
@@ -59,8 +56,7 @@ def test_namedtuple_subclass_1():
         def z(self):
             return self.x + self.y
 
-    x = C(1, 2)
-    assert x == from_json(to_json(x))
+    assert_to_from_json(C(1, 2))
 
 
 def test_namedtuple_subclass_2():
@@ -73,15 +69,12 @@ def test_namedtuple_subclass_2():
         def z(self):
             return self.x + self.y
 
-    x = C(1, 2)
-    assert x == from_json(to_json(x))
+    assert_to_from_json(C(1, 2))
 
 
 def test_set():
-    x = {1, 2, 3, 2}
-    assert x == from_json(to_json(x))
+    assert_to_from_json({1, 2, 3, 2})
 
 
 def test_set_empty():
-    x = {}
-    assert x == from_json(to_json(x))
+    assert_to_from_json({})
