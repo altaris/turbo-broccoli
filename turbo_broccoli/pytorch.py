@@ -1,5 +1,4 @@
 """Pytorch (de)serialization utilities."""
-__docformat__ = "google"
 
 from typing import Any, Callable, Tuple
 from uuid import uuid4
@@ -20,11 +19,6 @@ from turbo_broccoli.utils import (
 
 
 def _json_to_module(dct: dict) -> torch.nn.Module:
-    """
-    Converts a JSON document to a `pytorch` module. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__pytorch__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_module_v1,  # Use turbo_broccoli v3
         2: _json_to_module_v2,
@@ -33,10 +27,6 @@ def _json_to_module(dct: dict) -> torch.nn.Module:
 
 
 def _json_to_module_v2(dct: dict) -> torch.nn.Module:
-    """
-    Converts a JSON document to a `pytorch` module following the v2
-    specification.
-    """
     module: torch.nn.Module = get_registered_pytorch_module_type(
         dct["class"]
     )()
@@ -45,11 +35,6 @@ def _json_to_module_v2(dct: dict) -> torch.nn.Module:
 
 
 def _json_to_tensor(dct: dict) -> torch.Tensor:
-    """
-    Converts a JSON document to a `pytorch` tensor. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__pytorch__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_tensor_v1,  # Use turbo_broccoli v3
         2: _json_to_tensor_v2,
@@ -58,10 +43,6 @@ def _json_to_tensor(dct: dict) -> torch.Tensor:
 
 
 def _json_to_tensor_v2(dct: dict) -> torch.Tensor:
-    """
-    Converts a JSON document to a `pytorch` tensor following the v2
-    specification.
-    """
     if "data" in dct:
         if dct["data"] is None:  # empty tensor
             return torch.Tensor()
@@ -70,7 +51,6 @@ def _json_to_tensor_v2(dct: dict) -> torch.Tensor:
 
 
 def _module_to_json(module: torch.nn.Module) -> dict:
-    """Converts a pytorch `torch.nn.Module` into a JSON document."""
     return {
         "__type__": "pytorch.module",
         "__version__": 2,
@@ -80,7 +60,6 @@ def _module_to_json(module: torch.nn.Module) -> dict:
 
 
 def _tensor_to_json(tens: torch.Tensor) -> dict:
-    """Converts a tensor into a JSON document."""
     x = tens.detach().cpu().contiguous()
     if x.numel() == 0:  # empty tensor
         return {
@@ -103,12 +82,8 @@ def _tensor_to_json(tens: torch.Tensor) -> dict:
     }
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a `pytorch` object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__pytorch__`.
-    """
     raise_if_nodecode("pytorch")
     DECODERS = {
         "pytorch.tensor": _json_to_tensor,

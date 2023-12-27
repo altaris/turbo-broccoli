@@ -1,5 +1,4 @@
 """Bokeh objects (de)serialization utilities."""
-__docformat__ = "google"
 
 from typing import Any, Callable, Tuple
 
@@ -20,7 +19,6 @@ from turbo_broccoli.utils import (
 
 
 def _buffer_to_json(obj: Buffer) -> dict:
-    """Serializes a bokeh object.into a JSON document."""
     return {
         "__type__": "bokeh.buffer",
         "__version__": 2,
@@ -30,7 +28,6 @@ def _buffer_to_json(obj: Buffer) -> dict:
 
 
 def _generic_to_json(obj: Figure) -> dict:
-    """Serializes a bokeh object.into a JSON document."""
     s = Serializer().serialize(obj)
     return {
         "__type__": "bokeh.generic",
@@ -41,11 +38,6 @@ def _generic_to_json(obj: Figure) -> dict:
 
 
 def _json_to_buffer(dct: dict) -> Buffer:
-    """
-    Converts a JSON document to a bokeh buffer. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__bokeh__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
         2: _json_to_buffer_v2,
@@ -54,18 +46,10 @@ def _json_to_buffer(dct: dict) -> Buffer:
 
 
 def _json_to_buffer_v2(dct: dict) -> Buffer:
-    """
-    Converts a JSON document to a bokeh buffer following the v1 specification.
-    """
     return Buffer(id=dct["id"], data=dct["data"])
 
 
 def _json_to_generic(dct: dict) -> Any:
-    """
-    Converts a JSON document Serializes a bokeh object. See `to_json` for
-    the specification `dct` is expected to follow. Note that the key
-    `__bokeh__` should not be present.
-    """
     DECODERS = {
         # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
         2: _json_to_generic_v2,
@@ -74,20 +58,12 @@ def _json_to_generic(dct: dict) -> Any:
 
 
 def _json_to_generic_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document Serializes a bokeh object.following the v1
-    specification.
-    """
     c, b = dct["content"], dct["buffers"]
     return Deserializer().deserialize(Serialized(content=c, buffers=b))
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict Serializes a bokeh object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__bokeh__`.
-    """
     raise_if_nodecode("bokeh")
     DECODERS = {
         "bokeh.buffer": _json_to_buffer,
@@ -103,9 +79,7 @@ def from_json(dct: dict) -> Any:
 
 def to_json(obj: Any) -> dict:
     """
-    Serializes a bokeh object.
-
-    The return dict has the following structure
+    Serializes a bokeh object. The return dict has the following structure:
 
     - `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
 

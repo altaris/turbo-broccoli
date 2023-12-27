@@ -4,7 +4,6 @@ numpy (de)serialization utilities.
 Todo:
     Handle numpy's `generic` type (which supersedes the `number` type).
 """
-__docformat__ = "google"
 
 import pickle
 from typing import Any, Callable, Tuple
@@ -22,11 +21,6 @@ from turbo_broccoli.utils import (
 
 
 def _json_to_dtype(dct: dict) -> np.dtype:
-    """
-    Converts a JSON document to a numpy dtype. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__numpy__`
-    should not be present.
-    """
     raise_if_nodecode("numpy.dtype")
     DECODERS = {
         # 1: _json_to_dtype_v1,  # Use turbo_broccoli v3
@@ -36,19 +30,10 @@ def _json_to_dtype(dct: dict) -> np.dtype:
 
 
 def _json_to_dtype_v2(dct: dict) -> np.dtype:
-    """
-    Converts a JSON document to a numpy dtype object following the v1
-    specification.
-    """
     return np.lib.format.descr_to_dtype(dct["dtype"])
 
 
 def _json_to_ndarray(dct: dict) -> np.ndarray:
-    """
-    Converts a JSON document to a numpy array. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__numpy__`
-    should not be present.
-    """
     raise_if_nodecode("numpy.ndarray")
     DECODERS = {
         # 1: _json_to_ndarray_v1,  # Use turbo_broccoli v3
@@ -60,20 +45,12 @@ def _json_to_ndarray(dct: dict) -> np.ndarray:
 
 
 def _json_to_ndarray_v4(dct: dict) -> np.ndarray:
-    """
-    Converts a JSON document to a numpy array following the v1 specification.
-    """
     if "data" in dct:
         return st.load(dct["data"])["data"]
     return st.load_file(get_artifact_path() / dct["id"])["data"]
 
 
 def _json_to_number(dct: dict) -> np.number:
-    """
-    Converts a JSON document to a numpy number. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__numpy__`
-    should not be present.
-    """
     raise_if_nodecode("numpy.number")
     DECODERS = {
         # 1: _json_to_number_v1,  # Use turbo_broccoli v3
@@ -84,18 +61,10 @@ def _json_to_number(dct: dict) -> np.number:
 
 
 def _json_to_number_v3(dct: dict) -> np.number:
-    """
-    Converts a JSON document to a numpy number following the v3 specification.
-    """
     return np.frombuffer(dct["value"], dtype=dct["dtype"])[0]
 
 
 def _json_to_random_state(dct: dict) -> np.number:
-    """
-    Converts a JSON document to a numpy random state. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__numpy__`
-    should not be present.
-    """
     raise_if_nodecode("numpy.random_state")
     DECODERS = {
         # 1: _json_to_random_state_v1,
@@ -105,16 +74,11 @@ def _json_to_random_state(dct: dict) -> np.number:
 
 
 def _json_to_random_state_v2(dct: dict) -> np.number:
-    """
-    Converts a JSON document to a numpy random state following the v2
-    specification.
-    """
     with open(get_artifact_path() / dct["data"], mode="rb") as fp:
         return pickle.load(fp)
 
 
 def _dtype_to_json(d: np.dtype) -> dict:
-    """Serializes a `numpy` array."""
     return {
         "__type__": "numpy.dtype",
         "__version__": 2,
@@ -123,7 +87,6 @@ def _dtype_to_json(d: np.dtype) -> dict:
 
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
-    """Serializes a `numpy` array."""
     if arr.nbytes <= get_max_nbytes():
         return {
             "__type__": "numpy.ndarray",
@@ -140,8 +103,6 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
 
 
 def _number_to_json(num: np.number) -> dict:
-    """Serializes a `numpy` number."""
-
     return {
         "__type__": "numpy.number",
         "__version__": 3,
@@ -151,7 +112,6 @@ def _number_to_json(num: np.number) -> dict:
 
 
 def _random_state_to_json(obj: np.random.RandomState) -> dict:
-    """Pickles a numpy random state"""
     name, protocol = str(uuid4()), pickle.HIGHEST_PROTOCOL
     with open(get_artifact_path() / name, mode="wb") as fp:
         pickle.dump(obj, fp, protocol=protocol)
@@ -163,6 +123,7 @@ def _random_state_to_json(obj: np.random.RandomState) -> dict:
     }
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a numpy object. See `to_json` for the

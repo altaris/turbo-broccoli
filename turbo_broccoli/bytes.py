@@ -1,5 +1,4 @@
 """bytes (de)serialization utilities."""
-__docformat__ = "google"
 
 from base64 import b64decode, b64encode
 from typing import Any
@@ -12,18 +11,11 @@ from turbo_broccoli.utils import (
 
 
 def _bytes_from_json_v2(dct: dict) -> bytes:
-    """
-    Deserializes a dict into a bytes object following the v1 specification.
-    """
     return b64decode(dct["data"])
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> bytes | None:
-    """
-    Deserializes a dict into a bytes object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__bytes__`.
-    """
     raise_if_nodecode("bytes")
     DECODERS = {
         # 1: _bytes_from_json_v2,  # Use turbo_broccoli v3

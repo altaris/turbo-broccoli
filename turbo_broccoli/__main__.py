@@ -1,7 +1,6 @@
 # pylint: disable=import-outside-toplevel
 
 """Turbo Broccoli CLI"""
-__docformat__ = "google"
 
 
 import sys
@@ -21,7 +20,7 @@ except ModuleNotFoundError:
 
 @click.group()
 def main():
-    """Entrypoint."""
+    """Entrypoint"""
 
 
 @main.command()
@@ -44,7 +43,7 @@ def main():
     help="Prints the full path of the artifacts",
 )
 def list_artifacts(file_path: Path, full_path: bool, *_, **__):
-    """Lists the artifacts referenced by the JSON file."""
+    """Lists the artifacts referenced by the JSON file"""
     import json
 
     from .environment import get_artifact_path

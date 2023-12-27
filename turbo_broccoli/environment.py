@@ -5,7 +5,6 @@ Environment variable and settings management. See the
 [README](https://cedric.hothanh.fr/turbo-broccoli/turbo_broccoli.html#environment-variables)
 for information about the supported environment variables.
 """
-__docformat__ = "google"
 
 try:
     from loguru import logger as logging

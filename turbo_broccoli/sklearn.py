@@ -1,5 +1,4 @@
 """Scikit-learn estimators"""
-__docformat__ = "google"
 
 import re
 from typing import Any, Callable, Tuple
@@ -154,7 +153,6 @@ def _all_base_estimators() -> dict[str, type]:
 
 
 def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
-    """Converts a sklearn estimator into a JSON document."""
     r = re.compile(r"\w[\w_]*[^_]_")
     return {
         "__type__": "sklearn.estimator." + obj.__class__.__name__,
@@ -183,7 +181,6 @@ def _sklearn_to_raw(obj: Any) -> dict:
 
 
 def _sklearn_tree_to_json(obj: Tree) -> dict:
-    """Converts a sklearn Tree object into a JSON document."""
     return {
         "__type__": "sklearn.tree",
         "__version__": 2,
@@ -192,10 +189,6 @@ def _sklearn_tree_to_json(obj: Tree) -> dict:
 
 
 def _json_raw_to_sklearn(dct: dict) -> Any:
-    """
-    Unpickles an otherwise unserializable sklearn object. Actually uses the
-    `joblib.load`.
-    """
     DECODERS = {
         # 1: _json_raw_to_sklearn_v1,  # Use turbo_broccoli v3
         2: _json_raw_to_sklearn_v2,
@@ -204,19 +197,10 @@ def _json_raw_to_sklearn(dct: dict) -> Any:
 
 
 def _json_raw_to_sklearn_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document (pointing to a picked sklearn object) to a sklearn
-    object following the v2 specification.
-    """
     return joblib.load(get_artifact_path() / dct["data"])
 
 
 def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
-    """
-    Converts a JSON document to a sklearn estimator. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key
-    `__sklearn__` should not be present.
-    """
     DECODERS = {
         # 1: _json_to_sklearn_estimator_v1,  # Use turbo_broccoli v3
         2: _json_to_sklearn_estimator_v2,
@@ -225,10 +209,6 @@ def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
 
 
 def _json_to_sklearn_estimator_v2(dct: dict) -> BaseEstimator:
-    """
-    Converts a JSON document to a sklearn estimator following the v2
-    specification.
-    """
     bes = _all_base_estimators()
     cls = bes[dct["__type__"].split(".")[-1]]
     obj = cls(**dct["params"])
@@ -237,12 +217,8 @@ def _json_to_sklearn_estimator_v2(dct: dict) -> BaseEstimator:
     return obj
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> BaseEstimator:
-    """
-    Deserializes a dict into a sklearn estimator. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__sklearn__`.
-    """
     raise_if_nodecode("sklearn")
     DECODERS = {  # Except sklearn estimators
         "sklearn.raw": _json_raw_to_sklearn,

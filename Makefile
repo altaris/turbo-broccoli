@@ -1,6 +1,7 @@
 DOCS_PATH 		= docs
 SRC_PATH 		= turbo_broccoli
 VENV			= ./venv
+PDOC			= pdoc -d google
 
 .ONESHELL:
 
@@ -9,12 +10,12 @@ all: format typecheck lint
 .PHONY: docs
 docs:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	pdoc --output-directory $(DOCS_PATH) $(SRC_PATH)
+	$(PDOC) --output-directory $(DOCS_PATH) $(SRC_PATH)
 
 .PHONY: docs-browser
 docs-browser:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	pdoc $(SRC_PATH)
+	$(PDOC) $(SRC_PATH)
 
 .PHONY: format
 format:
@@ -28,7 +29,6 @@ lint:
 test:
 	-mkdir -p out/test
 	TB_ARTIFACT_PATH="out/test" pytest -v
-	-rm -r out/test
 
 .PHONY: test-clean
 test-clean:

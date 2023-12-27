@@ -1,6 +1,5 @@
 # pylint: disable=bare-except
 """Main module containing the JSON encoder and decoder classes."""
-__docformat__ = "google"
 
 import json
 from pathlib import Path
@@ -185,6 +184,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         return super().encode(o)
 
 
+# pylint: disable=missing-function-docstring
 def from_json(doc: str) -> Any:
     """Converts a JSON document string back to a Python object"""
     return json.loads(doc, cls=TurboBroccoliDecoder)

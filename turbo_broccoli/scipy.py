@@ -1,5 +1,4 @@
 """scipy objects"""
-__docformat__ = "google"
 
 from typing import Any, Callable, Tuple
 
@@ -13,7 +12,6 @@ from turbo_broccoli.utils import (
 
 
 def _csr_matrix_to_json(m: csr_matrix) -> dict:
-    """Converts a csr_matrix into a JSON document."""
     return {
         "__type__": "scipy.csr_matrix",
         "__version__": 2,
@@ -26,11 +24,6 @@ def _csr_matrix_to_json(m: csr_matrix) -> dict:
 
 
 def _json_to_csr_matrix(dct: dict) -> csr_matrix:
-    """
-    Converts a JSON document to a csr_matrix. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__scipy__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_csr_matrix_v1,  # Use turbo_broccoli v3
         2: _json_to_csr_matrix_v2,
@@ -39,9 +32,6 @@ def _json_to_csr_matrix(dct: dict) -> csr_matrix:
 
 
 def _json_to_csr_matrix_v2(dct: dict) -> csr_matrix:
-    """
-    Converts a JSON document to a csr_matrix following the v1 specification.
-    """
     return csr_matrix(
         (dct["data"], dct["indices"], dct["indptr"]),
         shape=dct["shape"],
@@ -49,12 +39,8 @@ def _json_to_csr_matrix_v2(dct: dict) -> csr_matrix:
     )
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a csr_matrix. See `to_json` for the specification
-    `dct` is expected to follow. In particular, note that `dct` must contain
-    the key `__csr_matrix__`.
-    """
     raise_if_nodecode("scipy")
     DECODERS = {
         "scipy.csr_matrix": _json_to_csr_matrix,

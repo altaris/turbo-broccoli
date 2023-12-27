@@ -1,5 +1,4 @@
 """Python standard collections and container types (de)serialization"""
-__docformat__ = "google"
 
 from collections import deque, namedtuple
 from typing import Any, Callable, Tuple
@@ -12,7 +11,6 @@ from turbo_broccoli.utils import (
 
 
 def _deque_to_json(deq: deque) -> dict:
-    """Converts a deque into a JSON document."""
     return {
         "__type__": "collections.deque",
         "__version__": 2,
@@ -22,11 +20,6 @@ def _deque_to_json(deq: deque) -> dict:
 
 
 def _json_to_deque(dct: dict) -> deque | None:
-    """
-    Converts a JSON document to a deque. See `to_json` for the specification
-    `dct` is expected to follow. Note that the key `__collections__` should not
-    be present.
-    """
     DECODERS = {
         # 1: _json_to_deque_v1,  # Use turbo_broccoli v3
         2: _json_to_deque_v2,
@@ -35,16 +28,10 @@ def _json_to_deque(dct: dict) -> deque | None:
 
 
 def _json_to_deque_v2(dct: dict) -> Any:
-    """Converts a JSON document to a deque following the v1 specification."""
     return deque(dct["data"], dct["maxlen"])
 
 
 def _json_to_namedtuple(dct: dict) -> Any:
-    """
-    Converts a JSON document to a namedtuple. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key
-    `__collections__` should not be present.
-    """
     DECODERS = {
         # 1: _json_to_namedtuple_v1,  # Use turbo_broccoli v3
         2: _json_to_namedtuple_v2,
@@ -53,7 +40,6 @@ def _json_to_namedtuple(dct: dict) -> Any:
 
 
 def _json_to_namedtuple_v2(dct: dict) -> Any:
-    """Converts a JSON document to a deque following the v1 specification."""
     return namedtuple(dct["class"], dct["data"].keys())(**dct["data"])
 
 
@@ -96,12 +82,8 @@ def _set_to_json(obj: set) -> dict:
     return {"__type__": "collections.set", "__version__": 2, "data": list(obj)}
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a Python collection. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__collections__`.
-    """
     DECODERS = {
         "collections.deque": _json_to_deque,
         "collections.namedtuple": _json_to_namedtuple,

@@ -1,6 +1,5 @@
 # pylint: disable=missing-class-docstring
 """Serialize secrets"""
-__docformat__ = "google"
 
 import json
 from typing import Any, NoReturn
@@ -79,9 +78,6 @@ class SecretStr(Secret):
 
 
 def _from_json_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document to a Python type following the v2 specification.
-    """
     key = get_shared_key()
     if key is None:
         return LockedSecret()
@@ -89,12 +85,8 @@ def _from_json_v2(dct: dict) -> Any:
     return json.loads(box.decrypt(dct["data"]).decode("utf-8"))
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a secret Python type. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__secret__`.
-    """
     raise_if_nodecode("secret")
     DECODERS = {
         # 1: _from_json_v1,  # Use turbo_broccoli v3

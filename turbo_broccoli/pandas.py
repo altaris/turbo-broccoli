@@ -1,5 +1,4 @@
 """pandas (de)serialization utilities."""
-__docformat__ = "google"
 
 import json
 from io import StringIO
@@ -21,7 +20,6 @@ from turbo_broccoli.utils import (
 
 
 def _dataframe_to_json(df: pd.DataFrame) -> dict:
-    """Converts a pandas dataframe into a JSON document."""
     # Sometimes column names are int, so cannot be used as keys in a JSON
     # document. Eventhough int column names are not supported, this is
     # future-proofing.
@@ -50,11 +48,6 @@ def _dataframe_to_json(df: pd.DataFrame) -> dict:
 
 
 def _json_to_dataframe(dct: dict) -> pd.DataFrame:
-    """
-    Converts a JSON document to a pandas dataframe. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__pandas__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_dataframe_v1,  # Use turbo_broccoli v3
         2: _json_to_dataframe_v2,
@@ -63,10 +56,6 @@ def _json_to_dataframe(dct: dict) -> pd.DataFrame:
 
 
 def _json_to_dataframe_v2(dct: dict) -> pd.DataFrame:
-    """
-    Converts a JSON document to a pandas dataframe following the v2
-    specification.
-    """
     if "data" in dct:
         df = pd.read_json(StringIO(json.dumps(dct["data"])))
     else:
@@ -91,11 +80,6 @@ def _json_to_dataframe_v2(dct: dict) -> pd.DataFrame:
 
 
 def _json_to_series(dct: dict) -> pd.Series:
-    """
-    Converts a JSON document to a pandas series. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__pandas__`
-    should not be present.
-    """
     DECODERS = {
         # 1: _json_to_series_v1,  # Use turbo_broccoli v3
         2: _json_to_series_v2,
@@ -104,14 +88,10 @@ def _json_to_series(dct: dict) -> pd.Series:
 
 
 def _json_to_series_v2(dct: dict) -> pd.Series:
-    """
-    Converts a JSON document to a pandas series following the v2 specification.
-    """
     return dct["data"][dct["name"]]
 
 
 def _series_to_json(ser: pd.Series) -> dict:
-    """Converts a pandas series into a JSON document."""
     name = ser.name if ser.name is not None else "main"
     return {
         "__type__": "pandas.series",
@@ -121,12 +101,8 @@ def _series_to_json(ser: pd.Series) -> dict:
     }
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a pandas object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__pandas__`.
-    """
     raise_if_nodecode("pandas")
     DECODERS = {
         "pandas.dataframe": _json_to_dataframe,

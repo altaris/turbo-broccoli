@@ -1,5 +1,4 @@
 """keras (de)serialization utilities."""
-__docformat__ = "google"
 
 from functools import partial
 from typing import Any, Callable, Tuple
@@ -165,7 +164,6 @@ KERAS_OPTIMIZERS = {
 
 
 def _json_to_layer(dct: dict) -> Any:
-    """Converts a JSON document to a serializable keras object."""
     raise_if_nodecode("keras.layer")
     DECODERS = {
         # 1: _json_to_layer_v1,  # Use turbo_broccoli v3
@@ -175,10 +173,6 @@ def _json_to_layer(dct: dict) -> Any:
 
 
 def _json_to_layer_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document to a keras layer object following the v2
-    specification.
-    """
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_LAYERS,
@@ -186,7 +180,6 @@ def _json_to_layer_v2(dct: dict) -> Any:
 
 
 def _json_to_loss(dct: dict) -> Any:
-    """Converts a JSON document to a serializable keras object."""
     raise_if_nodecode("keras.loss")
     DECODERS = {
         # 1: _json_to_loss_v1,  # Use turbo_broccoli v3
@@ -196,10 +189,6 @@ def _json_to_loss(dct: dict) -> Any:
 
 
 def _json_to_loss_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document to a keras loss object following the v1
-    specification.
-    """
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_LOSSES,
@@ -207,7 +196,6 @@ def _json_to_loss_v2(dct: dict) -> Any:
 
 
 def _json_to_metric(dct: dict) -> Any:
-    """Converts a JSON document to a serializable keras object."""
     raise_if_nodecode("keras.metric")
     DECODERS = {
         # 1: _json_to_metric_v1,  # Use turbo_broccoli v3
@@ -217,10 +205,6 @@ def _json_to_metric(dct: dict) -> Any:
 
 
 def _json_to_metric_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document to a keras metric object following the v1
-    specification.
-    """
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_METRICS,
@@ -228,7 +212,6 @@ def _json_to_metric_v2(dct: dict) -> Any:
 
 
 def _json_to_model(dct: dict) -> Any:
-    """Converts a JSON document to a serializable keras object."""
     raise_if_nodecode("keras.model")
     DECODERS = {
         # 1: _json_to_model_v1,  # Use turbo_broccoli v3
@@ -240,10 +223,6 @@ def _json_to_model(dct: dict) -> Any:
 
 
 def _json_to_model_v5(dct: dict) -> Any:
-    """
-    Converts a JSON document to a keras model object following the v2
-    specification.
-    """
     if "model" in dct:
         model = keras.models.model_from_config(dct["model"])
         model.set_weights(dct["weights"])
@@ -257,7 +236,6 @@ def _json_to_model_v5(dct: dict) -> Any:
 
 
 def _json_to_optimizer(dct: dict) -> Any:
-    """Converts a JSON document to a serializable keras object."""
     raise_if_nodecode("keras.optimizer")
     DECODERS = {
         # 1: _json_to_optimizer_v1,  # Use turbo_broccoli v3
@@ -267,10 +245,6 @@ def _json_to_optimizer(dct: dict) -> Any:
 
 
 def _json_to_optimizer_v2(dct: dict) -> Any:
-    """
-    Converts a JSON document to a keras optimizer object following the v1
-    specification.
-    """
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_OPTIMIZERS,
@@ -278,7 +252,6 @@ def _json_to_optimizer_v2(dct: dict) -> Any:
 
 
 def _generic_keras_to_json(obj: Any, type_: str) -> dict:
-    """Serializes a keras object using `keras.utils.serialize_keras_object`"""
     return {
         "__type__": "keras." + type_,
         "__version__": 2,
@@ -287,7 +260,6 @@ def _generic_keras_to_json(obj: Any, type_: str) -> dict:
 
 
 def _model_to_json(model: keras.Model) -> dict:
-    """Serializes a keras model"""
     fmt = get_keras_format()
     if fmt == "json":
         return {
@@ -309,12 +281,8 @@ def _model_to_json(model: keras.Model) -> dict:
     }
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a Keras object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__keras__`.
-    """
     raise_if_nodecode("keras")
     DECODERS = {
         "keras.model": _json_to_model,  # must be first!

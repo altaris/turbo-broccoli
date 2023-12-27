@@ -1,5 +1,4 @@
 """Tensorflow (de)serialization utilities."""
-__docformat__ = "google"
 
 from typing import Any, Callable, Tuple
 from uuid import uuid4
@@ -20,7 +19,6 @@ from turbo_broccoli.utils import (
 
 
 def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
-    """Converts a JSON document to a tensorflow tensor."""
     DECODERS = {
         # 1: _json_to_sparse_tensor_v1,  # Use turbo_broccoli v3
         2: _json_to_sparse_tensor_v2,
@@ -29,10 +27,6 @@ def _json_to_sparse_tensor(dct: dict) -> tf.Tensor:
 
 
 def _json_to_sparse_tensor_v2(dct: dict) -> tf.Tensor:
-    """
-    Converts a JSON document following the v2 specification to a tensorflow
-    sparse tensor.
-    """
     return tf.SparseTensor(
         dense_shape=dct["shape"],
         indices=dct["indices"],
@@ -41,7 +35,6 @@ def _json_to_sparse_tensor_v2(dct: dict) -> tf.Tensor:
 
 
 def _json_to_tensor(dct: dict) -> tf.Tensor:
-    """Converts a JSON document to a tensorflow tensor."""
     DECODERS = {
         # 1: _json_to_tensor_v1,  # Use turbo_broccoli v3
         # 2: _json_to_tensor_v2,  # Use turbo_broccoli v3
@@ -51,17 +44,12 @@ def _json_to_tensor(dct: dict) -> tf.Tensor:
 
 
 def _json_to_tensor_v3(dct: dict) -> tf.Tensor:
-    """
-    Converts a JSON document following the v2 specification to a tensorflow
-    tensor.
-    """
     if "data" in dct:
         return st.load(dct["data"])["data"]
     return st.load_file(get_artifact_path() / dct["id"])["data"]
 
 
 def _json_to_variable(dct: dict) -> tf.Variable:
-    """Converts a JSON document to a tensorflow variable."""
     DECODERS = {
         # 1: _json_to_variable_v1,  # Use turbo_broccoli v3
         # 2: _json_to_variable_v2,  # Use turbo_broccoli v3
@@ -71,10 +59,6 @@ def _json_to_variable(dct: dict) -> tf.Variable:
 
 
 def _json_to_variable_v3(dct: dict) -> tf.Variable:
-    """
-    Converts a JSON document following the v3 specification to a tensorflow
-    variable.
-    """
     return tf.Variable(
         initial_value=dct["value"],
         name=dct["name"],
@@ -83,14 +67,12 @@ def _json_to_variable_v3(dct: dict) -> tf.Variable:
 
 
 def _ragged_tensor_to_json(tens: tf.Tensor) -> dict:
-    """Serializes a general tensor"""
     raise NotImplementedError(
         "Serialization of ragged tensors is not supported"
     )
 
 
 def _sparse_tensor_to_json(tens: tf.SparseTensor) -> dict:
-    """Serializes a sparse tensor"""
     return {
         "__type__": "tensorflow.sparse_tensor",
         "__version__": 2,
@@ -101,9 +83,6 @@ def _sparse_tensor_to_json(tens: tf.SparseTensor) -> dict:
 
 
 def _tensor_to_json(tens: tf.Tensor) -> dict:
-    """
-    Serializes a general tensor following the v3 format.
-    """
     if tens.numpy().nbytes <= get_max_nbytes():
         return {
             "__type__": "tensorflow.tensor",
@@ -120,7 +99,6 @@ def _tensor_to_json(tens: tf.Tensor) -> dict:
 
 
 def _variable_to_json(var: tf.Variable) -> dict:
-    """Serializes a tensorflow variable"""
     return {
         "__type__": "tensorflow.variable",
         "__version__": 3,
@@ -130,12 +108,8 @@ def _variable_to_json(var: tf.Variable) -> dict:
     }
 
 
+# pylint: disable=missing-function-docstring
 def from_json(dct: dict) -> Any:
-    """
-    Deserializes a dict into a tensorflow object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__tensorflow__`.
-    """
     raise_if_nodecode("tensorflow")
     DECODERS = {
         "tensorflow.sparse_tensor": _json_to_sparse_tensor,
