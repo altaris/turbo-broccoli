@@ -11,14 +11,8 @@ from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
 
 def to_json(obj: Any) -> dict:
     """
-    Serializes a generic object into JSON by cases. The return dict has the
-    following structure:
-
-        {
-            "__type__": "generic",
-            "__version__": 2,
-            "data": {...},
-        }
+    Serializes a generic object into JSON. The return document contains all
+    attributes listed in the object's `__turbo_broccoli__` attribute.
 
     """
     if not (
@@ -27,8 +21,4 @@ def to_json(obj: Any) -> dict:
     ):
         raise TypeNotSupported()
     raise_if_nodecode("generic")
-    return {
-        "__type__": "generic",
-        "__version__": 2,
-        "data": {k: getattr(obj, k) for k in obj.__turbo_broccoli__},
-    }
+    return {k: getattr(obj, k) for k in obj.__turbo_broccoli__}

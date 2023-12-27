@@ -91,22 +91,20 @@ has the `__turbo_broccoli__` attribute. This attribute is expected to be a list
 of attributes whose values will be serialized. For example,
 ```py
 class C:
-    __turbo_broccoli__ = ["a"]
+    __turbo_broccoli__ = ["a", "b"]
     a: int
     b: int
+    c: int
 
 x = C()
-x.a, x.b = 42, 43
+x.a, x.b, x.c = 42, 43, 44
 json.dumps(x, cls=tb.TurboBroccoliEncoder)
 ```
 produces the following string (modulo indentation):
 ```json
 {
-  "__type__": "generic",
-  "__version__": 2,
-  "data": {
-    "a": 42
-  }
+  "a": 42,
+  "b": 43,
 }
 ```
 
