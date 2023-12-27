@@ -157,9 +157,8 @@ def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
     """Converts a sklearn estimator into a JSON document."""
     r = re.compile(r"\w[\w_]*[^_]_")
     return {
-        "__type__": "estimator",
-        "cls": obj.__class__.__name__,
-        "__version__": 1,
+        "__type__": "sklearn.estimator." + obj.__class__.__name__,
+        "__version__": 2,
         "params": obj.get_params(deep=False),
         "attrs": {k: v for k, v in obj.__dict__.items() if r.match(k)},
     }
@@ -177,8 +176,8 @@ def _sklearn_to_raw(obj: Any) -> dict:
     name = str(uuid4())
     joblib.dump(obj, get_artifact_path() / name)
     return {
-        "__type__": "raw",
-        "__version__": 1,
+        "__type__": "sklearn.raw",
+        "__version__": 2,
         "data": name,
     }
 
@@ -186,8 +185,8 @@ def _sklearn_to_raw(obj: Any) -> dict:
 def _sklearn_tree_to_json(obj: Tree) -> dict:
     """Converts a sklearn Tree object into a JSON document."""
     return {
-        "__type__": "tree",
-        "__version__": 1,
+        "__type__": "sklearn.tree",
+        "__version__": 2,
         **{a: getattr(obj, a) for a in _SKLEARN_TREE_ATTRIBUTES},
     }
 
@@ -198,15 +197,16 @@ def _json_raw_to_sklearn(dct: dict) -> Any:
     `joblib.load`.
     """
     DECODERS = {
-        1: _json_raw_to_sklearn_v1,
+        # 1: _json_raw_to_sklearn_v1,  # Use turbo_broccoli v3
+        2: _json_raw_to_sklearn_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_raw_to_sklearn_v1(dct: dict) -> Any:
+def _json_raw_to_sklearn_v2(dct: dict) -> Any:
     """
     Converts a JSON document (pointing to a picked sklearn object) to a sklearn
-    object following the v1 specification.
+    object following the v2 specification.
     """
     return joblib.load(get_artifact_path() / dct["data"])
 
@@ -218,47 +218,22 @@ def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
     `__sklearn__` should not be present.
     """
     DECODERS = {
-        1: _json_to_sklearn_estimator_v1,
+        # 1: _json_to_sklearn_estimator_v1,  # Use turbo_broccoli v3
+        2: _json_to_sklearn_estimator_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_sklearn_estimator_v1(dct: dict) -> BaseEstimator:
+def _json_to_sklearn_estimator_v2(dct: dict) -> BaseEstimator:
     """
-    Converts a JSON document to a sklearn estimator following the v1
+    Converts a JSON document to a sklearn estimator following the v2
     specification.
     """
     bes = _all_base_estimators()
-    cls = bes[dct["cls"]]
+    cls = bes[dct["__type__"].split(".")[-1]]
     obj = cls(**dct["params"])
     for k, v in dct["attrs"].items():
         setattr(obj, k, v)
-    return obj
-
-
-def _json_to_sklearn_tree(dct: dict) -> BaseEstimator:
-    """
-    Converts a JSON document to a sklearn tree object. See `to_json` for the
-    specification `dct` is expected to follow. Note that the key `__sklearn__`
-    should not be present.
-    """
-    DECODERS = {
-        1: _json_to_sklearn_tree_v1,
-    }
-    return DECODERS[dct["__version__"]](dct)
-
-
-def _json_to_sklearn_tree_v1(dct: dict) -> BaseEstimator:
-    """
-    Converts a JSON document to a sklearn tree following the v1 specification.
-
-    See also:
-        - https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_tree.pxd
-        - https://github.com/scikit-learn/scikit-learn/blob/9aaed498795f68e5956ea762fef9c440ca9eb239/sklearn/tree/_classes.py#L349
-    """
-    obj = Tree(dct["n_features"], dct["n_classes"], dct["n_outputs"])
-    for k in _SKLEARN_TREE_ATTRIBUTES:
-        setattr(obj, k, dct[k])
     return obj
 
 
@@ -269,15 +244,15 @@ def from_json(dct: dict) -> BaseEstimator:
     must contain the key `__sklearn__`.
     """
     raise_if_nodecode("sklearn")
-    DECODERS = {
-        "estimator": _json_to_sklearn_estimator,
-        # "tree": _json_to_sklearn_tree, # Doesn't work lol
-        "raw": _json_raw_to_sklearn,
+    DECODERS = {  # Except sklearn estimators
+        "sklearn.raw": _json_raw_to_sklearn,
     }
     try:
-        type_name = dct["__sklearn__"]["__type__"]
-        raise_if_nodecode("sklearn." + type_name)
-        return DECODERS[type_name](dct["__sklearn__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        if type_name.startswith("sklearn.estimator."):
+            return _json_to_sklearn_estimator(dct)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -285,20 +260,16 @@ def from_json(dct: dict) -> BaseEstimator:
 def to_json(obj: BaseEstimator) -> dict:
     """
     Serializes a sklearn estimator into JSON by cases. See the README for the
-    precise list of supported types.
-
-    The return dict has the following structure:
+    precise list of supported types. The return dict has the following
+    structure:
 
     * if the object is an estimator:
 
             {
-                "__sklearn__": {
-                    "__type__": "estimator",
-                    "__version__": 1,
-                    "cls": <class name>,
-                    "params": <dict returned by get_params(deep=False)>,
-                    "attrs": {...}
-                },
+                "__type__": "sklearn.estimator.<CLASS NAME>",
+                "__version__": 2,
+                "params": <dict returned by get_params(deep=False)>,
+                "attrs": {...}
             }
 
       where the `attrs` dict contains all the attributes of the estimator as
@@ -307,11 +278,9 @@ def to_json(obj: BaseEstimator) -> dict:
     * otherwise:
 
             {
-                "__sklearn__": {
-                    "__type__": "raw",
-                    "__version__": 1,
-                    "data": <uuid4>
-                },
+                "__type__": "sklearn.raw",
+                "__version__": 2,
+                "data": <uuid4>
             }
 
       where the UUID4 value points to an pickle file artifact.
@@ -323,9 +292,8 @@ def to_json(obj: BaseEstimator) -> dict:
 
     ENCODERS += [
         (BaseEstimator, _sklearn_estimator_to_json),
-        # (Tree, _sklearn_tree_to_json),  # Doesn't work lol
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__sklearn__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

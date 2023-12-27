@@ -13,12 +13,13 @@ from turbo_broccoli.utils import (
 )
 
 
-def _json_to_dataclass_v2(dct: dict) -> Any:
+def _json_to_dataclass_v3(dct: dict) -> Any:
     """
     Converts a JSON document following the v2 specification to a dataclass
     object.
     """
-    return get_registered_dataclass_type(dct["class"])(**dct["data"])
+    class_name = dct["__type__"].split(".")[-1]
+    return get_registered_dataclass_type(class_name)(**dct["data"])
 
 
 def from_json(dct: dict) -> Any:
@@ -29,13 +30,12 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("dataclass")
     DECODERS = {
-        2: _json_to_dataclass_v2,
+        # 2: _json_to_dataclass_v2,  # Use turbo_broccoli v3
+        3: _json_to_dataclass_v3,
     }
     try:
-        raise_if_nodecode("dataclass." + dct["__dataclass__"]["class"])
-        return DECODERS[dct["__dataclass__"]["__version__"]](
-            dct["__dataclass__"]
-        )
+        raise_if_nodecode(dct["__type__"])
+        return DECODERS[dct["__version__"]](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -46,21 +46,18 @@ def to_json(obj: Any) -> dict:
     following structure
 
         {
-            "__dataclass__": {
-                "__version__": 2,
-                "class": <str>,
-                "data": {...},
-            },
+            "__type__": "dataclass.<CLASS NAME>",
+            "__version__": 3,
+            "class": <str>,
+            "data": {...},
         }
 
     where the `{...}` is `obj.__dict__`.
     """
     if hasattr(obj, "__dataclass_fields__"):
         return {
-            "__dataclass__": {
-                "__version__": 2,
-                "class": obj.__class__.__name__,
-                "data": obj.__dict__,
-            },
+            "__type__": "dataclass." + obj.__class__.__name__,
+            "__version__": 3,
+            "data": obj.__dict__,
         }
     raise TypeNotSupported()

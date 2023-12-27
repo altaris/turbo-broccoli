@@ -15,8 +15,8 @@ from turbo_broccoli.utils import (
 def _csr_matrix_to_json(m: csr_matrix) -> dict:
     """Converts a csr_matrix into a JSON document."""
     return {
-        "__type__": "csr_matrix",
-        "__version__": 1,
+        "__type__": "scipy.csr_matrix",
+        "__version__": 2,
         "data": m.data,
         "dtype": m.dtype,
         "indices": m.indices,
@@ -32,12 +32,13 @@ def _json_to_csr_matrix(dct: dict) -> csr_matrix:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_csr_matrix_v1,
+        # 1: _json_to_csr_matrix_v1,  # Use turbo_broccoli v3
+        2: _json_to_csr_matrix_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_csr_matrix_v1(dct: dict) -> csr_matrix:
+def _json_to_csr_matrix_v2(dct: dict) -> csr_matrix:
     """
     Converts a JSON document to a csr_matrix following the v1 specification.
     """
@@ -56,12 +57,12 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("scipy")
     DECODERS = {
-        "csr_matrix": _json_to_csr_matrix,
+        "scipy.csr_matrix": _json_to_csr_matrix,
     }
     try:
-        type_name = dct["__scipy__"]["__type__"]
-        raise_if_nodecode("scipy." + type_name)
-        return DECODERS[type_name](dct["__scipy__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -69,29 +70,19 @@ def from_json(dct: dict) -> Any:
 def to_json(obj: Any) -> dict:
     """
     Serializes a Scipy object into JSON by cases. See the README for the
-    precise list of supported types.
-
-    The return dict has the following structure
-
-        {
-            "__scipy__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
+    precise list of supported types. The return dict has the following
+    structure:
 
     - [`csr_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix)
 
             {
-                "__scipy__": {
-                    "__type__": "csr_matrix",
-                    "__version__": 1,
-                    "data": ...,
-                    "dtype": ...,
-                    "indices": ...,
-                    "indptr": ...,
-                    "shape": ...,
-                }
+                "__type__": "scipy.csr_matrix",
+                "__version__": 2,
+                "data": ...,
+                "dtype": ...,
+                "indices": ...,
+                "indptr": ...,
+                "shape": ...,
             }
 
     """
@@ -100,5 +91,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__scipy__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

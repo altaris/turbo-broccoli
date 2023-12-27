@@ -26,14 +26,15 @@ def _json_to_module(dct: dict) -> torch.nn.Module:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_module_v1,
+        # 1: _json_to_module_v1,  # Use turbo_broccoli v3
+        2: _json_to_module_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_module_v1(dct: dict) -> torch.nn.Module:
+def _json_to_module_v2(dct: dict) -> torch.nn.Module:
     """
-    Converts a JSON document to a `pytorch` module following the v1
+    Converts a JSON document to a `pytorch` module following the v2
     specification.
     """
     module: torch.nn.Module = get_registered_pytorch_module_type(
@@ -50,14 +51,16 @@ def _json_to_tensor(dct: dict) -> torch.Tensor:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_tensor_v1,
+        # 1: _json_to_tensor_v1,  # Use turbo_broccoli v3
+        2: _json_to_tensor_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_tensor_v1(dct: dict) -> torch.Tensor:
+def _json_to_tensor_v2(dct: dict) -> torch.Tensor:
     """
-    Converts a JSON document to a `pytorch` tensor following the v1 specification.
+    Converts a JSON document to a `pytorch` tensor following the v2
+    specification.
     """
     if "data" in dct:
         if dct["data"] is None:  # empty tensor
@@ -69,8 +72,8 @@ def _json_to_tensor_v1(dct: dict) -> torch.Tensor:
 def _module_to_json(module: torch.nn.Module) -> dict:
     """Converts a pytorch `torch.nn.Module` into a JSON document."""
     return {
-        "__type__": "module",
-        "__version__": 1,
+        "__type__": "pytorch.module",
+        "__version__": 2,
         "class": module.__class__.__name__,
         "state": module.state_dict(),
     }
@@ -81,21 +84,21 @@ def _tensor_to_json(tens: torch.Tensor) -> dict:
     x = tens.detach().cpu().contiguous()
     if x.numel() == 0:  # empty tensor
         return {
-            "__type__": "tensor",
-            "__version__": 1,
+            "__type__": "pytorch.tensor",
+            "__version__": 2,
             "data": None,
         }
     if x.numpy().nbytes <= get_max_nbytes():
         return {
-            "__type__": "tensor",
-            "__version__": 1,
+            "__type__": "pytorch.tensor",
+            "__version__": 2,
             "data": st.save({"data": x}),
         }
     name = str(uuid4())
     st.save_file({"data": x}, get_artifact_path() / name)
     return {
-        "__type__": "tensor",
-        "__version__": 1,
+        "__type__": "pytorch.tensor",
+        "__version__": 2,
         "id": name,
     }
 
@@ -108,13 +111,13 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("pytorch")
     DECODERS = {
-        "tensor": _json_to_tensor,
-        "module": _json_to_module,
+        "pytorch.tensor": _json_to_tensor,
+        "pytorch.module": _json_to_module,
     }
     try:
-        type_name = dct["__pytorch__"]["__type__"]
-        raise_if_nodecode("pytorch." + type_name)
-        return DECODERS[type_name](dct["__pytorch__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -122,47 +125,32 @@ def from_json(dct: dict) -> Any:
 def to_json(obj: Any) -> dict:
     """
     Serializes a tensor into JSON by cases. See the README for the precise list
-    of supported types.
-
-    The return dict has the following structure
-
-        {
-            "__pytorch__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
+    of supported types. The return dict has the following structure:
 
     - Tensor:
 
             {
-                "__pytorch__": {
-                    "__type__": "tensor",
-                    "__version__": 1,
-                    "data": <bytes>,
-                }
+                "__type__": "pytorch.tensor",
+                "__version__": 2,
+                "data": <bytes>,
             }
 
       or if the underlying data is too large resulting in an artifact being
       created:
 
             {
-                "__pytorch__": {
-                    "__type__": "tensor",
-                    "__version__": 1,
-                    "id": <UUID4 str>,
-                }
+                "__type__": "pytorch.tensor",
+                "__version__": 2,
+                "id": <UUID4 str>,
             }
 
     - Module:
 
             {
-                "__pytorch__": {
-                    "__type__": "module",
-                    "__version__": 1,
-                    "class": <class name>,
-                    "state": {...},
-                }
+                "__type__": "pytorch.module",
+                "__version__": 2,
+                "class": <class name>,
+                "state": {...},
             }
 
     """
@@ -172,5 +160,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__pytorch__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

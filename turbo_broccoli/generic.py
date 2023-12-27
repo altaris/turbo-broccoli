@@ -16,10 +16,9 @@ def to_json(obj: Any) -> dict:
     following structure:
 
         {
-            "__generic__": {
-                "__version__": 1,
-                "data": {...},
-            },
+            "__type__": "generic",
+            "__version__": 2,
+            "data": {...},
         }
 
     """
@@ -30,8 +29,7 @@ def to_json(obj: Any) -> dict:
         raise TypeNotSupported()
     raise_if_nodecode("generic")
     return {
-        "__generic__": {
-            "__version__": 1,
-            "data": {k: getattr(obj, k) for k in obj.__turbo_broccoli__},
-        },
+        "__type__": "generic",
+        "__version__": 2,
+        "data": {k: getattr(obj, k) for k in obj.__turbo_broccoli__},
     }

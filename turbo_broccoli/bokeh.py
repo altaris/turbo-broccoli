@@ -22,8 +22,8 @@ from turbo_broccoli.utils import (
 def _buffer_to_json(obj: Buffer) -> dict:
     """Serializes a bokeh object.into a JSON document."""
     return {
-        "__type__": "buffer",
-        "__version__": 1,
+        "__type__": "bokeh.buffer",
+        "__version__": 2,
         "id": obj.id,
         "data": obj.to_bytes(),
     }
@@ -33,8 +33,8 @@ def _generic_to_json(obj: Figure) -> dict:
     """Serializes a bokeh object.into a JSON document."""
     s = Serializer().serialize(obj)
     return {
-        "__type__": "generic",
-        "__version__": 1,
+        "__type__": "bokeh.generic",
+        "__version__": 2,
         "content": s.content,
         "buffers": s.buffers,
     }
@@ -47,12 +47,13 @@ def _json_to_buffer(dct: dict) -> Buffer:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_buffer_v1,
+        # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
+        2: _json_to_buffer_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_buffer_v1(dct: dict) -> Buffer:
+def _json_to_buffer_v2(dct: dict) -> Buffer:
     """
     Converts a JSON document to a bokeh buffer following the v1 specification.
     """
@@ -66,12 +67,13 @@ def _json_to_generic(dct: dict) -> Any:
     `__bokeh__` should not be present.
     """
     DECODERS = {
-        1: _json_to_generic_v1,
+        # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
+        2: _json_to_generic_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_generic_v1(dct: dict) -> Any:
+def _json_to_generic_v2(dct: dict) -> Any:
     """
     Converts a JSON document Serializes a bokeh object.following the v1
     specification.
@@ -88,13 +90,13 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("bokeh")
     DECODERS = {
-        "buffer": _json_to_buffer,
-        "generic": _json_to_generic,
+        "bokeh.buffer": _json_to_buffer,
+        "bokeh.generic": _json_to_generic,
     }
     try:
-        type_name = dct["__bokeh__"]["__type__"]
-        raise_if_nodecode("bokeh." + type_name)
-        return DECODERS[type_name](dct["__bokeh__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -105,33 +107,22 @@ def to_json(obj: Any) -> dict:
 
     The return dict has the following structure
 
-        {
-            "__bokeh__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
-
     - `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
 
             {
-                "__bokeh__": {
-                    "__type__": "generic",
-                    "__version__": 1,
-                    "content": {...},
-                    "buffers": [...],
-                }
+                "__type__": "bokeh.generic",
+                "__version__": 2,
+                "content": {...},
+                "buffers": [...],
             }
 
     - `bokeh.core.serialization.Buffer`: (for internal use)
 
             {
-                "__bokeh__": {
-                    "__type__": "buffer",
-                    "__version__": 1,
-                    "id": <str>,
-                    "data": <bytes>,
-                }
+                "__type__": "bokeh.buffer",
+                "__version__": 2,
+                "id": <str>,
+                "data": <bytes>,
             }
 
     """
@@ -142,5 +133,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__bokeh__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

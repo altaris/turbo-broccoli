@@ -22,5 +22,5 @@ def test_dataclass():
     x.a_list = list(range(10))
     x.a_str = "Hello 🌎"
     y = {"a_str": x.a_str, "an_int": x.an_int}
-    z = from_json(to_json(x))["__generic__"]["data"]
+    z = from_json(to_json(x))["data"]
     assert y == z

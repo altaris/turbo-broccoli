@@ -94,32 +94,32 @@ class TurboBroccoliDecoder(json.JSONDecoder):
     def _hook(self, dct):
         """Deserialization hook"""
         DECODERS: dict[str, Callable[[dict], Any]] = {
-            "__dict__": turbo_broccoli.dict.from_json,
-            "__bytes__": turbo_broccoli.bytes.from_json,
+            "dict": turbo_broccoli.dict.from_json,
+            "bytes": turbo_broccoli.bytes.from_json,
         }
         if HAS_KERAS:
-            DECODERS["__keras__"] = turbo_broccoli.keras.from_json
+            DECODERS["keras"] = turbo_broccoli.keras.from_json
         if HAS_NUMPY:
-            DECODERS["__numpy__"] = turbo_broccoli.numpy.from_json
+            DECODERS["numpy"] = turbo_broccoli.numpy.from_json
         if HAS_PANDAS:
-            DECODERS["__pandas__"] = turbo_broccoli.pandas.from_json
+            DECODERS["pandas"] = turbo_broccoli.pandas.from_json
         if HAS_PYTORCH:
-            DECODERS["__pytorch__"] = turbo_broccoli.pytorch.from_json
+            DECODERS["pytorch"] = turbo_broccoli.pytorch.from_json
         if HAS_SECRET:
-            DECODERS["__secret__"] = turbo_broccoli.secret.from_json
+            DECODERS["secret"] = turbo_broccoli.secret.from_json
         if HAS_TENSORFLOW:
-            DECODERS["__tensorflow__"] = turbo_broccoli.tensorflow.from_json
+            DECODERS["tensorflow"] = turbo_broccoli.tensorflow.from_json
         if HAS_SCIPY:
-            DECODERS["__scipy__"] = turbo_broccoli.scipy.from_json
+            DECODERS["scipy"] = turbo_broccoli.scipy.from_json
         if HAS_SKLEARN:
-            DECODERS["__sklearn__"] = turbo_broccoli.sklearn.from_json
+            DECODERS["sklearn"] = turbo_broccoli.sklearn.from_json
         if HAS_BOKEH:
-            DECODERS["__bokeh__"] = turbo_broccoli.bokeh.from_json
+            DECODERS["bokeh"] = turbo_broccoli.bokeh.from_json
         # Intentionally put last
-        DECODERS["__collections__"] = turbo_broccoli.collections.from_json
-        DECODERS["__dataclass__"] = turbo_broccoli.dataclass.from_json
+        DECODERS["collections"] = turbo_broccoli.collections.from_json
+        DECODERS["dataclass"] = turbo_broccoli.dataclass.from_json
         for t, f in DECODERS.items():
-            if t in dct:
+            if str(dct.get("__type__", "")).startswith(t):
                 try:
                     return f(dct)
                 except TypeIsNodecode:

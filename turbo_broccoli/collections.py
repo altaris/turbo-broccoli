@@ -1,4 +1,4 @@
-"""Python standard collections (de)serialization"""
+"""Python standard collections and container types (de)serialization"""
 __docformat__ = "google"
 
 from collections import deque, namedtuple
@@ -14,8 +14,8 @@ from turbo_broccoli.utils import (
 def _deque_to_json(deq: deque) -> dict:
     """Converts a deque into a JSON document."""
     return {
-        "__type__": "deque",
-        "__version__": 1,
+        "__type__": "collections.deque",
+        "__version__": 2,
         "data": list(deq),
         "maxlen": deq.maxlen,
     }
@@ -28,12 +28,13 @@ def _json_to_deque(dct: dict) -> deque | None:
     be present.
     """
     DECODERS = {
-        1: _json_to_deque_v1,
+        # 1: _json_to_deque_v1,  # Use turbo_broccoli v3
+        2: _json_to_deque_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_deque_v1(dct: dict) -> Any:
+def _json_to_deque_v2(dct: dict) -> Any:
     """Converts a JSON document to a deque following the v1 specification."""
     return deque(dct["data"], dct["maxlen"])
 
@@ -45,24 +46,26 @@ def _json_to_namedtuple(dct: dict) -> Any:
     `__collections__` should not be present.
     """
     DECODERS = {
-        1: _json_to_namedtuple_v1,
+        # 1: _json_to_namedtuple_v1,  # Use turbo_broccoli v3
+        2: _json_to_namedtuple_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_namedtuple_v1(dct: dict) -> Any:
+def _json_to_namedtuple_v2(dct: dict) -> Any:
     """Converts a JSON document to a deque following the v1 specification."""
     return namedtuple(dct["class"], dct["data"].keys())(**dct["data"])
 
 
 def _json_to_set(dct: dict) -> set:
     DECODERS = {
-        1: _json_to_set_v1,
+        # 1: _json_to_set_v1,  # Use turbo_broccoli v3
+        2: _json_to_set_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_set_v1(dct: dict) -> Any:
+def _json_to_set_v2(dct: dict) -> Any:
     return set(dct["data"])
 
 
@@ -82,15 +85,15 @@ def _namedtuple_to_json(tup: tuple) -> dict:
             "`_field_defaults`, `_fields`, `_make`, and `_replace`."
         )
     return {
-        "__type__": "namedtuple",
-        "__version__": 1,
+        "__type__": "collections.namedtuple",
+        "__version__": 2,
         "class": tup.__class__.__name__,
         "data": tup._asdict(),  # type: ignore
     }
 
 
 def _set_to_json(obj: set) -> dict:
-    return {"__type__": "set", "__version__": 1, "data": list(obj)}
+    return {"__type__": "collections.set", "__version__": 2, "data": list(obj)}
 
 
 def from_json(dct: dict) -> Any:
@@ -100,14 +103,14 @@ def from_json(dct: dict) -> Any:
     must contain the key `__collections__`.
     """
     DECODERS = {
-        "deque": _json_to_deque,
-        "namedtuple": _json_to_namedtuple,
-        "set": _json_to_set,
+        "collections.deque": _json_to_deque,
+        "collections.namedtuple": _json_to_namedtuple,
+        "collections.set": _json_to_set,
     }
     try:
-        type_name = dct["__collections__"]["__type__"]
-        raise_if_nodecode("collections." + type_name)
-        return DECODERS[type_name](dct["__collections__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -115,47 +118,33 @@ def from_json(dct: dict) -> Any:
 def to_json(obj: Any) -> dict:
     """
     Serializes a Python collection into JSON by cases. See the README for the
-    precise list of supported types.
-
-    The return dict has the following structure
-
-        {
-            "__collections__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
+    precise list of supported types. The return dict has the following
+    structure:
 
     - `collections.deque`:
 
             {
-                "__collections__": {
-                    "__type__": "deque,
-                    "__version__": 1,
-                    "data": [...],
-                    "maxlen": <int or None>,
-                }
+                "__type__": "collections.deque",
+                "__version__": 2,
+                "data": [...],
+                "maxlen": <int or None>,
             }
 
     - `collections.namedtuple`
 
             {
-                "__collections__": {
-                    "__type__": "namedtuple,
-                    "__version__": 1,
-                    "class": <str>,
-                    "data": {...},
-                }
+                "__type__": "collections.namedtuple",
+                "__version__": 2,
+                "class": <str>,
+                "data": {...},
             }
 
     - `set`
 
             {
-                "__collections__": {
-                    "__type__": "set,
-                    "__version__": 1,
-                    "data": [...],
-                }
+                "__type__": "collections.set",
+                "__version__": 2,
+                "data": [...],
             }
 
 
@@ -167,5 +156,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__collections__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

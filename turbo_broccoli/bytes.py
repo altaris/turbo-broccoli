@@ -11,7 +11,7 @@ from turbo_broccoli.utils import (
 )
 
 
-def _bytes_from_json_v1(dct: dict) -> bytes:
+def _bytes_from_json_v2(dct: dict) -> bytes:
     """
     Deserializes a dict into a bytes object following the v1 specification.
     """
@@ -26,33 +26,31 @@ def from_json(dct: dict) -> bytes | None:
     """
     raise_if_nodecode("bytes")
     DECODERS = {
-        1: _bytes_from_json_v1,
+        # 1: _bytes_from_json_v2,  # Use turbo_broccoli v3
+        2: _bytes_from_json_v2,
     }
     try:
-        return DECODERS[dct["__bytes__"]["__version__"]](dct["__bytes__"])
+        return DECODERS[dct["__version__"]](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
 def to_json(obj: Any) -> dict:
     """
-    Serializes a Python `bytes` object into JSON using a base 64 + ASCII scheme.
-
-    The return dict has the following structure
+    Serializes a Python `bytes` object into JSON using a base 64 + ASCII
+    scheme. The return dict has the following structure
 
         {
-            "__bytes__": {
-                "__version__": 1,
-                "data": <str>,
-            },
+            "__type__": "bytes",
+            "__version__": 2,
+            "data": <ASCII str>,
         }
 
     """
     if isinstance(obj, bytes):
         return {
-            "__bytes__": {
-                "__version__": 1,
-                "data": b64encode(obj).decode("ascii"),
-            },
+            "__type__": "bytes",
+            "__version__": 2,
+            "data": b64encode(obj).decode("ascii"),
         }
     raise TypeNotSupported()

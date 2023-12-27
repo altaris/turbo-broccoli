@@ -11,22 +11,9 @@ from typing import Any, Callable, Tuple
 from uuid import uuid4
 
 import numpy as np
+from safetensors import numpy as st
 
-try:
-    from safetensors import numpy as st
-
-    HAS_SAFETENSORS = True
-except ModuleNotFoundError:
-    HAS_SAFETENSORS = False
-    from turbo_broccoli.utils import warn_about_safetensors
-
-    warn_about_safetensors()
-
-
-from turbo_broccoli.environment import (
-    get_artifact_path,
-    get_max_nbytes,
-)
+from turbo_broccoli.environment import get_artifact_path, get_max_nbytes
 from turbo_broccoli.utils import (
     DeserializationError,
     TypeNotSupported,
@@ -40,13 +27,15 @@ def _json_to_dtype(dct: dict) -> np.dtype:
     specification `dct` is expected to follow. Note that the key `__numpy__`
     should not be present.
     """
+    raise_if_nodecode("numpy.dtype")
     DECODERS = {
-        1: _json_to_dtype_v1,
+        # 1: _json_to_dtype_v1,  # Use turbo_broccoli v3
+        2: _json_to_dtype_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_dtype_v1(dct: dict) -> np.dtype:
+def _json_to_dtype_v2(dct: dict) -> np.dtype:
     """
     Converts a JSON document to a numpy dtype object following the v1
     specification.
@@ -60,43 +49,20 @@ def _json_to_ndarray(dct: dict) -> np.ndarray:
     specification `dct` is expected to follow. Note that the key `__numpy__`
     should not be present.
     """
+    raise_if_nodecode("numpy.ndarray")
     DECODERS = {
-        1: _json_to_ndarray_v1,
-        2: _json_to_ndarray_v2,
-        3: _json_to_ndarray_v3,
+        # 1: _json_to_ndarray_v1,  # Use turbo_broccoli v3
+        # 2: _json_to_ndarray_v2,  # Use turbo_broccoli v3
+        # 3: _json_to_ndarray_v3,  # Use turbo_broccoli v3
+        4: _json_to_ndarray_v4,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_ndarray_v1(dct: dict) -> np.ndarray:
+def _json_to_ndarray_v4(dct: dict) -> np.ndarray:
     """
     Converts a JSON document to a numpy array following the v1 specification.
     """
-    return np.frombuffer(
-        dct["data"],
-        dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
-    ).reshape(dct["shape"])
-
-
-def _json_to_ndarray_v2(dct: dict) -> np.ndarray:
-    """
-    Converts a JSON document to a numpy array following the v1 specification.
-    """
-    if "data" in dct:
-        return _json_to_ndarray_v1(dct)
-    return np.load(get_artifact_path() / (dct["id"] + ".npy"))
-
-
-def _json_to_ndarray_v3(dct: dict) -> np.ndarray:
-    """
-    Converts a JSON document to a numpy array following the v1 specification.
-    """
-    if not HAS_SAFETENSORS:
-        raise RuntimeError(
-            "A v3 numpy array document cannot be deserialized without "
-            "safetensors. Install safetensors using "
-            "'pip install safetensors'"
-        )
     if "data" in dct:
         return st.load(dct["data"])["data"]
     return st.load_file(get_artifact_path() / dct["id"])["data"]
@@ -108,26 +74,18 @@ def _json_to_number(dct: dict) -> np.number:
     specification `dct` is expected to follow. Note that the key `__numpy__`
     should not be present.
     """
+    raise_if_nodecode("numpy.number")
     DECODERS = {
-        1: _json_to_number_v1,
-        2: _json_to_number_v2,
+        # 1: _json_to_number_v1,  # Use turbo_broccoli v3
+        # 2: _json_to_number_v2,  # Use turbo_broccoli v3
+        3: _json_to_number_v3,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_number_v1(dct: dict) -> np.number:
+def _json_to_number_v3(dct: dict) -> np.number:
     """
-    Converts a JSON document to a numpy number following the v1 specification.
-    """
-    return np.frombuffer(
-        dct["value"],
-        dtype=np.lib.format.descr_to_dtype(dct["dtype"]),
-    )[0]
-
-
-def _json_to_number_v2(dct: dict) -> np.number:
-    """
-    Converts a JSON document to a numpy number following the v2 specification.
+    Converts a JSON document to a numpy number following the v3 specification.
     """
     return np.frombuffer(dct["value"], dtype=dct["dtype"])[0]
 
@@ -138,15 +96,17 @@ def _json_to_random_state(dct: dict) -> np.number:
     specification `dct` is expected to follow. Note that the key `__numpy__`
     should not be present.
     """
+    raise_if_nodecode("numpy.random_state")
     DECODERS = {
-        1: _json_to_random_state_v1,
+        # 1: _json_to_random_state_v1,
+        2: _json_to_random_state_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_random_state_v1(dct: dict) -> np.number:
+def _json_to_random_state_v2(dct: dict) -> np.number:
     """
-    Converts a JSON document to a numpy random state following the v1
+    Converts a JSON document to a numpy random state following the v2
     specification.
     """
     with open(get_artifact_path() / dct["data"], mode="rb") as fp:
@@ -156,59 +116,25 @@ def _json_to_random_state_v1(dct: dict) -> np.number:
 def _dtype_to_json(d: np.dtype) -> dict:
     """Serializes a `numpy` array."""
     return {
-        "__type__": "dtype",
-        "__version__": 1,
+        "__type__": "numpy.dtype",
+        "__version__": 2,
         "dtype": np.lib.format.dtype_to_descr(d),
     }
 
 
 def _ndarray_to_json(arr: np.ndarray) -> dict:
     """Serializes a `numpy` array."""
-    return (
-        _ndarray_to_json_v3(arr)
-        if HAS_SAFETENSORS
-        else _ndarray_to_json_v2(arr)
-    )
-
-
-def _ndarray_to_json_v2(arr: np.ndarray) -> dict:
-    """
-    Serializes a `numpy` array using the v2 format (which doesn't use
-    `safetensors`)
-    """
     if arr.nbytes <= get_max_nbytes():
         return {
-            "__type__": "ndarray",
-            "__version__": 2,
-            "data": bytes(arr.data),
-            "dtype": np.lib.format.dtype_to_descr(arr.dtype),
-            "shape": arr.shape,
-        }
-    name = str(uuid4())
-    np.save(get_artifact_path() / name, arr)
-    return {
-        "__type__": "ndarray",
-        "__version__": 2,
-        "id": name,
-    }
-
-
-def _ndarray_to_json_v3(arr: np.ndarray) -> dict:
-    """
-    Serializes a `numpy` array using the v3 format (which does use
-    `safetensors`)
-    """
-    if arr.nbytes <= get_max_nbytes():
-        return {
-            "__type__": "ndarray",
-            "__version__": 3,
+            "__type__": "numpy.ndarray",
+            "__version__": 4,
             "data": st.save({"data": arr}),
         }
     name = str(uuid4())
     st.save_file({"data": arr}, get_artifact_path() / name)
     return {
-        "__type__": "ndarray",
-        "__version__": 3,
+        "__type__": "numpy.ndarray",
+        "__version__": 4,
         "id": name,
     }
 
@@ -217,8 +143,8 @@ def _number_to_json(num: np.number) -> dict:
     """Serializes a `numpy` number."""
 
     return {
-        "__type__": "number",
-        "__version__": 2,
+        "__type__": "numpy.number",
+        "__version__": 3,
         "value": bytes(np.array(num).data),
         "dtype": num.dtype,
     }
@@ -230,8 +156,8 @@ def _random_state_to_json(obj: np.random.RandomState) -> dict:
     with open(get_artifact_path() / name, mode="wb") as fp:
         pickle.dump(obj, fp, protocol=protocol)
     return {
-        "__type__": "random_state",
-        "__version__": 1,
+        "__type__": "numpy.random_state",
+        "__version__": 2,
         "data": name,
         "protocol": protocol,
     }
@@ -240,20 +166,19 @@ def _random_state_to_json(obj: np.random.RandomState) -> dict:
 def from_json(dct: dict) -> Any:
     """
     Deserializes a dict into a numpy object. See `to_json` for the
-    specification `dct` is expected to follow. In particular, note that `dct`
-    must contain the key `__numpy__`.
+    specification `dct` is expected to follow.
     """
     raise_if_nodecode("numpy")
     DECODERS = {
-        "ndarray": _json_to_ndarray,
-        "number": _json_to_number,
-        "dtype": _json_to_dtype,
-        "random_state": _json_to_random_state,
+        "numpy.ndarray": _json_to_ndarray,
+        "numpy.number": _json_to_number,
+        "numpy.dtype": _json_to_dtype,
+        "numpy.random_state": _json_to_random_state,
     }
     try:
-        type_name = dct["__numpy__"]["__type__"]
-        raise_if_nodecode("numpy." + type_name)
-        return DECODERS[type_name](dct["__numpy__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -261,16 +186,8 @@ def from_json(dct: dict) -> Any:
 def to_json(obj: Any) -> dict:
     """
     Serializes a `numpy` object into JSON by cases. See the README for the
-    precise list of supported types.
-
-    The return dict has the following structure
-
-        {
-            "__numpy__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
+    precise list of supported types. The return dict has the following
+    structure:
 
     - `numpy.ndarray`: An array is processed differently depending on its size
       and on the `TB_MAX_NBYTES` environment variable. If the array is
@@ -278,23 +195,9 @@ def to_json(obj: Any) -> dict:
       stored in the resulting JSON document as
 
             {
-                "__numpy__": {
-                    "__type__": "ndarray",
-                    "__version__": 2,
-                    "data": <ASCII encoded byte string>,
-                    "dtype": <dtype_to_descr string>,
-                    "shape": <int tuple>,
-                }
-            }
-
-      or, if the `safetensors` package is available:
-
-            {
-                "__numpy__": {
-                    "__type__": "ndarray",
-                    "__version__": 3,
-                    "data": <ASCII encoded byte string>,
-                }
+                "__type__": "numpy.ndarray",
+                "__version__": 4,
+                "data": <ASCII encoded byte string>,
             }
 
 
@@ -306,11 +209,9 @@ def to_json(obj: Any) -> dict:
       random UUID4 as filename. The resulting JSON document looks like
 
             {
-                "__numpy__": {
-                    "__type__": "ndarray",
-                    "__version__": <2 or 3>,
-                    "id": <UUID4 str>,
-                }
+                "__type__": "numpy.ndarray",
+                "__version__": 4,
+                "id": <UUID4 str>,
             }
 
       By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough
@@ -320,12 +221,10 @@ def to_json(obj: Any) -> dict:
     - `numpy.number`:
 
             {
-                "__numpy__": {
-                    "__type__": "number",
-                    "__version__": 2,
-                    "value": <float>,
-                    "dtype": {...},
-                }
+                "__type__": "numpy.number",
+                "__version__": 3,
+                "value": <float>,
+                "dtype": {...},
             }
 
         where the `dtype` document follows the specification below.
@@ -333,22 +232,18 @@ def to_json(obj: Any) -> dict:
     - `numpy.dtype`:
 
             {
-                "__numpy__": {
-                    "__type__": "dtype",
-                    "__version__": 1,
-                    "dtype": <dtype_to_descr string>,
-                }
+                "__type__": "numpy.dtype",
+                "__version__": 2,
+                "dtype": <dtype_to_descr string>,
             }
 
     - `numpy.random.RandomState`:
 
             {
-                "__numpy__": {
-                    "__type__": "random_state",
-                    "__version__": 1,
-                    "dtype": <uuid4>,
-                    "protocol": <int>
-                }
+                "__type__": "numpy.random_state",
+                "__version__": 2,
+                "dtype": <uuid4>,
+                "protocol": <int>
             }
 
       where the UUID4 points to a pickle file artefact, and the protocol is the
@@ -363,5 +258,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__numpy__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

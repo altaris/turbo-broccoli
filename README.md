@@ -37,18 +37,16 @@ produces the following string (modulo indentation):
 ```json
 {
   "an_array": {
-    "__numpy__": {
-      "__type__": "ndarray",
-      "__version__": 3,
-      "data": {
-        "__bytes__": {
-          "__version__": 1,
-          "data": "PAAAAA..."
-        }
-      }
+    "__type__": "numpy.ndarray",
+    "__version__": 4,
+    "data": {
+      "__type__": "bytes",
+      "__version__": 2,
+      "data": "QAAAAAAAAAB7ImRhd..."
     }
   }
 }
+
 ```
 
 For deserialization, simply use
@@ -104,11 +102,10 @@ json.dumps(x, cls=tb.TurboBroccoliEncoder)
 produces the following string (modulo indentation):
 ```json
 {
-  "__generic__": {
-    "__version__": 1,
-    "data": {
-      "a": 42
-    }
+  "__type__": "generic",
+  "__version__": 2,
+  "data": {
+    "a": 42
   }
 }
 ```
@@ -304,14 +301,12 @@ content):
 {
   "user": "alice",
   "password": {
-    "__secret__": {
-      "__version__": 1,
-      "data": {
-        "__bytes__": {
-          "__version__": 1,
-          "data": "qPSsruu..."
-        }
-      }
+    "__type__": "secret",
+    "__version__": 2,
+    "data": {
+      "__type__": "bytes",
+      "__version__": 2,
+      "data": "Wk+42fDb8MoZT..."
     }
   }
 }
@@ -344,16 +339,14 @@ by modifying `os.environ`. Rather, use the methods of
   obj = {"an_array": arr}
   json.dumps(obj, cls=tb.TurboBroccoliEncoder)
   ```
-  will generate the following string (modulo indentation and id)
+  will generate the following string (modulo indentation and `id`)
   ```json
   {
-      "an_array": {
-          "__numpy__": {
-              "__type__": "ndarray",
-              "__version__": 3,
-              "id": "70692d08-c4cf-4231-b3f0-0969ea552d5a"
-          }
-      }
+    "an_array": {
+      "__type__": "numpy.ndarray",
+      "__version__": 3,
+      "id": "70692d08-c4cf-4231-b3f0-0969ea552d5a"
+    }
   }
   ```
   and a `70692d08-c4cf-4231-b3f0-0969ea552d5a` file has been created in
@@ -392,6 +385,7 @@ by modifying `os.environ`. Rather, use the methods of
     of `dict`s with non `str` keys),
 
   - `collections`, `collections.deque`, `collections.namedtuple`,
+    `collections.set`,
 
   - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
 
@@ -401,6 +395,7 @@ by modifying `os.environ`. Rather, use the methods of
     `keras.optimizer`,
 
   - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
+    `numpy.random_state`,
 
   - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
     `pandas.dataframe` will crash any deserialization of `pandas.series`,
@@ -412,7 +407,7 @@ by modifying `os.environ`. Rather, use the methods of
   - `secret`,
 
   - `sklearn`, `sklearn.estimator`, `sklearn.estimator.<estimator name>` (case
-    sensitive, see the list of supported sklearn estimators), `sklearn.tree`,
+    sensitive, see the list of supported sklearn estimators),
 
   - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
     `tensorflow.variable`.
@@ -433,7 +428,7 @@ This is so cool. Check out
 and
 [`turbo_broccoli.produces_document`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document).
 
-## CLI
+## CLI
 
 Turbo Broccoli has a few utilities that can be accessed from the CLI.
 

@@ -78,9 +78,9 @@ class SecretStr(Secret):
         super().__init__(value)
 
 
-def _from_json_v1(dct: dict) -> Any:
+def _from_json_v2(dct: dict) -> Any:
     """
-    Converts a JSON document to a Python type following the v1 specification.
+    Converts a JSON document to a Python type following the v2 specification.
     """
     key = get_shared_key()
     if key is None:
@@ -97,9 +97,10 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("secret")
     DECODERS = {
-        1: _from_json_v1,
+        # 1: _from_json_v1,  # Use turbo_broccoli v3
+        2: _from_json_v2,
     }
-    obj = DECODERS[dct["__secret__"]["__version__"]](dct["__secret__"])
+    obj = DECODERS[dct["__version__"]](dct)
     if isinstance(obj, LockedSecret):
         return obj
     TYPES = {
@@ -118,10 +119,9 @@ def to_json(obj: Secret) -> dict:
     new JSON document with the following structure:
 
         {
-            "__secret__": {
-                "__version__": 1,
-                "data": <encrypted bytes>,
-            }
+            "__type__": "secret",
+            "__version__": 2,
+            "data": <encrypted bytes>,
         }
     """
     if not isinstance(obj, Secret):
@@ -135,10 +135,9 @@ def to_json(obj: Secret) -> dict:
         )
     box = SecretBox(key)
     return {
-        "__secret__": {
-            "__version__": 1,
-            "data": box.encrypt(
-                json.dumps(obj.get_secret_value()).encode("utf-8")
-            ),
-        }
+        "__type__": "secret",
+        "__version__": 2,
+        "data": box.encrypt(
+            json.dumps(obj.get_secret_value()).encode("utf-8")
+        ),
     }

@@ -13,7 +13,12 @@ from functools import partial
 from pathlib import Path
 from typing import Any, Callable
 
-from turbo_broccoli.numpy import HAS_SAFETENSORS
+try:
+    import safetensors
+
+    HAS_SAFETENSORS = True
+except ModuleNotFoundError:
+    HAS_SAFETENSORS = False
 
 from .turbo_broccoli import (
     HAS_KERAS,

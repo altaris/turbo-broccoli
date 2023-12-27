@@ -28,8 +28,8 @@ def _dataframe_to_json(df: pd.DataFrame) -> dict:
     dtypes = [(k, v.name) for k, v in df.dtypes.items()]
     if df.memory_usage(deep=True).sum() <= get_max_nbytes():
         return {
-            "__type__": "dataframe",
-            "__version__": 1,
+            "__type__": "pandas.dataframe",
+            "__version__": 2,
             "data": json.loads(df.to_json(date_format="iso", date_unit="ns")),
             "dtypes": dtypes,
         }
@@ -41,8 +41,8 @@ def _dataframe_to_json(df: pd.DataFrame) -> dict:
     else:
         getattr(df, f"to_{fmt}")(path)
     return {
-        "__type__": "dataframe",
-        "__version__": 1,
+        "__type__": "pandas.dataframe",
+        "__version__": 2,
         "dtypes": dtypes,
         "id": name,
         "format": fmt,
@@ -56,14 +56,15 @@ def _json_to_dataframe(dct: dict) -> pd.DataFrame:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_dataframe_v1,
+        # 1: _json_to_dataframe_v1,  # Use turbo_broccoli v3
+        2: _json_to_dataframe_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_dataframe_v1(dct: dict) -> pd.DataFrame:
+def _json_to_dataframe_v2(dct: dict) -> pd.DataFrame:
     """
-    Converts a JSON document to a pandas dataframe following the v1
+    Converts a JSON document to a pandas dataframe following the v2
     specification.
     """
     if "data" in dct:
@@ -96,14 +97,15 @@ def _json_to_series(dct: dict) -> pd.Series:
     should not be present.
     """
     DECODERS = {
-        1: _json_to_series_v1,
+        # 1: _json_to_series_v1,  # Use turbo_broccoli v3
+        2: _json_to_series_v2,
     }
     return DECODERS[dct["__version__"]](dct)
 
 
-def _json_to_series_v1(dct: dict) -> pd.Series:
+def _json_to_series_v2(dct: dict) -> pd.Series:
     """
-    Converts a JSON document to a pandas series following the v1 specification.
+    Converts a JSON document to a pandas series following the v2 specification.
     """
     return dct["data"][dct["name"]]
 
@@ -112,8 +114,8 @@ def _series_to_json(ser: pd.Series) -> dict:
     """Converts a pandas series into a JSON document."""
     name = ser.name if ser.name is not None else "main"
     return {
-        "__type__": "series",
-        "__version__": 1,
+        "__type__": "pandas.series",
+        "__version__": 2,
         "data": ser.to_frame(name=name),
         "name": name,
     }
@@ -127,13 +129,13 @@ def from_json(dct: dict) -> Any:
     """
     raise_if_nodecode("pandas")
     DECODERS = {
-        "dataframe": _json_to_dataframe,
-        "series": _json_to_series,
+        "pandas.dataframe": _json_to_dataframe,
+        "pandas.series": _json_to_series,
     }
     try:
-        type_name = dct["__pandas__"]["__type__"]
-        raise_if_nodecode("pandas." + type_name)
-        return DECODERS[type_name](dct["__pandas__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -141,16 +143,8 @@ def from_json(dct: dict) -> Any:
 def to_json(obj: Any) -> dict:
     """
     Serializes a pandas object into JSON by cases. See the README for the
-    precise list of supported types.
-
-    The return dict has the following structure
-
-        {
-            "__pandas__": {...},
-        }
-
-    where the `{...}` dict contains the actual data, and whose structure
-    depends on the precise type of `obj`.
+    precise list of supported types. The return dict has the following
+    structure:
 
     - `pandas.DataFrame`: A dataframe is processed differently depending on its
       size and on the `TB_MAX_NBYTES` environment variable. If the dataframe is
@@ -158,16 +152,14 @@ def to_json(obj: Any) -> dict:
       the resulting JSON document as
 
             {
-                "__pandas__": {
-                    "__type__": "dataframe",
-                    "__version__": 1,
-                    "data": {...},
-                    "dtypes": [
-                        [col1, dtype1],
-                        [col2, dtype2],
-                        ...
-                    ],
-                }
+                "__type__": "pandas.dataframe",
+                "__version__": 2,
+                "data": {...},
+                "dtypes": [
+                    [col1, dtype1],
+                    [col2, dtype2],
+                    ...
+                ],
             }
 
       where `{...}` is the result of `pandas.DataFrame.to_json` (in `dict`
@@ -178,45 +170,39 @@ def to_json(obj: Any) -> dict:
       random UUID4 as filename. The resulting JSON document looks like
 
             {
-                "__pandas__": {
-                    "__type__": "dataframe",
-                    "__version__": 1,
-                    "dtypes": [
-                        [col1, dtype1],
-                        [col2, dtype2],
-                        ...
-                    ],
-                    "id": <UUID4 str>,
-                    "format": <str>
-                }
+                "__type__": "pandas.dataframe",
+                "__version__": 2,
+                "dtypes": [
+                    [col1, dtype1],
+                    [col2, dtype2],
+                    ...
+                ],
+                "id": <UUID4 str>,
+                "format": <str>
             }
 
     - `pandas.Series`: A series will be converted to a dataframe before being
       serialized. The final document will look like this
 
             {
-                "__pandas__": {
-                    "__type__": "series",
-                    "__version__": 1,
-                    "data": {...},
-                    "name": <str>,
-                }
+                "__type__": "pandas.series",
+                "__version__": 2,
+                "data": {...},
+                "name": <str>,
             }
 
       where `{...}` is the document of the dataframe'd series. So for example
 
             {
-                "__pandas__": {
-                    "__type__": "series",
-                    "__version__": 1,
-                    "data": {
-                        "__type__": "dataframe",
-                        "__version__": 1,
-                        "id": <UUID4 str>,
-                        "format": <str>,
-                    },
-                    "name": <str>,
-                }
+                "__type__": "pandas.series",
+                "__version__": 2,
+                "data": {
+                    "__type__": "pandas.dataframe",
+                    "__version__": 2,
+                    "id": <UUID4 str>,
+                    "format": <str>,
+                },
+                "name": <str>,
             }
 
       if the series is large.
@@ -231,5 +217,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__pandas__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()

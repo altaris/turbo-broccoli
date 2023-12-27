@@ -59,9 +59,9 @@ def from_json(dct: dict) -> Any:
         "XXX": _json_to_XXX,
     }
     try:
-        type_name = dct["__XXX__"]["__type__"]
-        raise_if_nodecode("XXX." + type_name)
-        return DECODERS[type_name](dct["__XXX__"])
+        type_name = dct["__type__"]
+        raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -74,7 +74,8 @@ def to_json(obj: Any) -> dict:
     The return dict has the following structure
 
         {
-            "__XXX__": {...},
+            "__type__": "XXX",
+            ...
         }
 
     where the `{...}` dict contains the actual data, and whose structure
@@ -87,5 +88,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return {"__XXX__": f(obj)}
+            return f(obj)
     raise TypeNotSupported()
