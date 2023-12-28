@@ -5,13 +5,13 @@ import json
 from pathlib import Path
 from typing import Any, Callable
 
-
 import turbo_broccoli.bytes
 import turbo_broccoli.collections
 import turbo_broccoli.dataclass
-from turbo_broccoli.environment import get_artifact_path, set_artifact_path
-import turbo_broccoli.generic
+import turbo_broccoli.datetime
 import turbo_broccoli.dict
+import turbo_broccoli.generic
+from turbo_broccoli.environment import get_artifact_path, set_artifact_path
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
 
 try:
@@ -95,6 +95,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
         DECODERS: dict[str, Callable[[dict], Any]] = {
             "dict": turbo_broccoli.dict.from_json,
             "bytes": turbo_broccoli.bytes.from_json,
+            "datetime": turbo_broccoli.datetime.from_json,
         }
         if HAS_KERAS:
             DECODERS["keras"] = turbo_broccoli.keras.from_json
@@ -135,6 +136,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
         ENCODERS: list[Callable[[Any], dict]] = [
             turbo_broccoli.bytes.to_json,
+            turbo_broccoli.datetime.to_json,
         ]
         if HAS_KERAS:
             ENCODERS.append(turbo_broccoli.keras.to_json)

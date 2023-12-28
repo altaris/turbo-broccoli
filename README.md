@@ -84,6 +84,9 @@ tb.from_json(json_string)
   json.loads(doc, cls=tb.TurboBroccoliDecoder)
   ```
 
+- [`datetime.datetime`, `datetime.time`,
+  `datetime.timedelta`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json)
+
 ### [Generic objects](https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json)
 
 **serialization only**. A generic object is an object that
@@ -386,6 +389,8 @@ by modifying `os.environ`. Rather, use the methods of
     `collections.set`,
 
   - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
+
+  - `datetime`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
 
   - `generic`,
 
