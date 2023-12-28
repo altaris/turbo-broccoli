@@ -5,13 +5,6 @@ from typing import Any, Generator
 
 from turbo_broccoli.environment import is_nodecode
 
-try:
-    from loguru import logger as logging
-except ModuleNotFoundError:
-    import logging  # type: ignore
-
-_WARNED_ABOUT_SAFETENSORS = False
-
 
 class DeserializationError(Exception):
     """Raised whenever something went wrong during deserialization"""
@@ -89,18 +82,3 @@ def raise_if_nodecode(name: str) -> None:
     """
     if is_nodecode(name):
         raise TypeIsNodecode(name)
-
-
-def warn_about_safetensors():
-    """
-    If safetensors is not installed, logs a warning message. This method may be
-    called multiple times, but the message will only be logged once.
-    """
-    global _WARNED_ABOUT_SAFETENSORS  # pylint: disable=global-statement
-    if not _WARNED_ABOUT_SAFETENSORS:
-        logging.warning(
-            "Serialization of numpy arrays and Tensorflow tensors without "
-            "safetensors is deprecated. Consider installing safetensors using "
-            "'pip install safetensors'."
-        )
-        _WARNED_ABOUT_SAFETENSORS = True
