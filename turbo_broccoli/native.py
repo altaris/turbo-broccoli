@@ -14,21 +14,20 @@ from pathlib import Path
 from typing import Any, Callable
 
 try:
-    import safetensors
+    import safetensors  # pylint: disable=unused-import
 
     HAS_SAFETENSORS = True
 except ModuleNotFoundError:
     HAS_SAFETENSORS = False
 
-from .turbo_broccoli import (
+from turbo_broccoli.custom import (
     HAS_KERAS,
     HAS_NUMPY,
     HAS_PANDAS,
     HAS_PYTORCH,
     HAS_TENSORFLOW,
-    load_json,
-    save_json,
 )
+from turbo_broccoli.turbo_broccoli import load_json, save_json
 
 
 def _is_dict_of(obj: Any, value_type: type, key_type: type = str) -> bool:
@@ -188,7 +187,7 @@ def _save_pt(obj: Any, path: str | Path, **kwargs) -> None:
 def _save_st(obj: Any, path: str | Path, **kwargs) -> None:
     if not HAS_SAFETENSORS:
         _raise_package_not_installed("safetensors", ".safetensors/.st")
-    import safetensors
+    import safetensors  # pylint: disable=redefined-outer-name
 
     if HAS_NUMPY:
         import numpy as np

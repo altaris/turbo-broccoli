@@ -53,7 +53,7 @@ from turbo_broccoli.utils import (
     raise_if_nodecode,
 )
 
-from .environment import get_artifact_path
+from turbo_broccoli.environment import get_artifact_path
 
 _SKLEARN_SUBMODULES = [
     # calibration,
@@ -264,9 +264,7 @@ def to_json(obj: BaseEstimator) -> dict:
 
     ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
         (t, _sklearn_to_raw) for t in _SUPPORTED_PICKLABLE_TYPES
-    ]
-
-    ENCODERS += [
+    ] + [
         (BaseEstimator, _sklearn_estimator_to_json),
     ]
     for t, f in ENCODERS:

@@ -1,84 +1,17 @@
-# pylint: disable=bare-except
 """Main module containing the JSON encoder and decoder classes."""
 
 import json
 from pathlib import Path
 from typing import Any, Callable
 
-import turbo_broccoli.bytes
-import turbo_broccoli.collections
-import turbo_broccoli.dataclass
-import turbo_broccoli.datetime
-import turbo_broccoli.dict
-import turbo_broccoli.generic
 from turbo_broccoli.environment import get_artifact_path, set_artifact_path
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
-
-try:
-    import turbo_broccoli.keras
-
-    HAS_KERAS = True
-except:
-    HAS_KERAS = False
-
-try:
-    import turbo_broccoli.numpy
-
-    HAS_NUMPY = True
-except:
-    HAS_NUMPY = False
-
-try:
-    import turbo_broccoli.pandas
-
-    HAS_PANDAS = True
-except:
-    HAS_PANDAS = False
-
-
-try:
-    import turbo_broccoli.secret
-
-    HAS_SECRET = True
-except:
-    HAS_SECRET = False
-
-try:
-    import turbo_broccoli.tensorflow
-
-    HAS_TENSORFLOW = True
-except:
-    HAS_TENSORFLOW = False
-
-try:
-    import turbo_broccoli.pytorch
-
-    HAS_PYTORCH = True
-except:
-    HAS_PYTORCH = False
-
-
-try:
-    import turbo_broccoli.scipy
-
-    HAS_SCIPY = True
-except:
-    HAS_SCIPY = False
-
-try:
-    import turbo_broccoli.sklearn
-
-    HAS_SKLEARN = True
-except:
-    HAS_SKLEARN = False
-
-
-try:
-    import turbo_broccoli.bokeh
-
-    HAS_BOKEH = True
-except:
-    HAS_BOKEH = False
+from turbo_broccoli.custom import (
+    _collections,
+    _dict,
+    get_decoders,
+    get_encoders,
+)
 
 
 class TurboBroccoliDecoder(json.JSONDecoder):
@@ -92,33 +25,7 @@ class TurboBroccoliDecoder(json.JSONDecoder):
 
     def _hook(self, dct):
         """Deserialization hook"""
-        DECODERS: dict[str, Callable[[dict], Any]] = {
-            "dict": turbo_broccoli.dict.from_json,
-            "bytes": turbo_broccoli.bytes.from_json,
-            "datetime": turbo_broccoli.datetime.from_json,
-        }
-        if HAS_KERAS:
-            DECODERS["keras"] = turbo_broccoli.keras.from_json
-        if HAS_NUMPY:
-            DECODERS["numpy"] = turbo_broccoli.numpy.from_json
-        if HAS_PANDAS:
-            DECODERS["pandas"] = turbo_broccoli.pandas.from_json
-        if HAS_PYTORCH:
-            DECODERS["pytorch"] = turbo_broccoli.pytorch.from_json
-        if HAS_SECRET:
-            DECODERS["secret"] = turbo_broccoli.secret.from_json
-        if HAS_TENSORFLOW:
-            DECODERS["tensorflow"] = turbo_broccoli.tensorflow.from_json
-        if HAS_SCIPY:
-            DECODERS["scipy"] = turbo_broccoli.scipy.from_json
-        if HAS_SKLEARN:
-            DECODERS["sklearn"] = turbo_broccoli.sklearn.from_json
-        if HAS_BOKEH:
-            DECODERS["bokeh"] = turbo_broccoli.bokeh.from_json
-        # Intentionally put last
-        DECODERS["collections"] = turbo_broccoli.collections.from_json
-        DECODERS["dataclass"] = turbo_broccoli.dataclass.from_json
-        for t, f in DECODERS.items():
+        for t, f in get_decoders().items():
             if str(dct.get("__type__", "")).startswith(t):
                 try:
                     return f(dct)
@@ -134,35 +41,7 @@ class TurboBroccoliEncoder(json.JSONEncoder):
     """
 
     def default(self, o: Any) -> Any:
-        ENCODERS: list[Callable[[Any], dict]] = [
-            turbo_broccoli.bytes.to_json,
-            turbo_broccoli.datetime.to_json,
-        ]
-        if HAS_KERAS:
-            ENCODERS.append(turbo_broccoli.keras.to_json)
-        if HAS_NUMPY:
-            ENCODERS.append(turbo_broccoli.numpy.to_json)
-        if HAS_PANDAS:
-            ENCODERS.append(turbo_broccoli.pandas.to_json)
-        if HAS_PYTORCH:
-            ENCODERS.append(turbo_broccoli.pytorch.to_json)
-        if HAS_SECRET:
-            ENCODERS.append(turbo_broccoli.secret.to_json)
-        if HAS_TENSORFLOW:
-            ENCODERS.append(turbo_broccoli.tensorflow.to_json)
-        if HAS_SCIPY:
-            ENCODERS.append(turbo_broccoli.scipy.to_json)
-        if HAS_SKLEARN:
-            ENCODERS.append(turbo_broccoli.sklearn.to_json)
-        if HAS_BOKEH:
-            ENCODERS.append(turbo_broccoli.bokeh.to_json)
-        # Intentionally put last
-        ENCODERS += [
-            turbo_broccoli.collections.to_json,
-            turbo_broccoli.dataclass.to_json,
-            turbo_broccoli.generic.to_json,
-        ]
-        for f in ENCODERS:
+        for f in get_encoders():
             try:
                 return f(o)
             except TypeNotSupported:
@@ -174,11 +53,11 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         Reimplementation of encode just to treat exceptional cases that need to
         be handled before `JSONEncoder.encode`.
         """
-        PRIORITY_ENCODERS: list[Callable[[Any], dict]] = [
-            turbo_broccoli.dict.to_json,
-            turbo_broccoli.collections.to_json,
+        priority_encoders: list[Callable[[Any], dict]] = [
+            _dict.to_json,
+            _collections.to_json,
         ]
-        for f in PRIORITY_ENCODERS:
+        for f in priority_encoders:
             try:
                 return super().encode(f(o))
             except TypeNotSupported:

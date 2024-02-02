@@ -3,7 +3,6 @@ Serialization of so-called generic object. See
 `turbo_broccoli.generic.to_json`.
 """
 
-
 from typing import Any, Iterable
 
 from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode

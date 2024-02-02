@@ -5,7 +5,6 @@ See also:
     https://docs.python.org/3/library/datetime.html
 """
 
-
 from datetime import datetime, time, timedelta
 from typing import Any, Callable, Tuple
 

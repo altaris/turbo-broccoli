@@ -8,7 +8,7 @@ from common import from_json, to_json  # Must be before turbo_broccoli imports
 from nacl.exceptions import CryptoError
 
 from turbo_broccoli.environment import set_shared_key
-from turbo_broccoli.secret import (
+from turbo_broccoli.custom.secret import (
     LockedSecret,
     Secret,
     SecretDict,
