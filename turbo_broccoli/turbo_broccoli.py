@@ -8,7 +8,6 @@ from turbo_broccoli.environment import get_artifact_path, set_artifact_path
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
 from turbo_broccoli.custom import (
     _collections,
-    _dict,
     get_decoders,
     get_encoders,
 )
@@ -54,7 +53,6 @@ class TurboBroccoliEncoder(json.JSONEncoder):
         be handled before `JSONEncoder.encode`.
         """
         priority_encoders: list[Callable[[Any], dict]] = [
-            _dict.to_json,
             _collections.to_json,
         ]
         for f in priority_encoders:

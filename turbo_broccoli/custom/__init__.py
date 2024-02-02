@@ -7,7 +7,6 @@ from turbo_broccoli.custom import bytes as _bytes
 from turbo_broccoli.custom import collections as _collections
 from turbo_broccoli.custom import dataclass as _dataclass
 from turbo_broccoli.custom import datetime as _datetime
-from turbo_broccoli.custom import nsk_dict as _dict
 from turbo_broccoli.custom import generic as _generic
 
 try:
@@ -97,7 +96,6 @@ def get_decoders() -> dict[str, Callable[[dict], Any]]:
 
     """
     decoders: dict[str, Callable[[dict], Any]] = {
-        "dict": _dict.from_json,
         "bytes": _bytes.from_json,
         "datetime": _datetime.from_json,
     }
