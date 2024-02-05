@@ -9,7 +9,8 @@ except ModuleNotFoundError:
 
 from typing import Any, Generator
 
-from turbo_broccoli.native import save, load
+from turbo_broccoli.native import save as native_save
+from turbo_broccoli.native import load as native_load
 from turbo_broccoli.context import Context
 
 
@@ -43,32 +44,49 @@ class GuardedBlockHandler:
         ...
         h.result = some_pandas_dataframe
     ```
-    See `turbo_broccoli.native.save` and `turbo_broccoli.native.load`.
+    See `turbo_broccoli.native.save` and `turbo_broccoli.native.load`. Finally,
+    if the actual result of the block are not needed, use
+    ```py
+    h = GuardedBlockHandler("out/foo.csv", load_if_skip=False)
+    for _ in h.guard():
+        ...
+    # If the block was skipped (out/foo.csv already exists), h.result is None
+    # instead of the content of out/foo.csv
+    ```
     """
 
     block_name: str | None
     context: Context
+    load_if_skip: bool
     result: Any = None
 
     def __init__(
-        self, file_path: str | Path, block_name: str | None = None, **kwargs
+        self,
+        file_path: str | Path,
+        block_name: str | None = None,
+        load_if_skip: bool = True,
+        **kwargs,
     ) -> None:
         """
         Args:
             file_path (str | Path): Output file path
             block_name (str | None, optional): Name of the block, for logging
                 purposes.
+            load_if_skip (bool, optional): Wether to load the output file if
+                the block is skipped.
             **kwargs: Forwarded to the `turbo_broccoli.context.Context`
                 constructor.
         """
         kwargs["file_path"] = file_path
         self.block_name, self.context = block_name, Context(**kwargs)
+        self.load_if_skip = load_if_skip
 
     def guard(self) -> Generator[Any, None, None]:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
         assert isinstance(self.context.file_path, Path)  # for typechecking
         if self.context.file_path.is_file():
-            self.result = load(self.context.file_path)
+            if self.load_if_skip:
+                self.result = native_load(self.context.file_path)
             if self.block_name:
                 logging.debug(f"Skipped guarded block '{self.block_name}'")
         else:
@@ -80,7 +98,7 @@ class GuardedBlockHandler:
                 self.context.file_path.parent.mkdir(
                     parents=True, exist_ok=True
                 )
-                save(self.result, self.context.file_path)
+                native_save(self.result, self.context.file_path)
                 if self.block_name is not None:
                     logging.debug(
                         f"Saved guarded block '{self.block_name}' results to "

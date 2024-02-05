@@ -41,3 +41,15 @@ def test_guarded_bloc_handler_native():
     if "Unnamed: 0" in df2.columns:
         df2.drop(["Unnamed: 0"], axis=1, inplace=True)
     assert (df1 == df2).all().all()
+
+
+def test_guarded_bloc_handler_no_load():
+    path = TEST_PATH / "test_guarded_bloc_handler_no_load.json"
+    h1 = GuardedBlockHandler(path)
+    for _ in h1.guard():
+        h1.result = 42
+    h2 = GuardedBlockHandler(path, load_if_skip=False)
+    for _ in h2.guard():
+        h2.result = 41
+    assert h1.result == load_json(path)
+    assert h2.result is None

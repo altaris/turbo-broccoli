@@ -50,6 +50,9 @@ Changelog
   `turbo_broccoli.guard.produces_document`. The iterable version of
   `turbo_broccoli.guard.GuardedBlockHandler.guard` no longer exist.
 - Removal of the CLI.
+- With a `turbo_broccoli.guard.GuardedBlockHandler`, it is now possible to not
+  load the block's results if the block is skipped. See the class
+  documentation.
 
 # `v2.1.0`
 
