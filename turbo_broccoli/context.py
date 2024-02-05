@@ -31,22 +31,21 @@ class Context:
     the context parameter's as kwargs.
     """
 
-    json_path: str
-    file_path: Path | None
     artifact_path: Path
-    min_artifact_size: int = 8000
-    nodecode_types: list[str]
+    dataclass_types: dict[str, type]
+    file_path: Path | None
+    json_path: str
     keras_format: str
+    min_artifact_size: int = 8000
+    nacl_shared_key: bytes | None
+    nodecode_types: list[str]
     pandas_format: str
     pandas_kwargs: dict
-    nacl_shared_key: bytes | None
-    dataclass_types: dict[str, type]
     pytorch_module_types: dict[str, type]
 
     # pylint: disable=too-many-arguments
     def __init__(
         self,
-        json_path: str = "$",
         file_path: str | Path | None = None,
         artifact_path: str | Path | None = None,
         min_artifact_size: int | None = None,
@@ -73,6 +72,7 @@ class Context:
         nacl_shared_key: bytes | None = None,
         dataclass_types: dict[str, type] | list[type] | None = None,
         pytorch_module_types: dict[str, type] | list[type] | None = None,
+        json_path: str = "$",
     ) -> None:
         """
         Args:
@@ -127,25 +127,22 @@ class Context:
             else (pytorch_module_types or {})
         )
 
+    def __repr__(self) -> str:
+        fp, ap = str(self.file_path), str(self.artifact_path)
+        return (
+            f"Context(file_path={fp}, artifact_path={ap}, "
+            f"json_path={self.json_path})"
+        )
+
     def __truediv__(self, x: str | int) -> "Context":
         """
         Returns a copy of the current context but where the `json_path`
         attribute is `self.json_path + "." + str(x)`. Use this when you're
         going down the document.
         """
-        return Context(  # TODO: define an __all__ variable
-            json_path=self.json_path + "." + str(x),
-            file_path=self.file_path,
-            artifact_path=self.artifact_path,
-            min_artifact_size=self.min_artifact_size,
-            nodecode_types=self.nodecode_types,
-            keras_format=self.keras_format,  # type: ignore
-            pandas_format=self.pandas_format,  # type: ignore
-            pandas_kwargs=self.pandas_kwargs,
-            nacl_shared_key=self.nacl_shared_key,
-            dataclass_types=self.dataclass_types,
-            pytorch_module_types=self.pytorch_module_types,
-        )
+        kwargs = self.__dict__.copy()
+        kwargs["json_path"] = self.json_path + "." + str(x)
+        return Context(**kwargs)
 
     def new_artifact_path(self) -> tuple[Path, str]:
         """Returns the path to a new artifact alongside the artifact's ID"""

@@ -44,7 +44,7 @@ Changelog
   the context parameter's as kwargs.
 - Removal of `turbo_broccoli.environment`. Use `turbo_broccoli.context.Context`
   instead.
-- Sentinel booleans like `HAS_NUMPY`, `HAS_PANDA` etc. are not in
+- Sentinel booleans like `HAS_NUMPY`, `HAS_PANDA` etc. are now in
   `turbo_broccoli.custom`.
 - Deleted `turbo_broccoli.guard.guarded_call` and
   `turbo_broccoli.guard.produces_document`. The iterable version of
