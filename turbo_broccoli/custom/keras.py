@@ -2,19 +2,11 @@
 
 from functools import partial
 from typing import Any, Callable, Tuple
-from uuid import uuid4
 
-from tensorflow import keras
+from tensorflow import keras  # pylint: disable=no-name-in-module
 
-from turbo_broccoli.environment import (
-    get_artifact_path,
-    get_keras_format,
-)
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
@@ -163,66 +155,66 @@ KERAS_OPTIMIZERS = {
 }
 
 
-def _json_to_layer(dct: dict) -> Any:
-    raise_if_nodecode("keras.layer")
+def _json_to_layer(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras.layer")
     DECODERS = {
         # 1: _json_to_layer_v1,  # Use turbo_broccoli v3
         2: _json_to_layer_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_layer_v2(dct: dict) -> Any:
+def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_LAYERS,
     )
 
 
-def _json_to_loss(dct: dict) -> Any:
-    raise_if_nodecode("keras.loss")
+def _json_to_loss(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras.loss")
     DECODERS = {
         # 1: _json_to_loss_v1,  # Use turbo_broccoli v3
         2: _json_to_loss_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_loss_v2(dct: dict) -> Any:
+def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_LOSSES,
     )
 
 
-def _json_to_metric(dct: dict) -> Any:
-    raise_if_nodecode("keras.metric")
+def _json_to_metric(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras.metric")
     DECODERS = {
         # 1: _json_to_metric_v1,  # Use turbo_broccoli v3
         2: _json_to_metric_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_metric_v2(dct: dict) -> Any:
+def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_METRICS,
     )
 
 
-def _json_to_model(dct: dict) -> Any:
-    raise_if_nodecode("keras.model")
+def _json_to_model(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras.model")
     DECODERS = {
         # 1: _json_to_model_v1,  # Use turbo_broccoli v3
         # 2: _json_to_model_v2,  # Use turbo_broccoli v3
         # 3: _json_to_model_v3,  # Use turbo_broccoli v3
         5: _json_to_model_v5,  # Use turbo_broccoli v3
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_model_v5(dct: dict) -> Any:
+def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
     if "model" in dct:
         model = keras.models.model_from_config(dct["model"])
         model.set_weights(dct["weights"])
@@ -232,26 +224,26 @@ def _json_to_model_v5(dct: dict) -> Any:
                 kwargs[k] = dct[k]
         model.compile(**kwargs)
         return model
-    return keras.models.load_model(get_artifact_path() / dct["id"])
+    return keras.models.load_model(ctx.artifact_path / (dct["id"] + ".tb"))
 
 
-def _json_to_optimizer(dct: dict) -> Any:
-    raise_if_nodecode("keras.optimizer")
+def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras.optimizer")
     DECODERS = {
         # 1: _json_to_optimizer_v1,  # Use turbo_broccoli v3
         2: _json_to_optimizer_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_optimizer_v2(dct: dict) -> Any:
+def _json_to_optimizer_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
         module_objects=KERAS_OPTIMIZERS,
     )
 
 
-def _generic_keras_to_json(obj: Any, type_: str) -> dict:
+def _generic_keras_to_json(obj: Any, type_: str, ctx: Context) -> dict:
     return {
         "__type__": "keras." + type_,
         "__version__": 2,
@@ -259,9 +251,8 @@ def _generic_keras_to_json(obj: Any, type_: str) -> dict:
     }
 
 
-def _model_to_json(model: keras.Model) -> dict:
-    fmt = get_keras_format()
-    if fmt == "json":
+def _model_to_json(model: keras.Model, ctx: Context) -> dict:
+    if ctx.keras_format == "json":
         return {
             "__type__": "keras.model",
             "__version__": 5,
@@ -271,19 +262,19 @@ def _model_to_json(model: keras.Model) -> dict:
             "optimizer": getattr(model, "optimizer", None),
             "weights": model.weights,
         }
-    name = str(uuid4())
-    model.save(get_artifact_path() / name, save_format=fmt)
+    path, name = ctx.new_artifact_path()
+    model.save(path, save_format=ctx.keras_format)
     return {
         "__type__": "keras.model",
         "__version__": 5,
-        "format": fmt,
+        "format": ctx.keras_format,
         "id": name,
     }
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("keras")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("keras")
     DECODERS = {
         "keras.model": _json_to_model,  # must be first!
         "keras.layer": _json_to_layer,
@@ -293,13 +284,13 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a tensorflow object into JSON by cases. See the README for the
     precise list of supported types. Most keras object will simply be
@@ -331,7 +322,7 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (keras.Model, _model_to_json),  # must be first
         (
             keras.metrics.Metric,
@@ -346,5 +337,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

@@ -8,6 +8,7 @@ from turbo_broccoli.custom import collections as _collections
 from turbo_broccoli.custom import dataclass as _dataclass
 from turbo_broccoli.custom import datetime as _datetime
 from turbo_broccoli.custom import generic as _generic
+from turbo_broccoli.context import Context
 
 try:
     from turbo_broccoli.custom import keras as _keras
@@ -52,7 +53,6 @@ try:
 except:
     HAS_PYTORCH = False
 
-
 try:
     from turbo_broccoli.custom import scipy as _scipy
 
@@ -67,7 +67,6 @@ try:
 except:
     HAS_SKLEARN = False
 
-
 try:
     from turbo_broccoli.custom import bokeh as _bokeh
 
@@ -76,7 +75,7 @@ except:
     HAS_BOKEH = False
 
 
-def get_decoders() -> dict[str, Callable[[dict], Any]]:
+def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
     """
     Returns the dict of all available decoders, which looks like this:
 
@@ -95,7 +94,7 @@ def get_decoders() -> dict[str, Callable[[dict], Any]]:
         }
 
     """
-    decoders: dict[str, Callable[[dict], Any]] = {
+    decoders: dict[str, Callable[[dict, Context], Any]] = {
         "bytes": _bytes.from_json,
         "datetime": _datetime.from_json,
     }
@@ -123,7 +122,7 @@ def get_decoders() -> dict[str, Callable[[dict], Any]]:
     return decoders
 
 
-def get_encoders() -> list[Callable[[Any], dict]]:
+def get_encoders() -> list[Callable[[Any, Context], dict]]:
     """
     Returns the dict of all available encoder. An encoder is a function that
     takes an object and returns a readily vanilla JSON-serializable dict. This
@@ -139,7 +138,7 @@ def get_encoders() -> list[Callable[[Any], dict]]:
     doesn't handle the kind of object it was given.
     """
 
-    encoders: list[Callable[[Any], dict]] = [
+    encoders: list[Callable[[Any, Context], dict]] = [
         _bytes.to_json,
         _datetime.to_json,
     ]

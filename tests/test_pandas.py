@@ -5,7 +5,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from common import from_json, to_json
+from common import to_from_json
 
 
 def _assert_equal(a, b):
@@ -18,24 +18,24 @@ def _assert_equal(a, b):
 
 def test_series_int():
     x = pd.Series(range(10))
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
     x = pd.Series(range(10), name="a_series")
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_series_float():
     x = pd.Series([1.0, 0.1, 1e3], name="a_series")
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 # def test_series_complex():
 #     x = pd.Series([1.0, 0.1j, 1e3 + 1e4j], name="a_series")
-#     _assert_equal(x, from_json(to_json(x)))
+#     _assert_equal(x, to_from_json(x))
 
 
 def test_series_string():
     x = pd.Series(["a", "b", "c", "🧇"], name="a_series")
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_series_datetime():
@@ -44,7 +44,7 @@ def test_series_datetime():
         dtype="datetime64[ns]",
         name="a_series",
     )
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_series_categorical():
@@ -53,7 +53,7 @@ def test_series_categorical():
         dtype="category",
         name="a_series",
     )
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_dataframe():
@@ -67,4 +67,4 @@ def test_dataframe():
             "cat": pd.Categorical(["X", "Y", "X", "Z"]),
         },
     )
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))

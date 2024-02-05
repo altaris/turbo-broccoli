@@ -8,21 +8,18 @@
 
 from typing import Any, Callable, Tuple
 
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _XXX_to_json(obj: Any) -> dict:
+def _XXX_to_json(obj: Any, ctx: Context) -> dict:
 
     # TODO: Rename
     # TODO: Type argument
     # TODO: Write body =)
 
 
-def _json_to_XXX(dct: dict) -> Any:
+def _json_to_XXX(dct: dict, ctx: Context) -> Any:
 
     # TODO: Rename
     # TODO: Type return
@@ -30,10 +27,10 @@ def _json_to_XXX(dct: dict) -> Any:
     DECODERS = {
         1: _json_to_XXX_v1,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_XXX_v1(dct: dict) -> Any:
+def _json_to_XXX_v1(dct: dict, ctx: Context) -> Any:
 
     # TODO: Rename
     # TODO: Type return
@@ -41,21 +38,21 @@ def _json_to_XXX_v1(dct: dict) -> Any:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
+def from_json(dct: dict, ctx: Context) -> Any:
     # TODO: Check dispatch
-    raise_if_nodecode("XXX")
+    ctx.raise_if_nodecode("XXX")
     DECODERS = {
         "XXX": _json_to_XXX,
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a XXX into JSON by cases. See the README for the precise list of
     supported types.
@@ -73,10 +70,10 @@ def to_json(obj: Any) -> dict:
     """
     # TODO: Write doc
     # TODO: Check dispatch
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (XXX, _XXX_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

@@ -7,6 +7,9 @@ PDOC			= pdoc -d google
 
 all: format typecheck lint
 
+.PHONY: test-clean
+clean:
+	-rm -r out/test/*
 .PHONY: docs
 docs:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
@@ -28,11 +31,7 @@ lint:
 .PHONY: test
 test:
 	-mkdir -p out/test
-	TB_ARTIFACT_PATH="out/test" pytest -v
-
-.PHONY: test-clean
-test-clean:
-	-rm -r out/test/*
+	pytest -v
 
 .PHONY: typecheck
 typecheck:

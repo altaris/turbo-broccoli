@@ -20,7 +20,7 @@ from bokeh.palettes import *
 from bokeh.plotting import figure
 from bokeh.transform import linear_cmap
 from bokeh.util.hex import hexbin
-from common import from_json, to_json
+from common import to_from_json
 from numpy.random import random, standard_normal
 from scipy.special import jv
 from scipy.stats import gaussian_kde
@@ -54,7 +54,7 @@ def test_markers():
             text_align="center",
             text_font_size="13px",
         )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 def test_color_scatter():
@@ -71,22 +71,22 @@ def test_color_scatter():
     p.scatter(
         x, y, radius=radii, fill_color=colors, fill_alpha=0.6, line_color=None
     )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_elements():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/scatters/elements.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_image_url():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/scatters/image_url.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_lorenz():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/lines/lorenz.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_linear_cmap():
@@ -104,27 +104,27 @@ def test_linear_cmap():
         source=bins,
         fill_color=linear_cmap("counts", "Viridis256", 0, max(bins.counts)),
     )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_linear_cmap_colorbar():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/data/linear_cmap_colorbar.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_color_mappers():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/data/color_mappers.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_transform_markers():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/data/transform_markers.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_transform_jitter():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/data/transform_jitter.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_logplot():
@@ -172,12 +172,12 @@ def test_logplot():
         line_width=2,
     )
     p.legend.location = "top_left"
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_twin_axes():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/axes/twin_axes.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_fixed_axis():
@@ -195,172 +195,172 @@ def test_fixed_axis():
     p.line(x, y, color="navy", alpha=0.4, line_width=4)
     p.background_fill_color = "#efefef"
     p.xaxis.fixed_location = 0
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_basic():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/basic.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_colormapped():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/colormapped.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_intervals():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/intervals.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_mixed():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/mixed.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_nested_colormapped():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/nested_colormapped.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_pandas_groupby_colormapped():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/pandas_groupby_colormapped.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_pandas_groupby_nested():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/pandas_groupby_nested.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_stacked():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/stacked.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_stacked_split():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/stacked_split.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_nested():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/nested.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_colors():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/colors.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_dodged():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/bars/dodged.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_stacked_area():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/areas/stacked_area.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_anscombe():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/layouts/anscombe.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_legend():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/legend.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_arrow():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/arrow.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_band():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/band.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_slope():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/slope.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_span():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/span.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_whisker():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/whisker.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_colorbar_log():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/colorbar_log.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_box_annotation():
 #     """https://docs.bokeh.org/en/latest/docs/examples/basic/annotations/box_annotation.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_grid_bounds():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/grid_bounds.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_minor_grid_lines():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/minor_grid_lines.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_grid_band_fill():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/grid_band_fill.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_hatch_grid_band():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/hatch_grid_band.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_glyph_selection():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/glyph_selection.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_glyph_hover():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/glyph_hover.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_legend_location_outside():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/legend_location_outside.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_legend_title():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/plots/legend_title.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_latex_blackbody_radiation():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/mathtext/latex_blackbody_radiation.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_latex_normal_distribution():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/mathtext/latex_normal_distribution.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_latex_schrodinger():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/mathtext/latex_schrodinger.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_latex_bessel():
@@ -387,47 +387,47 @@ def test_latex_bessel():
                 y=ylabel,
             )
         )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_caliber():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/themes/caliber.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_dark_minimal():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/themes/dark_minimal.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_light_minimal():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/themes/light_minimal.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_night_sky():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/themes/night_sky.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_contrast():
 #     """https://docs.bokeh.org/en/latest/docs/examples/styling/themes/contrast.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_image_rgba():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/images/image_rgba.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_image():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/images/image.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_image_origin_anchor():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/images/image_origin_anchor.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_contour_simple():
@@ -443,62 +443,62 @@ def test_contour_simple():
     )
     colorbar = contour_renderer.construct_color_bar()
     p.add_layout(colorbar, "right")
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_contour():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/contour/contour.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_contour_polar():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/contour/contour_polar.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_hex_tile():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/hex/hex_tile.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_hexbin():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/hex/hexbin.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_ridgeplot():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/categorical/ridgeplot.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_scatter_jitter():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/categorical/scatter_jitter.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_les_mis():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/categorical/les_mis.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_heatmap_unemployment():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/categorical/heatmap_unemployment.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_periodic():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/categorical/periodic.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_treemap():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/hierarchical/treemap.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_crosstab():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/hierarchical/crosstab.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_texas_hover_map():
@@ -546,72 +546,72 @@ def test_texas_hover_map():
         line_color="white",
         line_width=0.5,
     )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_eclipse():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/geo/eclipse.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_tile_source():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/geo/tile_source.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_tile_xyzservices():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/geo/tile_xyzservices.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_tile_demo():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/geo/tile_demo.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_gmap():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/geo/gmap.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_from_networkx():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/graph/from_networkx.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_node_and_edge_attributes():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/graph/node_and_edge_attributes.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_candlestick():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/timeseries/candlestick.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_missing_dates():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/timeseries/missing_dates.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_pie():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/pie/pie.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_donut():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/pie/donut.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_burtin():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/pie/burtin.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_histogram():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/stats/histogram.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_kde2d():
@@ -644,17 +644,17 @@ def test_kde2d():
     palette = Blues9[::-1]
     levels = np.linspace(np.min(z), np.max(z), 10)
     p.contour(x, y, z, levels[1:], fill_color=palette, line_color=palette)
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_splom():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/stats/splom.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_boxplot():
 #     """https://docs.bokeh.org/en/latest/docs/examples/topics/stats/boxplot.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_range_tool():
@@ -693,32 +693,32 @@ def test_range_tool():
     select.ygrid.grid_line_color = None
     select.add_tools(range_tool)
     p = column(p, select)
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_linked_brushing():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/linking/linked_brushing.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_linked_crosshair():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/linking/linked_crosshair.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_data_table_plot():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/linking/data_table_plot.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_legend_hide():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/legends/legend_hide.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_legend_mute():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/legends/legend_mute.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_slider():
@@ -752,12 +752,12 @@ def test_slider():
     phase.js_on_change("value", callback)
     offset.js_on_change("value", callback)
     p = row(plot, column(amp, freq, phase, offset))
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_color_sliders():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/js_callbacks/color_sliders.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 def test_customjs_lasso_mean():
@@ -793,39 +793,39 @@ def test_customjs_lasso_mean():
     """,
         ),
     )
-    from_json(to_json(p))
+    to_from_json(p)
 
 
 # def test_js_on_event():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/js_callbacks/js_on_event.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_multiselect():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/multiselect.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_multichoice():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/multichoice.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_date_picker():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/date_picker.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_dropdown():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/dropdown.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_data_table():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/data_table.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)
 
 
 # def test_data_cube():
 #     """https://docs.bokeh.org/en/latest/docs/examples/interaction/widgets/data_cube.html"""
-#     from_json(to_json(p))
+#     to_from_json(p)

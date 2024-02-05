@@ -19,16 +19,12 @@ pip install turbo-broccoli
 # Usage
 
 ```py
-import json
 import numpy as np
 import turbo_broccoli as tb
 
 obj = {
     "an_array": np.array([[1, 2], [3, 4]], dtype="float32")
 }
-json.dumps(obj, cls=tb.TurboBroccoliEncoder)
-
-# or even simpler:
 tb.to_json(obj)
 ```
 
@@ -46,15 +42,11 @@ produces the following string (modulo indentation):
     }
   }
 }
-
 ```
 
 For deserialization, simply use
 
 ```py
-json.loads(json_string, cls=tb.TurboBroccoliDecoder)
-
-# or even simpler:
 tb.from_json(json_string)
 ```
 
@@ -76,12 +68,12 @@ tb.from_json(json_string)
       a: int
       b: str
 
-  doc = json.dumps({"c": C(a=1, b="Hello")}, cls=tb.TurboBroccoliEncoder)
+  doc = tb.to_json({"c": C(a=1, b="Hello")})
   ```
   For deserialization, first register the class:
   ```py
   tb.register_dataclass_type(C)
-  json.loads(doc, cls=tb.TurboBroccoliDecoder)
+  tb.from_json(doc)
   ```
 
 - [`datetime.datetime`, `datetime.time`,
@@ -101,7 +93,7 @@ class C:
 
 x = C()
 x.a, x.b, x.c = 42, 43, 44
-json.dumps(x, cls=tb.TurboBroccoliEncoder)
+tb.to_json(x)
 ```
 produces the following string (modulo indentation):
 ```json
@@ -164,11 +156,11 @@ such as numpy arrays. Registered attributes can be `@property` methods.
     ...
 
   module = MyModule()  # Must be instantiable without arguments
-  doc = json.dumps(x, cls=tb.TurboBroccoliEncoder)
+  doc = tb.to_json(x)
 
   # Deserialization
   tb.register_pytorch_module_type(MyModule)
-  module = json.loads(doc, cls=tb.TurboBroccoliDecoder)
+  module = tb.from_json(doc)
   ```
   **Warning**: It is not possible to register and deserialize [standard pytorch
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
@@ -294,7 +286,7 @@ x = {
     "user": "alice",
     "password": SecretStr("dolphin")
 }
-json.dumps(x, cls=tb.TurboBroccoliEncoder)
+tb.to_json(x)
 ```
 produces the following string (modulo indentation and modulo the encrypted
 content):
@@ -337,8 +329,7 @@ by modifying `os.environ`. Rather, use the methods of
   object will point to. The artifacts will be stored in `TB_ARTIFACT_PATH`. For
   example, if `arr` is a big numpy array,
   ```py
-  obj = {"an_array": arr}
-  json.dumps(obj, cls=tb.TurboBroccoliEncoder)
+  tb.to_json({"an_array": arr})
   ```
   will generate the following string (modulo indentation and `id`)
   ```json
@@ -426,10 +417,7 @@ by modifying `os.environ`. Rather, use the methods of
 ## Guarded calls
 
 This is so cool. Check out
-[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler),
-[`turbo_broccoli.guarded_call`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#guarded_call),
-and
-[`turbo_broccoli.produces_document`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document).
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler).
 
 ## CLI
 

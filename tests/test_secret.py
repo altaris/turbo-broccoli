@@ -1,14 +1,14 @@
 # pylint: disable=missing-function-docstring
 """(de)serialization of secrets"""
 
+from common import to_from_json
 import nacl.secret
 import nacl.utils
 import pytest
-from common import from_json, to_json  # Must be before turbo_broccoli imports
 from nacl.exceptions import CryptoError
 
-from turbo_broccoli.environment import set_shared_key
-from turbo_broccoli.custom.secret import (
+from turbo_broccoli import (
+    Context,
     LockedSecret,
     Secret,
     SecretDict,
@@ -16,6 +16,8 @@ from turbo_broccoli.custom.secret import (
     SecretInt,
     SecretList,
     SecretStr,
+    from_json,
+    to_json,
 )
 
 
@@ -30,7 +32,7 @@ def assert_secret_equal(a: Secret, b: Secret):
 
 
 def test_secret():
-    set_shared_key(_new_key())
+    ctx = Context(nacl_shared_key=_new_key())
     x = {
         "a_dict": SecretDict({"a": 1, "b": 2}),
         "a_float": SecretFloat(1.2),
@@ -38,17 +40,16 @@ def test_secret():
         "a_list": SecretList(list(range(10))),
         "a_str": SecretStr("password"),
     }
-    y = from_json(to_json(x))
+    y = to_from_json(x, ctx)
     assert_secret_equal(x["a_dict"], y["a_dict"])
     assert_secret_equal(x["a_float"], y["a_float"])
     assert_secret_equal(x["a_int"], y["a_int"])
     assert_secret_equal(x["a_list"], y["a_list"])
     assert_secret_equal(x["a_str"], y["a_str"])
-    set_shared_key(None)
 
 
 def test_secret_nokey():
-    set_shared_key(_new_key())
+    ctx = Context(nacl_shared_key=_new_key())
     x = {
         "a_dict": SecretDict({"a": 1, "b": 2}),
         "a_float": SecretFloat(1.2),
@@ -56,8 +57,7 @@ def test_secret_nokey():
         "a_list": SecretList(list(range(10))),
         "a_str": SecretStr("password"),
     }
-    y = to_json(x)
-    set_shared_key(None)
+    y = to_json(x, ctx)
     z = from_json(y)
     assert isinstance(z["a_dict"], LockedSecret)
     assert isinstance(z["a_float"], LockedSecret)
@@ -67,7 +67,7 @@ def test_secret_nokey():
 
 
 def test_secret_wrongkey():
-    set_shared_key(_new_key())
+    ctx = Context(nacl_shared_key=_new_key())
     x = {
         "a_dict": SecretDict({"a": 1, "b": 2}),
         "a_float": SecretFloat(1.2),
@@ -75,8 +75,7 @@ def test_secret_wrongkey():
         "a_list": SecretList(list(range(10))),
         "a_str": SecretStr("password"),
     }
-    y = to_json(x)
-    set_shared_key(_new_key())
+    y = to_json(x, ctx)
+    ctx = Context(nacl_shared_key=_new_key())
     with pytest.raises(CryptoError):
-        from_json(y)
-    set_shared_key(None)
+        from_json(y, ctx)

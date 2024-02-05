@@ -1,7 +1,7 @@
 # pylint: disable=missing-function-docstring
 """deque (de)serialization test suite"""
 
-from common import from_json, to_json
+from common import to_from_json
 
 
 # pylint: disable=missing-class-docstring
@@ -22,5 +22,5 @@ def test_dataclass():
     x.a_list = list(range(10))
     x.a_str = "Hello 🌎"
     y = {"a_str": x.a_str, "an_int": x.an_int}
-    z = from_json(to_json(x))
+    z = to_from_json(x)
     assert y == z

@@ -4,7 +4,7 @@
 from collections import deque, namedtuple
 from typing import NamedTuple
 
-from common import assert_to_from_json, from_json, to_json
+from common import assert_to_from_json, to_from_json
 
 
 def _assert_equal(a: deque, b: deque):
@@ -14,24 +14,24 @@ def _assert_equal(a: deque, b: deque):
 
 def test_deque_empty():
     x = deque()
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
     x = deque([])
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_deque_normal():
     x = deque(range(100))
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_deque_maxlen_empty():
     x = deque([], maxlen=1)
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_deque_maxlen_trunc():
     x = deque(range(100), maxlen=10)
-    _assert_equal(x, from_json(to_json(x)))
+    _assert_equal(x, to_from_json(x))
 
 
 def test_namedtuple_empty():

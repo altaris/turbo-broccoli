@@ -3,8 +3,6 @@
 import re
 from typing import Any, Generator
 
-from turbo_broccoli.environment import is_nodecode
-
 
 class DeserializationError(Exception):
     """Raised whenever something went wrong during deserialization"""
@@ -63,7 +61,7 @@ def artifacts(doc: Any) -> Generator[str, None, None]:
                 r"^[0-9a-f]{8}(\-[0-9a-f]{4}){3}\-[0-9a-f]{12}(\..+)?$"
             )
             if r.match(v):
-                yield v
+                yield v + ".tb"
         else:
             for v in doc.values():
                 for a in artifacts(v):
@@ -72,13 +70,3 @@ def artifacts(doc: Any) -> Generator[str, None, None]:
         for x in doc:
             for a in artifacts(x):
                 yield a
-
-
-def raise_if_nodecode(name: str) -> None:
-    """
-    If the (prefixed) type name is set to nodecode
-    (`turbo_broccoli.environment.set_nodecode`), raises a
-    `turbo_broccoli.utils.TypeIsNodecode` exception.
-    """
-    if is_nodecode(name):
-        raise TypeIsNodecode(name)

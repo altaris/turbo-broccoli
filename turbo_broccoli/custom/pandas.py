@@ -3,41 +3,28 @@
 import json
 from io import StringIO
 from typing import Any, Callable, Tuple
-from uuid import uuid4
 
 import pandas as pd
 
-from turbo_broccoli.environment import (
-    get_artifact_path,
-    get_max_nbytes,
-    get_pandas_format,
-)
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _dataframe_to_json(df: pd.DataFrame) -> dict:
+def _dataframe_to_json(df: pd.DataFrame, ctx: Context) -> dict:
     # Sometimes column names are int, so cannot be used as keys in a JSON
     # document. Eventhough int column names are not supported, this is
     # future-proofing.
     dtypes = [(k, v.name) for k, v in df.dtypes.items()]
-    if df.memory_usage(deep=True).sum() <= get_max_nbytes():
+    if df.memory_usage(deep=True).sum() <= ctx.min_artifact_size:
         return {
             "__type__": "pandas.dataframe",
             "__version__": 2,
             "data": json.loads(df.to_json(date_format="iso", date_unit="ns")),
             "dtypes": dtypes,
         }
-    fmt = get_pandas_format()
-    name = str(uuid4())
-    path = get_artifact_path() / name
-    if fmt in ["h5", "hdf"]:
-        df.to_hdf(path, "main")
-    else:
-        getattr(df, f"to_{fmt}")(path)
+    fmt = ctx.pandas_format
+    path, name = ctx.new_artifact_path()
+    getattr(df, f"to_{fmt}")(path, **ctx.pandas_kwargs)
     return {
         "__type__": "pandas.dataframe",
         "__version__": 2,
@@ -47,20 +34,20 @@ def _dataframe_to_json(df: pd.DataFrame) -> dict:
     }
 
 
-def _json_to_dataframe(dct: dict) -> pd.DataFrame:
+def _json_to_dataframe(dct: dict, ctx: Context) -> pd.DataFrame:
     DECODERS = {
         # 1: _json_to_dataframe_v1,  # Use turbo_broccoli v3
         2: _json_to_dataframe_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_dataframe_v2(dct: dict) -> pd.DataFrame:
+def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
     if "data" in dct:
         df = pd.read_json(StringIO(json.dumps(dct["data"])))
     else:
         fmt = dct["format"]
-        path = get_artifact_path() / dct["id"]
+        path = ctx.artifact_path / (dct["id"] + ".tb")
         if fmt in ["h5", "hdf"]:
             df = pd.read_hdf(path, "main")
         else:
@@ -79,19 +66,19 @@ def _json_to_dataframe_v2(dct: dict) -> pd.DataFrame:
     return df
 
 
-def _json_to_series(dct: dict) -> pd.Series:
+def _json_to_series(dct: dict, ctx: Context) -> pd.Series:
     DECODERS = {
         # 1: _json_to_series_v1,  # Use turbo_broccoli v3
         2: _json_to_series_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_series_v2(dct: dict) -> pd.Series:
+def _json_to_series_v2(dct: dict, ctx: Context) -> pd.Series:
     return dct["data"][dct["name"]]
 
 
-def _series_to_json(ser: pd.Series) -> dict:
+def _series_to_json(ser: pd.Series, ctx: Context) -> dict:
     name = ser.name if ser.name is not None else "main"
     return {
         "__type__": "pandas.series",
@@ -102,21 +89,21 @@ def _series_to_json(ser: pd.Series) -> dict:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("pandas")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("pandas")
     DECODERS = {
         "pandas.dataframe": _json_to_dataframe,
         "pandas.series": _json_to_series,
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a pandas object into JSON by cases. See the README for the
     precise list of supported types. The return dict has the following
@@ -187,11 +174,11 @@ def to_json(obj: Any) -> dict:
         Series and column names must be strings!
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (pd.DataFrame, _dataframe_to_json),
         (pd.Series, _series_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

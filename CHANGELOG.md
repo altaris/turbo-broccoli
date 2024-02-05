@@ -36,6 +36,19 @@ Changelog
   }
   ```
   This declutters the overall structure of the JSON documents.
+- Introduction of (de)serialization context objects
+  (`turbo_broccoli.context.Context`), which contain various information and
+  parameters about the ongoing (de)serialization operation. You can use it when
+  calling `turbo_broccoli.from_json` or `turbo_broccoli.to_json`. For
+  convenience, `turbo_broccoli.save_json` and `turbo_broccoli.load_json` take
+  the context parameter's as kwargs.
+- Removal of `turbo_broccoli.environment`. Use `turbo_broccoli.context.Context`
+  instead.
+- Sentinel booleans like `HAS_NUMPY`, `HAS_PANDA` etc. are not in
+  `turbo_broccoli.custom`.
+- Deleted `turbo_broccoli.guard.guarded_call` and
+  `turbo_broccoli.guard.produces_document`. The iterable version of
+  `turbo_broccoli.guard.GuardedBlockHandler.guard` no longer exist.
 
 # `v2.1.0`
 

@@ -8,11 +8,11 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-from common import assert_to_from_json, from_json, to_json
+from common import assert_to_from_json, to_from_json
 from test_keras import _build_model
 from test_pandas import _assert_equal as assert_equal_pd
 
-from turbo_broccoli.environment import register_dataclass_type, set_nodecode
+from turbo_broccoli import Context
 
 
 def _basic_dict() -> dict:
@@ -20,16 +20,14 @@ def _basic_dict() -> dict:
 
 
 def test_nodecode_nothing():
-    set_nodecode("")
     assert_to_from_json(_basic_dict())
 
 
 def test_nodecode_bytes():
-    set_nodecode("bytes")
+    ctx = Context(nodecode_types=["bytes"])
     x = {"b": "Hello 🌎".encode("utf8"), **_basic_dict()}
     y = {"b": None, **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)
 
 
 def test_nodecode_dataclass():
@@ -45,44 +43,38 @@ def test_nodecode_dataclass():
         a_dataclass: C
         a_float: float
 
-    register_dataclass_type(C)
-    register_dataclass_type(D)
-    set_nodecode("dataclass.C")
+    ctx = Context(nodecode_types=["dataclass.C"], dataclass_types=[C, D])
     c = C(a_byte_str=b"", a_list=[], a_str="", an_int=0)
     x = {"c": c, "d": D(a_dataclass=c, a_float=1.2), **_basic_dict()}
     y = {"c": None, "d": D(a_dataclass=None, a_float=1.2), **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)
 
 
 def test_nodecode_collections():
-    set_nodecode("collections.deque")
+    ctx = Context(nodecode_types=["collections.deque"])
     x = {"deq": deque(range(100)), **_basic_dict()}
     y = {"deq": None, **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)
 
 
 def test_nodecode_keras():
-    set_nodecode("keras.model")
+    ctx = Context(nodecode_types=["keras.model"])
     x = {"model": _build_model(), **_basic_dict()}
     y = {"model": None, **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)
 
 
 def test_nodecode_numpy():
-    set_nodecode("numpy.ndarray")
+    ctx = Context(nodecode_types=["numpy.ndarray"])
     x = {"arr": np.zeros(10), **_basic_dict()}
     y = {"arr": None, **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)
 
 
 # The serialization of Series depends on that of DataFrame. So excluding
 # pandas.dataframe will make it impossible to deserialize Series.
 # def test_nodecode_pandas_df():
-#     set_nodecode("pandas.dataframe")
+#     ctx = Context(nodecode_types=["pandas.dataframe"])
 #     s = pd.Series([1, 2, 3])
 #     df = pd.DataFrame(
 #         {
@@ -95,29 +87,26 @@ def test_nodecode_numpy():
 #         "df": df,
 #     }
 #     print(to_json(x))
-#     y = from_json(to_json(x))
+#     y = to_from_json(x, ctx)
 #     assert_equal_pd(x["s"], y["s"])
 #     assert y["df"] is None
-#     set_nodecode("")
 
 
 def test_nodecode_pandas_ser():
-    set_nodecode("pandas.series")
+    ctx = Context(nodecode_types=["pandas.series"])
     s = pd.Series([1, 2, 3])
     df = pd.DataFrame({"a": s, "b": pd.Categorical(["X", "Y", "X"])})
     x = {
         "s": s,
         "df": df,
     }
-    y = from_json(to_json(x))
+    y = to_from_json(x, ctx)
     assert_equal_pd(x["df"], y["df"])
     assert y["s"] is None
-    set_nodecode("")
 
 
 def test_nodecode_tensorflow():
-    set_nodecode("tensorflow.tensor")
+    ctx = Context(nodecode_types=["tensorflow.tensor"])
     x = {"t": tf.random.uniform((10, 10)), **_basic_dict()}
     y = {"t": None, **_basic_dict()}
-    assert y == from_json(to_json(x))
-    set_nodecode("")
+    assert y == to_from_json(x, ctx)

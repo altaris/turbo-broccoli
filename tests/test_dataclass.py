@@ -4,9 +4,8 @@
 
 from dataclasses import dataclass
 
-from common import from_json, to_json  # Must be before turbo_broccoli imports
-
-from turbo_broccoli.environment import register_dataclass_type
+from common import to_from_json
+from turbo_broccoli import Context
 
 
 @dataclass
@@ -24,21 +23,20 @@ class D:
 
 
 def test_dataclass():
-    register_dataclass_type(C)
+    ctx = Context(dataclass_types=[C])
     x = C(
         a_byte_str="🦐🦐🦐".encode("utf8"),
         a_list=list(range(10)),
         a_str="Hello 🌎",
         an_int="42",
     )
-    y = from_json(to_json(x))
+    y = to_from_json(x, ctx)
     assert isinstance(y, C)
     assert x.__dict__ == y.__dict__
 
 
 def test_dataclass_recursive():
-    register_dataclass_type(C)
-    register_dataclass_type(D)
+    ctx = Context(dataclass_types=[C, D])
     x = D(
         a_dataclass=C(
             a_byte_str="🦐🦐🦐".encode("utf8"),
@@ -48,7 +46,7 @@ def test_dataclass_recursive():
         ),
         a_float=1.2,
     )
-    y = from_json(to_json(x))
+    y = to_from_json(x, ctx)
     assert isinstance(y, D)
     assert x.a_float == y.a_float
     assert isinstance(x.a_dataclass, C)

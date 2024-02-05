@@ -1,118 +1,110 @@
-"""Main module containing the JSON encoder and decoder classes."""
+"""Main module containing the JSON encoder and decoder methods."""
 
 import json
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
-from turbo_broccoli.environment import get_artifact_path, set_artifact_path
+from turbo_broccoli.context import Context
+from turbo_broccoli.custom import get_decoders, get_encoders
 from turbo_broccoli.utils import TypeIsNodecode, TypeNotSupported
-from turbo_broccoli.custom import (
-    _collections,
-    get_decoders,
-    get_encoders,
-)
 
 
-class TurboBroccoliDecoder(json.JSONDecoder):
+def _from_jsonable(obj: Any, ctx: Context) -> Any:
     """
-    TurboBroccoli's custom JSON decoder class. See the README for the list of
-    supported types.
+    Takes an object fresh from `json.load` or `json.loads` and loads types that
+    are supported by TurboBroccoli therein.
     """
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(object_hook=self._hook, *args, **kwargs)
-
-    def _hook(self, dct):
-        """Deserialization hook"""
-        for t, f in get_decoders().items():
-            if str(dct.get("__type__", "")).startswith(t):
+    if isinstance(obj, dict):
+        obj = {k: _from_jsonable(v, ctx / k) for k, v in obj.items()}
+        if "__type__" in obj:
+            base = obj["__type__"].split(".")[0]
+            decoders = get_decoders()
+            if base in decoders:
                 try:
-                    return f(dct)
+                    obj = decoders[base](obj, ctx)
                 except TypeIsNodecode:
-                    return None
-        return dct
+                    obj = None
+    elif isinstance(obj, list):
+        return [_from_jsonable(v, ctx / str(i)) for i, v in enumerate(obj)]
+    elif isinstance(obj, tuple):
+        return tuple(
+            _from_jsonable(v, ctx / str(i)) for i, v in enumerate(obj)
+        )
+    return obj
 
 
-class TurboBroccoliEncoder(json.JSONEncoder):
+def _to_jsonable(obj: Any, ctx: Context) -> Any:
     """
-    TurboBroccoli's custom JSON decoder class. See the README for the list of
-    supported types.
+    Transforms an object (dict, list, primitive) that possibly contains types
+    that TurboBroccoli's custom encoders support, and returns an object that is
+    readily vanilla JSON-serializable.
     """
-
-    def default(self, o: Any) -> Any:
-        for f in get_encoders():
-            try:
-                return f(o)
-            except TypeNotSupported:
-                pass
-        return super().default(o)
-
-    def encode(self, o: Any) -> str:
-        """
-        Reimplementation of encode just to treat exceptional cases that need to
-        be handled before `JSONEncoder.encode`.
-        """
-        priority_encoders: list[Callable[[Any], dict]] = [
-            _collections.to_json,
-        ]
-        for f in priority_encoders:
-            try:
-                return super().encode(f(o))
-            except TypeNotSupported:
-                pass
-        return super().encode(o)
+    for encoder in get_encoders():
+        try:
+            obj = encoder(obj, ctx)
+            break
+        except TypeNotSupported:
+            pass
+    if isinstance(obj, dict):
+        return {k: _to_jsonable(v, ctx / k) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_to_jsonable(v, ctx / str(i)) for i, v in enumerate(obj)]
+    if isinstance(obj, tuple):
+        return tuple(_to_jsonable(v, ctx / str(i)) for i, v in enumerate(obj))
+    return obj
 
 
-# pylint: disable=missing-function-docstring
-def from_json(doc: str) -> Any:
-    """Converts a JSON document string back to a Python object"""
-    return json.loads(doc, cls=TurboBroccoliDecoder)
+def from_json(doc: str, ctx: Context | None = None) -> Any:
+    """Deserializes a JSON string"""
+    return _from_jsonable(json.loads(doc), Context() if ctx is None else ctx)
 
 
-def load_json(path: str | Path, auto_artifact_path: bool = True) -> Any:
+def load_json(file_path: str | Path, **kwargs) -> Any:
     """
-    Loads and deserializes a JSON file using Turbo Broccoli
+    Loads a JSON file.
 
     Args:
-        path (str | Path):
-        auto_artifact_path (bool): If left to `True`, set the artifact path to
-            the target file's parent directory before loading. After loading,
-            the previous artifact path is restored. See also see
-            `turbo_broccoli.environment.set_artifact_path`.
+        file_path (str | Path):
+        **kwargs: Forwarded to the `turbo_broccoli.context.Context`
+            constructor.
+
+    Returns:
+        Any: _description_
     """
-    old_artifact_path = get_artifact_path()
-    if auto_artifact_path:
-        set_artifact_path(Path(path).parent)
-    with open(path, mode="r", encoding="utf-8") as fp:
-        document = json.load(fp, cls=TurboBroccoliDecoder)
-    if auto_artifact_path:
-        set_artifact_path(old_artifact_path)
-    return document
+    kwargs["file_path"] = file_path
+    ctx = Context(**kwargs)
+    assert isinstance(ctx.file_path, Path)  # for typechecking
+    with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
+        return _from_jsonable(json.load(fp), ctx)
 
 
-def save_json(
-    obj: Any, path: str | Path, auto_artifact_path: bool = True
-) -> None:
+def save_json(obj: Any, file_path: str | Path, **kwargs) -> None:
     """
-    Serializes and saves a JSON-serializable object
+    Serializes an object and writes the result to a file. The artifact path and
+    the output file's parent folder will be created if they don't exist.
 
     Args:
         obj (Any):
-        path (str | Path):
-        auto_artifact_path (bool): If left to `True`, set the artifact path to
-            the target file's parent directory before saving. After saving,
-            the previous artifact path is restored. See also see
-            `turbo_broccoli.environment.set_artifact_path`.
+        file_path (str | Path):
+        **kwargs: Forwarded to the `turbo_broccoli.context.Context`
+            constructor.
     """
-    old_artifact_path = get_artifact_path()
-    if auto_artifact_path:
-        set_artifact_path(Path(path).parent)
-    with open(path, mode="w", encoding="utf-8") as fp:
-        fp.write(to_json(obj))
-    if auto_artifact_path:
-        set_artifact_path(old_artifact_path)
+    kwargs["file_path"] = file_path
+    ctx = Context(**kwargs)
+    data = json.dumps(_to_jsonable(obj, ctx))
+    assert isinstance(ctx.file_path, Path)  # for typechecking
+    if not ctx.file_path.parent.exists():
+        ctx.file_path.parent.mkdir(parents=True)
+    with ctx.file_path.open(mode="w", encoding="utf-8") as fp:
+        fp.write(data)
 
 
-def to_json(obj: Any) -> str:
-    """Converts an object to JSON"""
-    return json.dumps(obj, cls=TurboBroccoliEncoder)
+def to_json(obj: Any, ctx: Context | None = None) -> str:
+    """
+    Converts an object to a JSON string. The context's artifact folder will be
+    created if it doesn't exist.
+    """
+    ctx = Context() if ctx is None else ctx
+    if not ctx.artifact_path.exists():
+        ctx.artifact_path.mkdir(parents=True)
+    return json.dumps(_to_jsonable(obj, ctx))

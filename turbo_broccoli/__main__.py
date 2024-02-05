@@ -46,14 +46,16 @@ def list_artifacts(file_path: Path, full_path: bool, *_, **__):
     """Lists the artifacts referenced by the JSON file"""
     import json
 
-    from .environment import get_artifact_path
-    from .utils import artifacts
+    from turbo_broccoli.context import Context
+    from turbo_broccoli.utils import artifacts
 
-    with open(file_path, mode="r", encoding="utf-8") as fp:
+    ctx = Context(file_path=file_path)
+    assert isinstance(ctx.file_path, Path)  # for typechecking
+    with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
         document = json.load(fp)
     a: Iterable = artifacts(document)
     if full_path:
-        p = get_artifact_path().absolute()
+        p = ctx.artifact_path.absolute()
         a = map(lambda x: p / x, a)
     print(*a, sep="\n")
 
@@ -78,12 +80,14 @@ def rm(file_path: Path, dry_run: bool, *_, **__):
     """
     import json
 
-    from .environment import get_artifact_path
-    from .utils import artifacts
+    from turbo_broccoli.context import Context
+    from turbo_broccoli.utils import artifacts
 
-    with open(file_path, mode="r", encoding="utf-8") as fp:
+    ctx = Context(file_path=file_path)
+    assert isinstance(ctx.file_path, Path)  # for typechecking
+    with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
         document = json.load(fp)
-    p = get_artifact_path().absolute()
+    p = ctx.artifact_path.absolute()
     files = list(map(lambda x: p / x, artifacts(document))) + [
         file_path.absolute()
     ]

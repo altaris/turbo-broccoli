@@ -2,7 +2,6 @@
 
 import re
 from typing import Any, Callable, Tuple
-from uuid import uuid4
 
 # Sklearn recommends joblib rather than direct pickle
 # https://scikit-learn.org/stable/model_persistence.html#python-specific-serialization
@@ -47,13 +46,8 @@ from sklearn import (
 from sklearn.base import BaseEstimator
 from sklearn.tree._tree import Tree
 
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
-
-from turbo_broccoli.environment import get_artifact_path
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 _SKLEARN_SUBMODULES = [
     # calibration,
@@ -152,7 +146,7 @@ def _all_base_estimators() -> dict[str, type]:
     return {cls.__name__: cls for cls in result}
 
 
-def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
+def _sklearn_estimator_to_json(obj: BaseEstimator, ctx: Context) -> dict:
     r = re.compile(r"\w[\w_]*[^_]_")
     return {
         "__type__": "sklearn.estimator." + obj.__class__.__name__,
@@ -162,7 +156,7 @@ def _sklearn_estimator_to_json(obj: BaseEstimator) -> dict:
     }
 
 
-def _sklearn_to_raw(obj: Any) -> dict:
+def _sklearn_to_raw(obj: Any, ctx: Context) -> dict:
     """
     Pickles an otherwise unserializable sklearn object. Actually uses the
     `joblib.dump`.
@@ -171,8 +165,8 @@ def _sklearn_to_raw(obj: Any) -> dict:
         Don't dump to file if the object is small enough. Unfortunately
         `joblib` can't dump to a string.
     """
-    name = str(uuid4())
-    joblib.dump(obj, get_artifact_path() / name)
+    path, name = ctx.new_artifact_path()
+    joblib.dump(obj, path)
     return {
         "__type__": "sklearn.raw",
         "__version__": 2,
@@ -180,7 +174,7 @@ def _sklearn_to_raw(obj: Any) -> dict:
     }
 
 
-def _sklearn_tree_to_json(obj: Tree) -> dict:
+def _sklearn_tree_to_json(obj: Tree, ctx: Context) -> dict:
     return {
         "__type__": "sklearn.tree",
         "__version__": 2,
@@ -188,27 +182,27 @@ def _sklearn_tree_to_json(obj: Tree) -> dict:
     }
 
 
-def _json_raw_to_sklearn(dct: dict) -> Any:
+def _json_raw_to_sklearn(dct: dict, ctx: Context) -> Any:
     DECODERS = {
         # 1: _json_raw_to_sklearn_v1,  # Use turbo_broccoli v3
         2: _json_raw_to_sklearn_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_raw_to_sklearn_v2(dct: dict) -> Any:
-    return joblib.load(get_artifact_path() / dct["data"])
+def _json_raw_to_sklearn_v2(dct: dict, ctx: Context) -> Any:
+    return joblib.load(ctx.artifact_path / (dct["data"] + ".tb"))
 
 
-def _json_to_sklearn_estimator(dct: dict) -> BaseEstimator:
+def _json_to_sklearn_estimator(dct: dict, ctx: Context) -> BaseEstimator:
     DECODERS = {
         # 1: _json_to_sklearn_estimator_v1,  # Use turbo_broccoli v3
         2: _json_to_sklearn_estimator_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_sklearn_estimator_v2(dct: dict) -> BaseEstimator:
+def _json_to_sklearn_estimator_v2(dct: dict, ctx: Context) -> BaseEstimator:
     bes = _all_base_estimators()
     cls = bes[dct["__type__"].split(".")[-1]]
     obj = cls(**dct["params"])
@@ -218,22 +212,22 @@ def _json_to_sklearn_estimator_v2(dct: dict) -> BaseEstimator:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> BaseEstimator:
-    raise_if_nodecode("sklearn")
+def from_json(dct: dict, ctx: Context) -> BaseEstimator:
+    ctx.raise_if_nodecode("sklearn")
     DECODERS = {  # Except sklearn estimators
         "sklearn.raw": _json_raw_to_sklearn,
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
+        ctx.raise_if_nodecode(type_name)
         if type_name.startswith("sklearn.estimator."):
-            return _json_to_sklearn_estimator(dct)
-        return DECODERS[type_name](dct)
+            return _json_to_sklearn_estimator(dct, ctx)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: BaseEstimator) -> dict:
+def to_json(obj: BaseEstimator, ctx: Context) -> dict:
     """
     Serializes a sklearn estimator into JSON by cases. See the README for the
     precise list of supported types. The return dict has the following
@@ -262,12 +256,12 @@ def to_json(obj: BaseEstimator) -> dict:
       where the UUID4 value points to an pickle file artifact.
     """
 
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (t, _sklearn_to_raw) for t in _SUPPORTED_PICKLABLE_TYPES
     ] + [
         (BaseEstimator, _sklearn_estimator_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

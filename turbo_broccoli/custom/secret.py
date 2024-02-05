@@ -6,8 +6,8 @@ from typing import Any, NoReturn
 
 from nacl.secret import SecretBox
 
-from turbo_broccoli.environment import get_shared_key
-from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import TypeNotSupported
 
 
 class Secret:
@@ -77,22 +77,21 @@ class SecretStr(Secret):
         super().__init__(value)
 
 
-def _from_json_v2(dct: dict) -> Any:
-    key = get_shared_key()
-    if key is None:
+def _from_json_v2(dct: dict, ctx: Context) -> Any:
+    if ctx.nacl_shared_key is None:
         return LockedSecret()
-    box = SecretBox(key)
+    box = SecretBox(ctx.nacl_shared_key)
     return json.loads(box.decrypt(dct["data"]).decode("utf-8"))
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("secret")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("secret")
     DECODERS = {
         # 1: _from_json_v1,  # Use turbo_broccoli v3
         2: _from_json_v2,
     }
-    obj = DECODERS[dct["__version__"]](dct)
+    obj = DECODERS[dct["__version__"]](dct, ctx)
     if isinstance(obj, LockedSecret):
         return obj
     TYPES = {
@@ -105,7 +104,7 @@ def from_json(dct: dict) -> Any:
     return TYPES[type(obj)](obj)
 
 
-def to_json(obj: Secret) -> dict:
+def to_json(obj: Secret, ctx: Context) -> dict:
     """
     Encrypts a JSON **string representation** of a secret document into a
     new JSON document with the following structure:
@@ -118,14 +117,14 @@ def to_json(obj: Secret) -> dict:
     """
     if not isinstance(obj, Secret):
         raise TypeNotSupported()
-    key = get_shared_key()
-    if key is None:
+    if ctx.nacl_shared_key is None:
         raise RuntimeError(
             "Attempting to serialize a secret type but no shared key is set. "
-            "Use either turbo_broccoli.environment.set_shared_key or the "
-            "TB_SHARED_KEY environment variable."
+            "Either set `nacl_shared_key` when constructing the encoding "
+            "torbo_broccoli.context.Context, or set the TB_SHARED_KEY "
+            "environment variable."
         )
-    box = SecretBox(key)
+    box = SecretBox(ctx.nacl_shared_key)
     return {
         "__type__": "secret",
         "__version__": 2,

@@ -5,10 +5,11 @@ Serialization of so-called generic object. See
 
 from typing import Any, Iterable
 
-from turbo_broccoli.utils import TypeNotSupported, raise_if_nodecode
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import TypeNotSupported
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a generic object into JSON. The return document contains all
     attributes listed in the object's `__turbo_broccoli__` attribute.
@@ -19,5 +20,5 @@ def to_json(obj: Any) -> dict:
         and isinstance(obj.__turbo_broccoli__, Iterable)
     ):
         raise TypeNotSupported()
-    raise_if_nodecode("generic")
+    ctx.raise_if_nodecode("generic")
     return {k: getattr(obj, k) for k in obj.__turbo_broccoli__}

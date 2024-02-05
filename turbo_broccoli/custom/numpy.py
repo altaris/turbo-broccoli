@@ -7,78 +7,73 @@ Todo:
 
 import pickle
 from typing import Any, Callable, Tuple
-from uuid import uuid4
 
 import numpy as np
 from safetensors import numpy as st
 
-from turbo_broccoli.environment import get_artifact_path, get_max_nbytes
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _json_to_dtype(dct: dict) -> np.dtype:
-    raise_if_nodecode("numpy.dtype")
+def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:
+    ctx.raise_if_nodecode("numpy.dtype")
     DECODERS = {
         # 1: _json_to_dtype_v1,  # Use turbo_broccoli v3
         2: _json_to_dtype_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_dtype_v2(dct: dict) -> np.dtype:
+def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
     return np.lib.format.descr_to_dtype(dct["dtype"])
 
 
-def _json_to_ndarray(dct: dict) -> np.ndarray:
-    raise_if_nodecode("numpy.ndarray")
+def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
+    ctx.raise_if_nodecode("numpy.ndarray")
     DECODERS = {
         # 1: _json_to_ndarray_v1,  # Use turbo_broccoli v3
         # 2: _json_to_ndarray_v2,  # Use turbo_broccoli v3
         # 3: _json_to_ndarray_v3,  # Use turbo_broccoli v3
         4: _json_to_ndarray_v4,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_ndarray_v4(dct: dict) -> np.ndarray:
+def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
     if "data" in dct:
         return st.load(dct["data"])["data"]
-    return st.load_file(get_artifact_path() / dct["id"])["data"]
+    return st.load_file(ctx.artifact_path / (dct["id"] + ".tb"))["data"]
 
 
-def _json_to_number(dct: dict) -> np.number:
-    raise_if_nodecode("numpy.number")
+def _json_to_number(dct: dict, ctx: Context) -> np.number:
+    ctx.raise_if_nodecode("numpy.number")
     DECODERS = {
         # 1: _json_to_number_v1,  # Use turbo_broccoli v3
         # 2: _json_to_number_v2,  # Use turbo_broccoli v3
         3: _json_to_number_v3,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_number_v3(dct: dict) -> np.number:
+def _json_to_number_v3(dct: dict, ctx: Context) -> np.number:
     return np.frombuffer(dct["value"], dtype=dct["dtype"])[0]
 
 
-def _json_to_random_state(dct: dict) -> np.number:
-    raise_if_nodecode("numpy.random_state")
+def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
+    ctx.raise_if_nodecode("numpy.random_state")
     DECODERS = {
         # 1: _json_to_random_state_v1,
         2: _json_to_random_state_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_random_state_v2(dct: dict) -> np.number:
-    with open(get_artifact_path() / dct["data"], mode="rb") as fp:
+def _json_to_random_state_v2(dct: dict, ctx: Context) -> np.number:
+    with open(ctx.artifact_path / (dct["data"] + ".tb"), mode="rb") as fp:
         return pickle.load(fp)
 
 
-def _dtype_to_json(d: np.dtype) -> dict:
+def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:
     return {
         "__type__": "numpy.dtype",
         "__version__": 2,
@@ -86,15 +81,15 @@ def _dtype_to_json(d: np.dtype) -> dict:
     }
 
 
-def _ndarray_to_json(arr: np.ndarray) -> dict:
-    if arr.nbytes <= get_max_nbytes():
+def _ndarray_to_json(arr: np.ndarray, ctx: Context) -> dict:
+    if arr.nbytes <= ctx.min_artifact_size:
         return {
             "__type__": "numpy.ndarray",
             "__version__": 4,
             "data": st.save({"data": arr}),
         }
-    name = str(uuid4())
-    st.save_file({"data": arr}, get_artifact_path() / name)
+    path, name = ctx.new_artifact_path()
+    st.save_file({"data": arr}, path)
     return {
         "__type__": "numpy.ndarray",
         "__version__": 4,
@@ -102,7 +97,7 @@ def _ndarray_to_json(arr: np.ndarray) -> dict:
     }
 
 
-def _number_to_json(num: np.number) -> dict:
+def _number_to_json(num: np.number, ctx: Context) -> dict:
     return {
         "__type__": "numpy.number",
         "__version__": 3,
@@ -111,9 +106,10 @@ def _number_to_json(num: np.number) -> dict:
     }
 
 
-def _random_state_to_json(obj: np.random.RandomState) -> dict:
-    name, protocol = str(uuid4()), pickle.HIGHEST_PROTOCOL
-    with open(get_artifact_path() / name, mode="wb") as fp:
+def _random_state_to_json(obj: np.random.RandomState, ctx: Context) -> dict:
+    path, name = ctx.new_artifact_path()
+    protocol = pickle.HIGHEST_PROTOCOL
+    with open(path, mode="wb") as fp:
         pickle.dump(obj, fp, protocol=protocol)
     return {
         "__type__": "numpy.random_state",
@@ -124,12 +120,12 @@ def _random_state_to_json(obj: np.random.RandomState) -> dict:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
+def from_json(dct: dict, ctx: Context) -> Any:
     """
     Deserializes a dict into a numpy object. See `to_json` for the
     specification `dct` is expected to follow.
     """
-    raise_if_nodecode("numpy")
+    ctx.raise_if_nodecode("numpy")
     DECODERS = {
         "numpy.ndarray": _json_to_ndarray,
         "numpy.number": _json_to_number,
@@ -138,13 +134,13 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a `numpy` object into JSON by cases. See the README for the
     precise list of supported types. The return dict has the following
@@ -162,12 +158,11 @@ def to_json(obj: Any) -> dict:
             }
 
 
-      On the other hand, the array is too large (i.e. the number of bytes
-      exceeds `TB_MAX_NBYTES` or the value set by
-      `turbo_broccoli.environment.set_max_nbytes`), then the content of `arr`
-      is stored in an `.npy` file. Said file is saved to the path specified by
-      the `TB_ARTIFACT_PATH` environment variable with a
-      random UUID4 as filename. The resulting JSON document looks like
+      On the other hand, the array is too large (see
+      `turbo_broccoli.context.Context.min_artifact_size`), then the content of
+      `arr` is stored in an `.npy` file. Said file is saved to the path
+      specified by the `TB_ARTIFACT_PATH` environment variable with a random
+      UUID4 as filename. The resulting JSON document looks like
 
             {
                 "__type__": "numpy.ndarray",
@@ -211,7 +206,7 @@ def to_json(obj: Any) -> dict:
       pickle protocol.
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (np.ndarray, _ndarray_to_json),
         (np.number, _number_to_json),
         (np.dtype, _dtype_to_json),
@@ -219,5 +214,5 @@ def to_json(obj: Any) -> dict:
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

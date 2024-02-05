@@ -4,14 +4,11 @@ from typing import Any, Callable, Tuple
 
 from scipy.sparse import csr_matrix
 
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _csr_matrix_to_json(m: csr_matrix) -> dict:
+def _csr_matrix_to_json(m: csr_matrix, ctx: Context) -> dict:
     return {
         "__type__": "scipy.csr_matrix",
         "__version__": 2,
@@ -23,15 +20,15 @@ def _csr_matrix_to_json(m: csr_matrix) -> dict:
     }
 
 
-def _json_to_csr_matrix(dct: dict) -> csr_matrix:
+def _json_to_csr_matrix(dct: dict, ctx: Context) -> csr_matrix:
     DECODERS = {
         # 1: _json_to_csr_matrix_v1,  # Use turbo_broccoli v3
         2: _json_to_csr_matrix_v2,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_csr_matrix_v2(dct: dict) -> csr_matrix:
+def _json_to_csr_matrix_v2(dct: dict, ctx: Context) -> csr_matrix:
     return csr_matrix(
         (dct["data"], dct["indices"], dct["indptr"]),
         shape=dct["shape"],
@@ -40,20 +37,20 @@ def _json_to_csr_matrix_v2(dct: dict) -> csr_matrix:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("scipy")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("scipy")
     DECODERS = {
         "scipy.csr_matrix": _json_to_csr_matrix,
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a Scipy object into JSON by cases. See the README for the
     precise list of supported types. The return dict has the following
@@ -72,10 +69,10 @@ def to_json(obj: Any) -> dict:
             }
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (csr_matrix, _csr_matrix_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

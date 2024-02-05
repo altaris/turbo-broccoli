@@ -1,13 +1,12 @@
 # pylint: disable=missing-function-docstring
 """Keras (de)serialization test suite"""
 
-from tensorflow import keras
 import numpy as np
+from common import to_from_json
 from numpy.testing import assert_array_equal
+from tensorflow import keras
 
-from common import from_json, to_json  # Must be before turbo_broccoli imports
-
-from turbo_broccoli.environment import set_keras_format
+from turbo_broccoli import Context
 
 
 def _assert_model_equal(a, b):
@@ -40,18 +39,18 @@ def _build_model():
 
 
 def test_keras_model_json():
-    set_keras_format("json")
+    ctx = Context(keras_format="json")
     x = _build_model()
-    _assert_model_equal(x, from_json(to_json(x)))
+    _assert_model_equal(x, to_from_json(x, ctx))
 
 
 def test_keras_model_h5():
-    set_keras_format("h5")
+    ctx = Context(keras_format="h5")
     x = _build_model()
-    _assert_model_equal(x, from_json(to_json(x)))
+    _assert_model_equal(x, to_from_json(x, ctx))
 
 
 def test_keras_model_tf():
-    set_keras_format("tf")
+    ctx = Context(keras_format="tf")
     x = _build_model()
-    _assert_model_equal(x, from_json(to_json(x)))
+    _assert_model_equal(x, to_from_json(x, ctx))

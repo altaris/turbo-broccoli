@@ -2,36 +2,30 @@
 
 from typing import Any
 
-from turbo_broccoli.environment import (
-    get_registered_dataclass_type,
-)
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _json_to_dataclass_v3(dct: dict) -> Any:
+def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:
     class_name = dct["__type__"].split(".")[-1]
-    return get_registered_dataclass_type(class_name)(**dct["data"])
+    return ctx.dataclass_types[class_name](**dct["data"])
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("dataclass")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("dataclass")
     DECODERS = {
         # 2: _json_to_dataclass_v2,  # Use turbo_broccoli v3
         3: _json_to_dataclass_v3,
     }
     try:
-        raise_if_nodecode(dct["__type__"])
-        return DECODERS[dct["__version__"]](dct)
+        ctx.raise_if_nodecode(dct["__type__"])
+        return DECODERS[dct["__version__"]](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a dataclass into JSON by cases. The return dict has the
     following structure

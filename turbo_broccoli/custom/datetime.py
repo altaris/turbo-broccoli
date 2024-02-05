@@ -8,14 +8,11 @@ See also:
 from datetime import datetime, time, timedelta
 from typing import Any, Callable, Tuple
 
-from turbo_broccoli.utils import (
-    DeserializationError,
-    TypeNotSupported,
-    raise_if_nodecode,
-)
+from turbo_broccoli.context import Context
+from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
-def _datetime_to_json(obj: datetime) -> dict:
+def _datetime_to_json(obj: datetime, ctx: Context) -> dict:
     return {
         "__type__": "datetime.datetime",
         "__version__": 1,
@@ -23,7 +20,7 @@ def _datetime_to_json(obj: datetime) -> dict:
     }
 
 
-def _time_to_json(obj: time) -> dict:
+def _time_to_json(obj: time, ctx: Context) -> dict:
     return {
         "__type__": "datetime.time",
         "__version__": 1,
@@ -31,7 +28,7 @@ def _time_to_json(obj: time) -> dict:
     }
 
 
-def _timedelta_to_json(obj: timedelta) -> dict:
+def _timedelta_to_json(obj: timedelta, ctx: Context) -> dict:
     return {
         "__type__": "datetime.timedelta",
         "__version__": 1,
@@ -41,36 +38,36 @@ def _timedelta_to_json(obj: timedelta) -> dict:
     }
 
 
-def _json_to_datetime(dct: dict) -> datetime:
+def _json_to_datetime(dct: dict, ctx: Context) -> datetime:
     DECODERS = {
         1: _json_to_datetime_v1,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_datetime_v1(dct: dict) -> datetime:
+def _json_to_datetime_v1(dct: dict, ctx: Context) -> datetime:
     return datetime.fromisoformat(dct["datetime"])
 
 
-def _json_to_time(dct: dict) -> time:
+def _json_to_time(dct: dict, ctx: Context) -> time:
     DECODERS = {
         1: _json_to_time_v1,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_time_v1(dct: dict) -> time:
+def _json_to_time_v1(dct: dict, ctx: Context) -> time:
     return time.fromisoformat(dct["time"])
 
 
-def _json_to_timedelta(dct: dict) -> timedelta:
+def _json_to_timedelta(dct: dict, ctx: Context) -> timedelta:
     DECODERS = {
         1: _json_to_timedelta_v1,
     }
-    return DECODERS[dct["__version__"]](dct)
+    return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_timedelta_v1(dct: dict) -> timedelta:
+def _json_to_timedelta_v1(dct: dict, ctx: Context) -> timedelta:
     return timedelta(
         days=dct["days"],
         microseconds=dct["microseconds"],
@@ -79,8 +76,8 @@ def _json_to_timedelta_v1(dct: dict) -> timedelta:
 
 
 # pylint: disable=missing-function-docstring
-def from_json(dct: dict) -> Any:
-    raise_if_nodecode("datetime")
+def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("datetime")
     DECODERS = {
         "datetime.datetime": _json_to_datetime,
         "datetime.time": _json_to_time,
@@ -88,13 +85,13 @@ def from_json(dct: dict) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        raise_if_nodecode(type_name)
-        return DECODERS[type_name](dct)
+        ctx.raise_if_nodecode(type_name)
+        return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
 
-def to_json(obj: Any) -> dict:
+def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a XXX into JSON by cases. See the README for the precise list of
     supported types. The return dict has the following structure:
@@ -125,12 +122,12 @@ def to_json(obj: Any) -> dict:
             "seconds": <int>,
         }
     """
-    ENCODERS: list[Tuple[type, Callable[[Any], dict]]] = [
+    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (datetime, _datetime_to_json),
         (time, _time_to_json),
         (timedelta, _timedelta_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
-            return f(obj)
+            return f(obj, ctx)
     raise TypeNotSupported()

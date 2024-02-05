@@ -4,9 +4,8 @@
 import os
 import torch
 
-from common import from_json, to_json  # Must be before turbo_broccoli imports
-
-from turbo_broccoli.environment import register_pytorch_module_type
+from common import to_from_json
+from turbo_broccoli import Context
 
 
 class _TestModule(torch.nn.Module):
@@ -27,22 +26,22 @@ class _TestModule(torch.nn.Module):
 
 def test_pytorch_numerical():
     x = torch.Tensor()
-    assert from_json(to_json(x)).numel() == 0
+    assert to_from_json(x).numel() == 0
     x = torch.Tensor([1, 2, 3])
-    torch.testing.assert_close(x, from_json(to_json(x)))
+    torch.testing.assert_close(x, to_from_json(x))
     x = torch.rand((10, 10))
-    torch.testing.assert_close(x, from_json(to_json(x)))
+    torch.testing.assert_close(x, to_from_json(x))
 
 
 def test_pytorch_numerical_large():
-    os.environ["TB_MAX_NBYTES"] = "0"
+    ctx = Context(min_artifact_size=0)
     x = torch.rand((100, 100), dtype=torch.float64)
-    torch.testing.assert_close(x, from_json(to_json(x)))
+    torch.testing.assert_close(x, to_from_json(x, ctx))
 
 
 def test_pytorch_module():
-    register_pytorch_module_type(_TestModule)
+    ctx = Context(pytorch_module_types=[_TestModule])
     x = torch.ones(4)
     a = _TestModule()
-    b = from_json(to_json(a))
+    b = to_from_json(a, ctx)
     torch.testing.assert_close(a(x), b(x))
