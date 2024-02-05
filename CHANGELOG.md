@@ -49,6 +49,7 @@ Changelog
 - Deleted `turbo_broccoli.guard.guarded_call` and
   `turbo_broccoli.guard.produces_document`. The iterable version of
   `turbo_broccoli.guard.GuardedBlockHandler.guard` no longer exist.
+- Removal of the CLI.
 
 # `v2.1.0`
 

@@ -1,6 +1,5 @@
 black
 bokeh
-click
 fastparquet
 loguru
 mypy
