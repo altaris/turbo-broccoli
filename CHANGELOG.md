@@ -53,6 +53,11 @@ Changelog
 - With a `turbo_broccoli.guard.GuardedBlockHandler`, it is now possible to not
   load the block's results if the block is skipped. See the class
   documentation.
+- Artifacts not have the output JSON filename's stem as a prefix and the `.tb`
+  extension. For example, if the output file is `test.json`, then an artifact
+  filename would be `test.<UUID4>.tb`. If no output filename is set in the
+  serialization context, then artifact filenames simply have the form
+  `<UUID4>.tb`.
 
 # `v2.1.0`
 

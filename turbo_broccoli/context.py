@@ -146,8 +146,11 @@ class Context:
 
     def new_artifact_path(self) -> tuple[Path, str]:
         """Returns the path to a new artifact alongside the artifact's ID"""
-        name = str(uuid4())
-        return self.artifact_path / (name + ".tb"), name
+        art_id = str(uuid4())
+        art_fn = art_id + ".tb"
+        if self.file_path is not None:
+            art_fn = self.file_path.stem + "." + art_fn
+        return self.artifact_path / art_fn, art_id
 
     def raise_if_nodecode(self, type_name: str) -> None:
         """
