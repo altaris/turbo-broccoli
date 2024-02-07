@@ -7,6 +7,7 @@ Todo:
 
 import pickle
 from typing import Any, Callable, Tuple
+import joblib
 
 import numpy as np
 from safetensors import numpy as st
@@ -60,6 +61,7 @@ def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
     DECODERS = {
         # 1: _json_to_random_state_v1,
         2: _json_to_random_state_v2,
+        3: _json_to_random_state_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -67,6 +69,10 @@ def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
 def _json_to_random_state_v2(dct: dict, ctx: Context) -> np.number:
     with open(ctx.artifact_path / (dct["data"] + ".tb"), mode="rb") as fp:
         return pickle.load(fp)
+
+
+def _json_to_random_state_v3(dct: dict, ctx: Context) -> np.number:
+    return joblib.load(ctx.artifact_path / (dct["data"] + ".tb"))
 
 
 def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:
@@ -104,14 +110,12 @@ def _number_to_json(num: np.number, ctx: Context) -> dict:
 
 def _random_state_to_json(obj: np.random.RandomState, ctx: Context) -> dict:
     path, name = ctx.new_artifact_path()
-    protocol = pickle.HIGHEST_PROTOCOL
-    with open(path, mode="wb") as fp:
-        pickle.dump(obj, fp, protocol=protocol)
+    with path.open(mode="wb") as fp:
+        joblib.dump(obj, fp)
     return {
         "__type__": "numpy.random_state",
-        "__version__": 2,
+        "__version__": 3,
         "data": name,
-        "protocol": protocol,
     }
 
 
@@ -189,14 +193,10 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
             {
                 "__type__": "numpy.random_state",
-                "__version__": 2,
-                "dtype": <uuid4>,
-                "protocol": <int>
+                "__version__": 3,
+                "data": <uuid4>,
             }
 
-      where the UUID4 points to a pickle file artefact, and the protocol is the
-      [pickle
-      protocol](`https://docs.python.org/3/library/pickle.html#data-stream-format`).
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (np.ndarray, _ndarray_to_json),
