@@ -34,7 +34,7 @@ def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
 def _json_to_tensor_v3(dct: dict, ctx: Context) -> tf.Tensor:
     if "data" in dct:
         return st.load(dct["data"])["data"]
-    return st.load_file(ctx.artifact_path / (dct["id"] + ".tb"))["data"]
+    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _json_to_variable(dct: dict, ctx: Context) -> tf.Variable:

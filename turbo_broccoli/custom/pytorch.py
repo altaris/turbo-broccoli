@@ -34,7 +34,7 @@ def _json_to_tensor_v2(dct: dict, ctx: Context) -> torch.Tensor:
         if dct["data"] is None:  # empty tensor
             return torch.Tensor()
         return st.load(dct["data"])["data"]
-    return st.load_file(ctx.artifact_path / (dct["id"] + ".tb"))["data"]
+    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _module_to_json(module: torch.nn.Module, ctx: Context) -> dict:

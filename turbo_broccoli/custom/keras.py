@@ -214,7 +214,7 @@ def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
                 kwargs[k] = dct[k]
         model.compile(**kwargs)
         return model
-    return keras.models.load_model(ctx.artifact_path / (dct["id"] + ".tb"))
+    return keras.models.load_model(ctx.id_to_artifact_path(dct["id"]))
 
 
 def _json_to_optimizer(dct: dict, ctx: Context) -> Any:

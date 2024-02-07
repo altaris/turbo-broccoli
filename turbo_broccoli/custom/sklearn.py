@@ -191,7 +191,7 @@ def _json_raw_to_sklearn(dct: dict, ctx: Context) -> Any:
 
 
 def _json_raw_to_sklearn_v2(dct: dict, ctx: Context) -> Any:
-    return joblib.load(ctx.artifact_path / (dct["data"] + ".tb"))
+    return joblib.load(ctx.id_to_artifact_path(dct["data"]))
 
 
 def _json_to_sklearn_estimator(dct: dict, ctx: Context) -> BaseEstimator:

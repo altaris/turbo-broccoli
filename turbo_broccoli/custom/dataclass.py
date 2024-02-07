@@ -1,6 +1,5 @@
 """Dataclass serialization"""
 
-from re import S
 from typing import Any
 
 from turbo_broccoli.context import Context

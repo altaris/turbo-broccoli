@@ -37,7 +37,7 @@ def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
 def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
     if "data" in dct:
         return st.load(dct["data"])["data"]
-    return st.load_file(ctx.artifact_path / (dct["id"] + ".tb"))["data"]
+    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _json_to_number(dct: dict, ctx: Context) -> np.number:
@@ -60,12 +60,12 @@ def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
 
 
 def _json_to_random_state_v2(dct: dict, ctx: Context) -> np.number:
-    with open(ctx.artifact_path / (dct["data"] + ".tb"), mode="rb") as fp:
+    with open(ctx.id_to_artifact_path(dct["data"]), mode="rb") as fp:
         return pickle.load(fp)
 
 
 def _json_to_random_state_v3(dct: dict, ctx: Context) -> np.number:
-    return joblib.load(ctx.artifact_path / (dct["data"] + ".tb"))
+    return joblib.load(ctx.id_to_artifact_path(dct["data"]))
 
 
 def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:

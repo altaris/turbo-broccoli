@@ -144,13 +144,20 @@ class Context:
         kwargs["json_path"] = self.json_path + "." + str(x)
         return Context(**kwargs)
 
-    def new_artifact_path(self) -> tuple[Path, str]:
-        """Returns the path to a new artifact alongside the artifact's ID"""
-        art_id = str(uuid4())
+    def id_to_artifact_path(self, art_id: str) -> Path:
+        """
+        Takes an artifact id (which is an UUID4 string) and returns the
+        absolute path to the corresponding artifact file.
+        """
         art_fn = art_id + ".tb"
         if self.file_path is not None:
             art_fn = self.file_path.stem + "." + art_fn
-        return self.artifact_path / art_fn, art_id
+        return self.artifact_path / art_fn
+
+    def new_artifact_path(self) -> tuple[Path, str]:
+        """Returns the path to a new artifact alongside the artifact's ID"""
+        art_id = str(uuid4())
+        return self.id_to_artifact_path(art_id), art_id
 
     def raise_if_nodecode(self, type_name: str) -> None:
         """

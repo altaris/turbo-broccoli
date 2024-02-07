@@ -46,7 +46,7 @@ def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
         df = pd.read_json(StringIO(json.dumps(dct["data"])))
     else:
         fmt = dct["format"]
-        path = ctx.artifact_path / (dct["id"] + ".tb")
+        path = ctx.id_to_artifact_path(dct["id"])
         if fmt in ["h5", "hdf"]:
             df = pd.read_hdf(path, "main")
         else:
