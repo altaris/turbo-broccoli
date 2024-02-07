@@ -125,11 +125,9 @@ def to_json(obj: Any, ctx: Context) -> dict:
             }
 
       where `{...}` is the result of `pandas.DataFrame.to_json` (in `dict`
-      form). On the other hand, the dataframe is too but, then its content is
+      form). On the other hand, the dataframe is too large, then its content is
       stored in an artifact, whose format follows the `TB_PANDAS_FORMAT`
-      environment (HDF5 by default). Said file is saved to the
-      path specified by the `TB_ARTIFACT_PATH` environment variable with a
-      random UUID4 as filename. The resulting JSON document looks like
+      environment (CSV by default). The resulting JSON document looks like
 
             {
                 "__type__": "pandas.dataframe",

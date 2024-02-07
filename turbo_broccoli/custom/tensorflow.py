@@ -143,13 +143,11 @@ def to_json(obj: Any, ctx: Context) -> dict:
                 "data": {...},
             }
 
-      On the other hand, if the `safetensors` package is available, and if the
-      tensor is too large (i.e. the number of bytes exceeds `TB_MAX_NBYTES` or
-      the value set by the `min_artifact_size` argument when constructing the
-      encoding `turbo_broccoli.context.Context`), then the content of the
-      tensor is stored in a binary artefact. Said file is saved to the path
-      specified by the `TB_ARTIFACT_PATH` environment variable with a random
-      UUID4 as filename. The resulting JSON document looks like
+      If the tensor is too large (i.e. the number of bytes exceeds
+      `TB_MAX_NBYTES` or the value set by the `min_artifact_size` argument when
+      constructing the encoding `turbo_broccoli.context.Context`), then the
+      content of the tensor is stored in a binary artefact. The resulting JSON
+      document looks like
 
             {
                 "__type__": "tensorflow.tensor",
@@ -157,9 +155,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
                 "id": <UUID4 str>,
             }
 
-      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough
-      to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
-      `TB_ARTIFACT_PATH` must point to an existing directory.
+      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough to
+      store an array of 1000 `float64`s.
 
     - `tf.Variable`:
 

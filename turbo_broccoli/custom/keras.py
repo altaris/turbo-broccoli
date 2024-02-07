@@ -314,6 +314,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
                 "id": <UUID4 str>
             }
 
+      where `id` points to an artifact.
+
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (keras.Model, _model_to_json),  # must be first

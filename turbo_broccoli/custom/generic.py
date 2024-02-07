@@ -13,7 +13,6 @@ def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a generic object into JSON. The return document contains all
     attributes listed in the object's `__turbo_broccoli__` attribute.
-
     """
     if not (
         hasattr(obj, "__turbo_broccoli__")

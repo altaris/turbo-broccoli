@@ -15,19 +15,13 @@ class SerializationError(Exception):
 class TypeNotSupported(Exception):
     """
     `to_json` will raise that if they are fed types they cannot manage. This is
-    fine, the dispatch in
-    `turbo_broccoli.turbo_broccoli.TurboBroccoliEncoder.default` catches these
-    and moves on to the next registered `to_json` method.
+    fine, the dispatch in `turbo_broccoli.turbo_broccoli._to_jsonable` catches
+    these and moves on to the next registered `to_json` method.
     """
 
 
 class TypeIsNodecode(Exception):
-    """
-    `from_json` methods raise this if the type shouldn't be decoded. See
-    `turbo_broccoli.environment.set_nodecode`. This is fine,
-    `turbo_broccoli.turbo_broccoli.TurboBroccoliDecoder._hook` catches these
-    and returns `None`.
-    """
+    """Raised during deserialization if the type shouldn't be decoded"""
 
 
 def artifacts(doc: Any) -> Generator[str, None, None]:

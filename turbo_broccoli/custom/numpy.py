@@ -154,9 +154,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
       On the other hand, the array is too large (see
       `turbo_broccoli.context.Context.min_artifact_size`), then the content of
-      `arr` is stored in an `.npy` file. Said file is saved to the path
-      specified by the `TB_ARTIFACT_PATH` environment variable with a random
-      UUID4 as filename. The resulting JSON document looks like
+      `arr` is stored in an `.npy` file and the resulting JSON document looks
+      like
 
             {
                 "__type__": "numpy.ndarray",
@@ -164,9 +163,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
                 "id": <UUID4 str>,
             }
 
-      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough
-      to store an array of 1000 `float64`s, and `TB_ARTIFACT_PATH` is `./`.
-      `TB_ARTIFACT_PATH` must point to an existing directory.
+      where `id` points to an artifact. By default, `TB_MAX_NBYTES` is `8000`
+      bytes, which should be enough to store an array of 1000 `float64`s.
 
     - `numpy.number`:
 
@@ -197,8 +195,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
             }
 
       where the UUID4 points to a pickle file artefact, and the protocol is the
-      pickle protocol.
-
+      [pickle
+      protocol](`https://docs.python.org/3/library/pickle.html#data-stream-format`).
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (np.ndarray, _ndarray_to_json),

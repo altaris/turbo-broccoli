@@ -13,14 +13,13 @@ from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _XXX_to_json(obj: Any, ctx: Context) -> dict:
-
     # TODO: Rename
     # TODO: Type argument
     # TODO: Write body =)
+    pass
 
 
 def _json_to_XXX(dct: dict, ctx: Context) -> Any:
-
     # TODO: Rename
     # TODO: Type return
     # TODO: Check dispatch
@@ -31,10 +30,10 @@ def _json_to_XXX(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_XXX_v1(dct: dict, ctx: Context) -> Any:
-
     # TODO: Rename
     # TODO: Type return
     # TODO: Write body =)
+    pass
 
 
 # pylint: disable=missing-function-docstring

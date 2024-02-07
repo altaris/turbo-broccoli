@@ -81,31 +81,28 @@ or by setting the `TB_ARTIFACT_PATH` environment variable (see below.)
 
 Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
 variables. If you want to modify these parameters programatically, do not do so
-by modifying `os.environ`. Rather, use the methods of
-`turbo_broccoli.environment`.
+by modifying `os.environ`. Rather, use the
+[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)
+constructor.
 
 - `TB_ARTIFACT_PATH` (default: output JSON file's parent directory): During
   serialization, Turbo Broccoli may create artifacts to which the JSON object
   will point to. The artifacts will be stored in `TB_ARTIFACT_PATH` if
   specified.
 
-- `TB_KERAS_FORMAT` (default: `tf`, valid values are `keras`, `tf`, and `h5`;
-  see also
-  [`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)):
+- `TB_KERAS_FORMAT` (default: `tf`, valid values are `keras`, `tf`, and `h5`):
   The serialization format for keras models. If `h5` or `tf` is used, an
   artifact following said format will be created in `TB_ARTIFACT_PATH`. If
   `json` is used, the model will be contained in the JSON document (anthough
   the weights may be in artifacts if they are too large).
 
-- `TB_MAX_NBYTES` (default: `8000`, see also
-  [`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)):
+- `TB_MAX_NBYTES` (default: `8000`):
   The maximum byte size of a python object beyond which serialization will
   produce an artifact instead of storing it in the JSON document. This does not
   limit the size of the overall JSON document though. 8000 bytes should be
   enough for a numpy array of 1000 `float64`s to be stored in-document.
 
-- `TB_NODECODE` (default: empty; see also
-  [`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)):
+- `TB_NODECODE` (default: empty):
   Comma-separated list of types to not deserialize, for example
   `bytes,numpy.ndarray`. Excludable types are:
 
@@ -147,8 +144,7 @@ by modifying `os.environ`. Rather, use the methods of
   - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
     `tensorflow.variable`.
 
-- `TB_SHARED_KEY` (default: empty; see also
-  [`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)):
+- `TB_SHARED_KEY` (default: empty):
   Secret key used to encrypt secrets. The encryption uses [`pynacl`'s
   `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
   An exception is raised when attempting to serialize a secret type while no
@@ -265,9 +261,8 @@ such as numpy arrays. Registered attributes can be `@property` methods.
 - `torch.Tensor`, **Warning**: loaded tensors are automatically placed on the
   CPU and gradients are lost;
 
-- `torch.nn.Module`, don't forget to register your
-  module type using
-  [`turbo_broccoli.register_pytorch_module_type`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type):
+- `torch.nn.Module`, don't forget to register your module type using a
+  [`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context):
 
   ```py
   # Serialization
