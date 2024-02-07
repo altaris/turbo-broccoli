@@ -6,15 +6,43 @@ from typing import Any, Callable, Tuple
 # Sklearn recommends joblib rather than direct pickle
 # https://scikit-learn.org/stable/model_persistence.html#python-specific-serialization
 import joblib
-from sklearn import (calibration, cluster, compose, covariance,
-                     cross_decomposition, datasets, decomposition,
-                     discriminant_analysis, dummy, ensemble, exceptions,
-                     feature_extraction, feature_selection, gaussian_process,
-                     impute, inspection, isotonic, kernel_approximation,
-                     kernel_ridge, linear_model, manifold, metrics, mixture,
-                     model_selection, multiclass, multioutput, naive_bayes,
-                     neighbors, neural_network, pipeline, preprocessing,
-                     random_projection, semi_supervised, svm, tree)
+from sklearn import (
+    calibration,
+    cluster,
+    compose,
+    covariance,
+    cross_decomposition,
+    datasets,
+    decomposition,
+    discriminant_analysis,
+    dummy,
+    ensemble,
+    exceptions,
+    feature_extraction,
+    feature_selection,
+    gaussian_process,
+    impute,
+    inspection,
+    isotonic,
+    kernel_approximation,
+    kernel_ridge,
+    linear_model,
+    manifold,
+    metrics,
+    mixture,
+    model_selection,
+    multiclass,
+    multioutput,
+    naive_bayes,
+    neighbors,
+    neural_network,
+    pipeline,
+    preprocessing,
+    random_projection,
+    semi_supervised,
+    svm,
+    tree,
+)
 from sklearn.base import BaseEstimator
 from sklearn.tree._tree import Tree
 

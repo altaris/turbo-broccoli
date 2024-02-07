@@ -1,12 +1,10 @@
 # pylint: disable=missing-function-docstring
 """Numpy (de)serialization test suite"""
 
-import os
-
 import numpy as np
-from numpy.testing import assert_equal, assert_array_equal
-
 from common import assert_to_from_json, to_from_json
+from numpy.testing import assert_array_equal, assert_equal
+
 from turbo_broccoli import Context
 
 

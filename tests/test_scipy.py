@@ -3,10 +3,9 @@
 """deque (de)serialization test suite"""
 
 import numpy as np
+from common import to_from_json
 from numpy.testing import assert_array_equal
 from scipy.sparse import csr_matrix
-
-from common import to_from_json
 
 
 def _assert_csr_matrix_equal(m1: csr_matrix, m2: csr_matrix) -> None:

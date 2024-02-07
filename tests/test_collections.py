@@ -73,7 +73,7 @@ def test_namedtuple_subclass_2():
 
 
 def test_set():
-    assert_to_from_json({1, 2, 3, 2})
+    assert_to_from_json({1, 2, 3})
 
 
 def test_set_empty():

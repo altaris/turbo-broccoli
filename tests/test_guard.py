@@ -1,13 +1,11 @@
+# pylint: disable=import-outside-toplevel
 # pylint: disable=missing-function-docstring
+# pylint: disable=unused-import
 """Test suite for guarded blocks/loops"""
 
 from pathlib import Path
 
-# pylint: disable=unused-import
-# pylint: disable=import-outside-toplevel
-
-# Must be before turbo_broccoli imports
-import common
+import common  # Must be before turbo_broccoli imports
 
 from turbo_broccoli import GuardedBlockHandler, load_json
 

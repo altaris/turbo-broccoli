@@ -1,7 +1,8 @@
 # pylint: disable=missing-function-docstring
 """datetime objects (de)serialization test suite"""
 
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, timedelta, timezone
+
 from common import assert_to_from_json
 
 

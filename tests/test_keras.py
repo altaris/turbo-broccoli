@@ -4,7 +4,7 @@
 import numpy as np
 from common import to_from_json
 from numpy.testing import assert_array_equal
-from tensorflow import keras
+from tensorflow import keras  # pylint: disable=no-name-in-module
 
 from turbo_broccoli import Context
 

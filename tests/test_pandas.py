@@ -4,7 +4,6 @@
 from datetime import datetime
 
 import pandas as pd
-
 from common import to_from_json
 
 

@@ -1,6 +1,8 @@
 # pylint: disable=import-outside-toplevel
 # pylint: disable=missing-function-docstring
+# pylint: disable=redefined-builtin
 # pylint: disable=unused-wildcard-import
+# pylint: disable=wildcard-import
 """
 bokeh (de)serialization test suite. This test suite serializes and deserializes
 various figures, but does not check for similarity between the original and the
@@ -63,13 +65,13 @@ def test_color_scatter():
     x = np.random.random(size=N) * 100
     y = np.random.random(size=N) * 100
     radii = np.random.random(size=N) * 1.5
-    colors = np.array(
+    cols = np.array(
         [(r, g, 150) for r, g in zip(50 + 2 * x, 30 + 2 * y)], dtype="uint8"
     )
     TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,reset,tap,save,box_select,poly_select,lasso_select,examine,help"
     p = figure(tools=TOOLS)
     p.scatter(
-        x, y, radius=radii, fill_color=colors, fill_alpha=0.6, line_color=None
+        x, y, radius=radii, fill_color=cols, fill_alpha=0.6, line_color=None
     )
     to_from_json(p)
 
@@ -438,10 +440,8 @@ def test_contour_simple():
     )
     p = figure(width=550, height=300, x_range=(0, 3), y_range=(0, 2))
     levels = np.linspace(-1, 1, 9)
-    contour_renderer = p.contour(
-        x, y, z, levels, fill_color=Sunset8, line_color="black"
-    )
-    colorbar = contour_renderer.construct_color_bar()
+    cr = p.contour(x, y, z, levels, fill_color=Sunset8, line_color="black")
+    colorbar = cr.construct_color_bar()
     p.add_layout(colorbar, "right")
     to_from_json(p)
 
@@ -517,12 +517,12 @@ def test_texas_hover_map():
     county_names = [county["name"] for county in counties.values()]
     county_rates = [unemployment[county_id] for county_id in counties]
     color_mapper = LogColorMapper(palette=palette)
-    data = dict(
-        x=county_xs,
-        y=county_ys,
-        name=county_names,
-        rate=county_rates,
-    )
+    data = {
+        "x": county_xs,
+        "y": county_ys,
+        "name": county_names,
+        "rate": county_rates,
+    }
     TOOLS = "pan,wheel_zoom,reset,hover,save"
     p = figure(
         title="Texas Unemployment, 2009",
@@ -662,7 +662,7 @@ def test_range_tool():
     from bokeh.sampledata.stocks import AAPL
 
     dates = np.array(AAPL["date"], dtype=np.datetime64)
-    source = ColumnDataSource(data=dict(date=dates, close=AAPL["adj_close"]))
+    source = ColumnDataSource(data={"date": dates, "close": AAPL["adj_close"]})
     p = figure(
         height=300,
         width=800,
@@ -725,7 +725,7 @@ def test_slider():
     """https://docs.bokeh.org/en/latest/docs/examples/interaction/js_callbacks/slider.html"""
     x = np.linspace(0, 10, 500)
     y = np.sin(x)
-    source = ColumnDataSource(data=dict(x=x, y=y))
+    source = ColumnDataSource(data={"x": x, "y": y})
     plot = figure(y_range=(-10, 10), width=400, height=400)
     plot.line("x", "y", source=source, line_width=3, line_alpha=0.6)
     amp = Slider(start=0.1, end=10, value=1, step=0.1, title="Amplitude")
@@ -733,9 +733,13 @@ def test_slider():
     phase = Slider(start=-6.4, end=6.4, value=0, step=0.1, title="Phase")
     offset = Slider(start=-9, end=9, value=0, step=0.1, title="Offset")
     callback = CustomJS(
-        args=dict(
-            source=source, amp=amp, freq=freq, phase=phase, offset=offset
-        ),
+        args={
+            "source": source,
+            "amp": amp,
+            "freq": freq,
+            "phase": phase,
+            "offset": offset,
+        },
         code="""
         const A = amp.value
         const k = freq.value
@@ -765,7 +769,7 @@ def test_customjs_lasso_mean():
     x = [random() for x in range(500)]
     y = [random() for y in range(500)]
     color = ["navy"] * len(x)
-    s = ColumnDataSource(data=dict(x=x, y=y, color=color))
+    s = ColumnDataSource(data={"x": x, "y": y, "color": color})
     p = figure(
         width=400, height=400, tools="lasso_select", title="Select Here"
     )
@@ -778,12 +782,12 @@ def test_customjs_lasso_mean():
         alpha=0.4,
         selection_color="firebrick",
     )
-    s2 = ColumnDataSource(data=dict(x=[0, 1], ym=[0.5, 0.5]))
+    s2 = ColumnDataSource(data={"x": [0, 1], "ym": [0.5, 0.5]})
     p.line(x="x", y="ym", color="orange", line_width=5, alpha=0.6, source=s2)
     s.selected.js_on_change(
         "indices",
         CustomJS(
-            args=dict(s=s, s2=s2),
+            args={"s": s, "s2": s2},
             code="""
         const inds = s.selected.indices
         if (inds.length > 0) {

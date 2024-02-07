@@ -1,11 +1,10 @@
 # pylint: disable=missing-function-docstring
 """Tensorflow (de)serialization test suite"""
 
-import os
 import tensorflow as tf
-
 from common import to_from_json
-from turbo_broccoli import Context, context
+
+from turbo_broccoli import Context
 
 
 def _assert_sparse_equal(a, b):

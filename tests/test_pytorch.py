@@ -1,10 +1,9 @@
 # pylint: disable=missing-function-docstring
 """Pytorch (de)serialization test suite"""
 
-import os
 import torch
-
 from common import to_from_json
+
 from turbo_broccoli import Context
 
 
@@ -12,7 +11,7 @@ class _TestModule(torch.nn.Module):
     module: torch.nn.Module
 
     def __init__(self):
-        super(_TestModule, self).__init__()
+        super().__init__()
         self.module = torch.nn.Sequential(
             torch.nn.Linear(4, 2),
             torch.nn.ReLU(),

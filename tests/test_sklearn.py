@@ -1,10 +1,12 @@
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
+# pylint: disable=too-many-lines
+# pylint: disable=unbalanced-tuple-unpacking
+# pylint: disable=unused-import
 # pylint: disable=unused-wildcard-import
 # pylint: disable=wildcard-import
 """sklearn estimators (de)serialization test suite"""
 
-from typing import Optional, Tuple
 
 import numpy as np
 from common import from_json, to_json
@@ -55,7 +57,7 @@ def _to_json_and_back(obj: BaseEstimator) -> BaseEstimator:
 
 def _fit_labels_test(
     obj: BaseEstimator, x: np.ndarray
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x)
     obj2 = _to_json_and_back(obj)
     assert_array_equal(obj.labels_, obj.labels_)
@@ -64,7 +66,7 @@ def _fit_labels_test(
 
 def _fit_predict_x_z_test(
     obj: BaseEstimator, x: np.ndarray, z: np.ndarray
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x)
     obj2 = _to_json_and_back(obj)
     assert_array_equal(obj.predict(z), obj2.predict(z))
@@ -73,7 +75,7 @@ def _fit_predict_x_z_test(
 
 def _fit_predict_x_y_z_test(
     obj: BaseEstimator, x: np.ndarray, y: np.ndarray, z: np.ndarray
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x, y)
     obj2 = _to_json_and_back(obj)
     assert_array_equal(obj.predict(z), obj2.predict(z))
@@ -86,7 +88,7 @@ def _fit_score_test(
     x_test: np.ndarray,
     y_train: np.ndarray | None = None,
     y_test: np.ndarray | None = None,
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train, y_train)
     obj2 = _to_json_and_back(obj)
     assert_array_equal(obj.score(x_test, y_test), obj2.score(x_test, y_test))
@@ -97,7 +99,7 @@ def _fit_transform_x_test(
     obj: BaseEstimator,
     x_train: np.ndarray,
     x_test: np.ndarray,
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train)
     obj2 = _to_json_and_back(obj)
     assert_array_equal(obj.transform(x_test), obj2.transform(x_test))
@@ -110,7 +112,7 @@ def _fit_transform_x_y_test(
     x_test: np.ndarray,
     y_train: np.ndarray,
     y_test: np.ndarray,
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train, y_train)
     obj2 = _to_json_and_back(obj)
     x_tr1, y_tr1 = obj.transform(x_test, y_test)
@@ -122,7 +124,7 @@ def _fit_transform_x_y_test(
 
 def _test_cross_decomposition_estimator(
     obj: BaseEstimator,
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     x = [[0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [2.0, 2.0, 2.0], [2.0, 5.0, 4.0]]
     y = [[0.1, -0.2], [0.9, 1.1], [6.2, 5.9], [11.9, 12.3]]
     obj = obj.fit(x, y)
@@ -136,7 +138,7 @@ def _test_cross_decomposition_estimator(
 
 def _test_covariance_estimator(
     obj: BaseEstimator,
-) -> Tuple[BaseEstimator, BaseEstimator]:
+) -> tuple[BaseEstimator, BaseEstimator]:
     """Unit tests for covariance estimators"""
     np.random.seed(0)
     true_cov = np.array(
@@ -1552,7 +1554,7 @@ def test_decisiontreeclassifier():
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
     """
     iris = load_iris()
-    x, y = iris.data, iris.target
+    x, y = iris.data, iris.target  # pylint: disable=no-member
     e = DecisionTreeClassifier(random_state=0)
     _fit_score_test(e, x, x, y, y)
 

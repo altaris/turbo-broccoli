@@ -8,7 +8,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 
 # pylint: disable=wrong-import-position
-from turbo_broccoli import from_json, to_json, Context
+from turbo_broccoli import Context, from_json, to_json
 
 
 def assert_to_from_json(obj: Any, ctx: Context | None = None):

@@ -1,10 +1,10 @@
 # pylint: disable=missing-function-docstring
 """(de)serialization of secrets"""
 
-from common import to_from_json
 import nacl.secret
 import nacl.utils
 import pytest
+from common import to_from_json
 from nacl.exceptions import CryptoError
 
 from turbo_broccoli import (

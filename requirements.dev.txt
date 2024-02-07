@@ -1,6 +1,7 @@
 black
 bokeh
 fastparquet
+isort
 loguru
 mypy
 numpy

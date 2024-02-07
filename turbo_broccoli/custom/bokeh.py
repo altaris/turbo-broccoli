@@ -2,8 +2,12 @@
 
 from typing import Any, Callable, Tuple
 
-from bokeh.core.serialization import (Buffer, Deserializer, Serialized,
-                                      Serializer)
+from bokeh.core.serialization import (
+    Buffer,
+    Deserializer,
+    Serialized,
+    Serializer,
+)
 from bokeh.models import Model
 from bokeh.plotting import figure as Figure
 
