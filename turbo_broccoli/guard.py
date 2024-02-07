@@ -9,9 +9,9 @@ except ModuleNotFoundError:
 
 from typing import Any, Generator
 
-from turbo_broccoli.native import save as native_save
-from turbo_broccoli.native import load as native_load
 from turbo_broccoli.context import Context
+from turbo_broccoli.native import load as native_load
+from turbo_broccoli.native import save as native_save
 
 
 class GuardedBlockHandler:

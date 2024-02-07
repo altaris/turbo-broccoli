@@ -9,7 +9,7 @@
 from typing import Any, Callable, Tuple
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _XXX_to_json(obj: Any, ctx: Context) -> dict:

@@ -7,13 +7,13 @@ Todo:
 
 import pickle
 from typing import Any, Callable, Tuple
-import joblib
 
+import joblib
 import numpy as np
 from safetensors import numpy as st
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:

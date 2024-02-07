@@ -6,7 +6,7 @@ import tensorflow as tf
 from safetensors import tensorflow as st
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_sparse_tensor(dct: dict, ctx: Context) -> tf.Tensor:

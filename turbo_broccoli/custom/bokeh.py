@@ -2,17 +2,13 @@
 
 from typing import Any, Callable, Tuple
 
-from bokeh.core.serialization import (
-    Buffer,
-    Deserializer,
-    Serialized,
-    Serializer,
-)
+from bokeh.core.serialization import (Buffer, Deserializer, Serialized,
+                                      Serializer)
 from bokeh.models import Model
 from bokeh.plotting import figure as Figure
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _buffer_to_json(obj: Buffer, ctx: Context) -> dict:

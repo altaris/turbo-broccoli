@@ -9,7 +9,7 @@ from datetime import datetime, time, timedelta
 from typing import Any, Callable, Tuple
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _datetime_to_json(obj: datetime, ctx: Context) -> dict:

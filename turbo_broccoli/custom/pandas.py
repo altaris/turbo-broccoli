@@ -7,7 +7,7 @@ from typing import Any, Callable, Tuple
 import pandas as pd
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _dataframe_to_json(df: pd.DataFrame, ctx: Context) -> dict:

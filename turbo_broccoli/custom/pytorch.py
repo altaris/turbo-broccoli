@@ -6,7 +6,7 @@ import safetensors.torch as st
 import torch
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_module(dct: dict, ctx: Context) -> torch.nn.Module:

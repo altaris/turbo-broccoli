@@ -6,7 +6,7 @@ from typing import Any, Callable, Tuple
 from tensorflow import keras  # pylint: disable=no-name-in-module
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,

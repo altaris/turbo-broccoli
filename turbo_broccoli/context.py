@@ -3,13 +3,13 @@ A context object holds information about the (de)serialization process, such as
 the current position in the document, output paths, etc.
 """
 
-from os import environ as ENV
 import tempfile
+from os import environ as ENV
 from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
-from turbo_broccoli.utils import TypeIsNodecode
+from turbo_broccoli.exceptions import TypeIsNodecode
 
 
 def _list_of_types_to_dict(lot: list[type]) -> dict[str, type]:

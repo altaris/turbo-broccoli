@@ -3,7 +3,7 @@
 from typing import Any
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:

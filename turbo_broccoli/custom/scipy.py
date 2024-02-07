@@ -5,7 +5,7 @@ from typing import Any, Callable, Tuple
 from scipy.sparse import csr_matrix
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _csr_matrix_to_json(m: csr_matrix, ctx: Context) -> dict:

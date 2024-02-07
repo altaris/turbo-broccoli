@@ -74,6 +74,8 @@
   serialization context, then artifact filenames simply have the form
   `<UUID4>.tb`.
 
+- `turbo_broccoli.utils` has been renamed to `turbo_broccoli.exceptions`.
+
 ## `v2.1.0`
 
 - `sklearn` (de)serialization of most estimator classes, see [the list of

@@ -4,7 +4,7 @@ from base64 import b64decode, b64encode
 from typing import Any
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import DeserializationError, TypeNotSupported
+from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _bytes_from_json_v2(dct: dict, ctx: Context) -> bytes:

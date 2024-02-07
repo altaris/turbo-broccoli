@@ -7,7 +7,7 @@ from typing import Any, NoReturn
 from nacl.secret import SecretBox
 
 from turbo_broccoli.context import Context
-from turbo_broccoli.utils import TypeNotSupported
+from turbo_broccoli.exceptions import TypeNotSupported
 
 
 class Secret:
