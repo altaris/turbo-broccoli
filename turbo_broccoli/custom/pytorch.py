@@ -11,7 +11,6 @@ from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 def _json_to_module(dct: dict, ctx: Context) -> torch.nn.Module:
     DECODERS = {
-        # 1: _json_to_module_v1,  # Use turbo_broccoli v3
         2: _json_to_module_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -25,7 +24,6 @@ def _json_to_module_v2(dct: dict, ctx: Context) -> torch.nn.Module:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> torch.Tensor:
     DECODERS = {
-        # 1: _json_to_tensor_v1,  # Use turbo_broccoli v3
         2: _json_to_tensor_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

@@ -11,7 +11,6 @@ from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 def _json_to_sparse_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     DECODERS = {
-        # 1: _json_to_sparse_tensor_v1,  # Use turbo_broccoli v3
         2: _json_to_sparse_tensor_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -27,8 +26,6 @@ def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     DECODERS = {
-        # 1: _json_to_tensor_v1,  # Use turbo_broccoli v3
-        # 2: _json_to_tensor_v2,  # Use turbo_broccoli v3
         3: _json_to_tensor_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -42,8 +39,6 @@ def _json_to_tensor_v3(dct: dict, ctx: Context) -> tf.Tensor:
 
 def _json_to_variable(dct: dict, ctx: Context) -> tf.Variable:
     DECODERS = {
-        # 1: _json_to_variable_v1,  # Use turbo_broccoli v3
-        # 2: _json_to_variable_v2,  # Use turbo_broccoli v3
         3: _json_to_variable_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

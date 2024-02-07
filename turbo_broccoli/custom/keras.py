@@ -157,7 +157,6 @@ KERAS_OPTIMIZERS = {
 
 def _json_to_layer(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_layer_v1,  # Use turbo_broccoli v3
         2: _json_to_layer_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -172,7 +171,6 @@ def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_loss(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_loss_v1,  # Use turbo_broccoli v3
         2: _json_to_loss_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -187,7 +185,6 @@ def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_metric(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_metric_v1,  # Use turbo_broccoli v3
         2: _json_to_metric_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -202,10 +199,7 @@ def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_model(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_model_v1,  # Use turbo_broccoli v3
-        # 2: _json_to_model_v2,  # Use turbo_broccoli v3
-        # 3: _json_to_model_v3,  # Use turbo_broccoli v3
-        5: _json_to_model_v5,  # Use turbo_broccoli v3
+        5: _json_to_model_v5,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -225,7 +219,6 @@ def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
 
 def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_optimizer_v1,  # Use turbo_broccoli v3
         2: _json_to_optimizer_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

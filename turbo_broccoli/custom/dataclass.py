@@ -15,7 +15,6 @@ def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 2: _json_to_dataclass_v2,  # Use turbo_broccoli v3
         3: _json_to_dataclass_v3,
     }
     try:

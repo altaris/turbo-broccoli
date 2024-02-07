@@ -36,7 +36,6 @@ def _dataframe_to_json(df: pd.DataFrame, ctx: Context) -> dict:
 
 def _json_to_dataframe(dct: dict, ctx: Context) -> pd.DataFrame:
     DECODERS = {
-        # 1: _json_to_dataframe_v1,  # Use turbo_broccoli v3
         2: _json_to_dataframe_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -69,7 +68,6 @@ def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
 def _json_to_series(dct: dict, ctx: Context) -> pd.Series:
     ctx.raise_if_nodecode("pandas.dataframe")
     DECODERS = {
-        # 1: _json_to_series_v1,  # Use turbo_broccoli v3
         2: _json_to_series_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

@@ -36,7 +36,6 @@ def _generic_to_json(obj: Figure, ctx: Context) -> dict:
 
 def _json_to_buffer(dct: dict, ctx: Context) -> Buffer:
     DECODERS = {
-        # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
         2: _json_to_buffer_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -48,7 +47,6 @@ def _json_to_buffer_v2(dct: dict, ctx: Context) -> Buffer:
 
 def _json_to_generic(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_buffer_v1,  # Use turbo_broccoli v3
         2: _json_to_generic_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

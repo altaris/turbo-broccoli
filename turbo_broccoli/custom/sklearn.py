@@ -196,7 +196,6 @@ def _json_raw_to_sklearn_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_sklearn_estimator(dct: dict, ctx: Context) -> BaseEstimator:
     DECODERS = {
-        # 1: _json_to_sklearn_estimator_v1,  # Use turbo_broccoli v3
         2: _json_to_sklearn_estimator_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

@@ -18,7 +18,6 @@ from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:
     DECODERS = {
-        # 1: _json_to_dtype_v1,  # Use turbo_broccoli v3
         2: _json_to_dtype_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -30,9 +29,6 @@ def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
 
 def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
     DECODERS = {
-        # 1: _json_to_ndarray_v1,  # Use turbo_broccoli v3
-        # 2: _json_to_ndarray_v2,  # Use turbo_broccoli v3
-        # 3: _json_to_ndarray_v3,  # Use turbo_broccoli v3
         4: _json_to_ndarray_v4,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -46,8 +42,6 @@ def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
 
 def _json_to_number(dct: dict, ctx: Context) -> np.number:
     DECODERS = {
-        # 1: _json_to_number_v1,  # Use turbo_broccoli v3
-        # 2: _json_to_number_v2,  # Use turbo_broccoli v3
         3: _json_to_number_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -59,7 +53,6 @@ def _json_to_number_v3(dct: dict, ctx: Context) -> np.number:
 
 def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
     DECODERS = {
-        # 1: _json_to_random_state_v1,
         2: _json_to_random_state_v2,
         3: _json_to_random_state_v3,
     }

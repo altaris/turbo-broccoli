@@ -22,7 +22,6 @@ def _csr_matrix_to_json(m: csr_matrix, ctx: Context) -> dict:
 
 def _json_to_csr_matrix(dct: dict, ctx: Context) -> csr_matrix:
     DECODERS = {
-        # 1: _json_to_csr_matrix_v1,  # Use turbo_broccoli v3
         2: _json_to_csr_matrix_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)

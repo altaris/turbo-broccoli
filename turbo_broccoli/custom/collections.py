@@ -18,7 +18,6 @@ def _deque_to_json(deq: deque, ctx: Context) -> dict:
 
 def _json_to_deque(dct: dict, ctx: Context) -> deque | None:
     DECODERS = {
-        # 1: _json_to_deque_v1,  # Use turbo_broccoli v3
         2: _json_to_deque_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -30,7 +29,6 @@ def _json_to_deque_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_namedtuple(dct: dict, ctx: Context) -> Any:
     DECODERS = {
-        # 1: _json_to_namedtuple_v1,  # Use turbo_broccoli v3
         2: _json_to_namedtuple_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
@@ -42,7 +40,6 @@ def _json_to_namedtuple_v2(dct: dict, ctx: Context) -> Any:
 
 def _json_to_set(dct: dict, ctx: Context) -> set:
     DECODERS = {
-        # 1: _json_to_set_v1,  # Use turbo_broccoli v3
         2: _json_to_set_v2,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
