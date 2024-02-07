@@ -1,11 +1,12 @@
-Changelog
-=========
+# Changelog
 
-# `v4.0.0`
+## `v4.0.0`
 
 - `safetensors` is not required for (de)serializing `numpy.ndarray`,
   `torch.Tensor`, and `tensorflow.Tensor`.
+
 - Before `v4`, JSON document looked like
+
   ```json
   {
     "__TYPE__": {
@@ -13,7 +14,9 @@ Changelog
     }
   }
   ```
+
   and
+
   ```json
   {
     "__TYPE__": {
@@ -21,45 +24,57 @@ Changelog
     }
   }
   ```
+
   now they look like
+
   ```json
   {
     "__type__": "TYPE",
     ...
   }
   ```
+
   and
+
   ```json
   {
     "__type__": "TYPE.SUBTYPE",
     ...
   }
   ```
+
   This declutters the overall structure of the JSON documents.
+
 - Introduction of (de)serialization context objects
   (`turbo_broccoli.context.Context`), which contain various information and
   parameters about the ongoing (de)serialization operation. You can use it when
   calling `turbo_broccoli.from_json` or `turbo_broccoli.to_json`. For
   convenience, `turbo_broccoli.save_json` and `turbo_broccoli.load_json` take
   the context parameter's as kwargs.
+
 - Removal of `turbo_broccoli.environment`. Use `turbo_broccoli.context.Context`
   instead.
+
 - Sentinel booleans like `HAS_NUMPY`, `HAS_PANDA` etc. are now in
   `turbo_broccoli.custom`.
+
 - Deleted `turbo_broccoli.guard.guarded_call` and
   `turbo_broccoli.guard.produces_document`. The iterable version of
   `turbo_broccoli.guard.GuardedBlockHandler.guard` no longer exist.
+
 - Removal of the CLI.
+
 - With a `turbo_broccoli.guard.GuardedBlockHandler`, it is now possible to not
   load the block's results if the block is skipped. See the class
   documentation.
+
 - Artifacts not have the output JSON filename's stem as a prefix and the `.tb`
   extension. For example, if the output file is `test.json`, then an artifact
   filename would be `test.<UUID4>.tb`. If no output filename is set in the
   serialization context, then artifact filenames simply have the form
   `<UUID4>.tb`.
 
-# `v2.1.0`
+## `v2.1.0`
 
 - `sklearn` (de)serialization of most estimator classes, see [the list of
   supported
@@ -70,7 +85,7 @@ Changelog
   [here](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#guarded-calls)
   for some basic usage.
 
-# `v2.0.0`
+## `v2.0.0`
 
 - `turbo-broccoli` now uses [Huggingface's
   `safetensors`](https://huggingface.co/docs/safetensors/index) to store
