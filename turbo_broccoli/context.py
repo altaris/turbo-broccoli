@@ -97,8 +97,10 @@ class Context:
                 )
         else:
             self.artifact_path = Path(artifact_path)
-        self.min_artifact_size = min_artifact_size or int(
-            ENV.get("TB_MAX_NBYTES", 8000)
+        self.min_artifact_size = (
+            min_artifact_size
+            if min_artifact_size is not None
+            else int(ENV.get("TB_MAX_NBYTES", 8000))
         )
         self.nodecode_types = nodecode_types or ENV.get(
             "TB_NODECODE", ""
