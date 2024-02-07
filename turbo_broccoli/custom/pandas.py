@@ -67,6 +67,7 @@ def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
 
 
 def _json_to_series(dct: dict, ctx: Context) -> pd.Series:
+    ctx.raise_if_nodecode("pandas.dataframe")
     DECODERS = {
         # 1: _json_to_series_v1,  # Use turbo_broccoli v3
         2: _json_to_series_v2,
@@ -90,14 +91,12 @@ def _series_to_json(ser: pd.Series, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("pandas")
     DECODERS = {
         "pandas.dataframe": _json_to_dataframe,
         "pandas.series": _json_to_series,
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

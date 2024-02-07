@@ -156,7 +156,6 @@ KERAS_OPTIMIZERS = {
 
 
 def _json_to_layer(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras.layer")
     DECODERS = {
         # 1: _json_to_layer_v1,  # Use turbo_broccoli v3
         2: _json_to_layer_v2,
@@ -172,7 +171,6 @@ def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_loss(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras.loss")
     DECODERS = {
         # 1: _json_to_loss_v1,  # Use turbo_broccoli v3
         2: _json_to_loss_v2,
@@ -188,7 +186,6 @@ def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_metric(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras.metric")
     DECODERS = {
         # 1: _json_to_metric_v1,  # Use turbo_broccoli v3
         2: _json_to_metric_v2,
@@ -204,7 +201,6 @@ def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_model(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras.model")
     DECODERS = {
         # 1: _json_to_model_v1,  # Use turbo_broccoli v3
         # 2: _json_to_model_v2,  # Use turbo_broccoli v3
@@ -228,7 +224,6 @@ def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras.optimizer")
     DECODERS = {
         # 1: _json_to_optimizer_v1,  # Use turbo_broccoli v3
         2: _json_to_optimizer_v2,
@@ -274,7 +269,6 @@ def _model_to_json(model: keras.Model, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("keras")
     DECODERS = {
         "keras.model": _json_to_model,  # must be first!
         "keras.layer": _json_to_layer,
@@ -284,7 +278,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

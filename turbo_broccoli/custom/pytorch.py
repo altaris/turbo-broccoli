@@ -69,14 +69,12 @@ def _tensor_to_json(tens: torch.Tensor, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("pytorch")
     DECODERS = {
         "pytorch.tensor": _json_to_tensor,
         "pytorch.module": _json_to_module,
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

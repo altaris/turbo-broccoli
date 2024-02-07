@@ -88,7 +88,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

@@ -1,5 +1,6 @@
 """Dataclass serialization"""
 
+from re import S
 from typing import Any
 
 from turbo_broccoli.context import Context
@@ -13,13 +14,11 @@ def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("dataclass")
     DECODERS = {
         # 2: _json_to_dataclass_v2,  # Use turbo_broccoli v3
         3: _json_to_dataclass_v3,
     }
     try:
-        ctx.raise_if_nodecode(dct["__type__"])
         return DECODERS[dct["__version__"]](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

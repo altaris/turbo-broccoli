@@ -71,25 +71,22 @@ def test_nodecode_numpy():
     assert y == to_from_json(x, ctx)
 
 
-# The serialization of Series depends on that of DataFrame. So excluding
-# pandas.dataframe will make it impossible to deserialize Series.
-# def test_nodecode_pandas_df():
-#     ctx = Context(nodecode_types=["pandas.dataframe"])
-#     s = pd.Series([1, 2, 3])
-#     df = pd.DataFrame(
-#         {
-#             "a": s,
-#             "b": pd.Categorical(["X", "Y", "X"])
-#         }
-#     )
-#     x = {
-#         "s": s,
-#         "df": df,
-#     }
-#     print(to_json(x))
-#     y = to_from_json(x, ctx)
-#     assert_equal_pd(x["s"], y["s"])
-#     assert y["df"] is None
+def test_nodecode_pandas_series():
+    ctx = Context(nodecode_types=["pandas.series"])
+    s = pd.Series([1, 2, 3])
+    x = {"ser": s, **_basic_dict()}
+    y = {"ser": None, **_basic_dict()}
+    assert y == to_from_json(x, ctx)
+
+
+def test_nodecode_pandas_dataframe():
+    ctx = Context(nodecode_types=["pandas.dataframe"])
+    s = pd.Series([1, 2, 3])
+    df = pd.DataFrame({"a": s, "b": pd.Categorical(["X", "Y", "X"])})
+    x = {"s": s, "df": df, **_basic_dict()}
+    y = {"s": None, "df": None, **_basic_dict()}
+    y = to_from_json(x, ctx)
+    assert y == to_from_json(x, ctx)
 
 
 def test_nodecode_pandas_ser():

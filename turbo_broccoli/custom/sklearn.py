@@ -213,13 +213,11 @@ def _json_to_sklearn_estimator_v2(dct: dict, ctx: Context) -> BaseEstimator:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> BaseEstimator:
-    ctx.raise_if_nodecode("sklearn")
     DECODERS = {  # Except sklearn estimators
         "sklearn.raw": _json_raw_to_sklearn,
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         if type_name.startswith("sklearn.estimator."):
             return _json_to_sklearn_estimator(dct, ctx)
         return DECODERS[type_name](dct, ctx)

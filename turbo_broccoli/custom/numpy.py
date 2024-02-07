@@ -16,7 +16,6 @@ from turbo_broccoli.utils import DeserializationError, TypeNotSupported
 
 
 def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:
-    ctx.raise_if_nodecode("numpy.dtype")
     DECODERS = {
         # 1: _json_to_dtype_v1,  # Use turbo_broccoli v3
         2: _json_to_dtype_v2,
@@ -29,7 +28,6 @@ def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
 
 
 def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
-    ctx.raise_if_nodecode("numpy.ndarray")
     DECODERS = {
         # 1: _json_to_ndarray_v1,  # Use turbo_broccoli v3
         # 2: _json_to_ndarray_v2,  # Use turbo_broccoli v3
@@ -46,7 +44,6 @@ def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
 
 
 def _json_to_number(dct: dict, ctx: Context) -> np.number:
-    ctx.raise_if_nodecode("numpy.number")
     DECODERS = {
         # 1: _json_to_number_v1,  # Use turbo_broccoli v3
         # 2: _json_to_number_v2,  # Use turbo_broccoli v3
@@ -60,7 +57,6 @@ def _json_to_number_v3(dct: dict, ctx: Context) -> np.number:
 
 
 def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
-    ctx.raise_if_nodecode("numpy.random_state")
     DECODERS = {
         # 1: _json_to_random_state_v1,
         2: _json_to_random_state_v2,
@@ -125,7 +121,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     Deserializes a dict into a numpy object. See `to_json` for the
     specification `dct` is expected to follow.
     """
-    ctx.raise_if_nodecode("numpy")
     DECODERS = {
         "numpy.ndarray": _json_to_ndarray,
         "numpy.number": _json_to_number,
@@ -134,7 +129,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

@@ -154,8 +154,16 @@ class Context:
 
     def raise_if_nodecode(self, type_name: str) -> None:
         """
-        Raises a `TypeIsNodecode` exception if `type_name` is set to not be
-        decoded in this context (see `nodecode_types` constructor argument).
+        Raises a `TypeIsNodecode` exception if `type_name` or any prefix is set
+        to not be decoded in this context (see `nodecode_types` constructor
+        argument).
+
+        For example, if `type_name` is `a.b.c`, then this method raises
+        `TypeIsNodecode` if either `a`, `a.b`, or `a.b.c` is set as a nodecode
+        type.
         """
-        if type_name in self.nodecode_types:
-            raise TypeIsNodecode(type_name)
+        parts = type_name.split(".")
+        for i in range(1, len(parts) + 1):
+            t = ".".join(parts[:i])
+            if t in self.nodecode_types:
+                raise TypeIsNodecode(t)

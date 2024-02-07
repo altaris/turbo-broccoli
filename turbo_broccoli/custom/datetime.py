@@ -77,7 +77,6 @@ def _json_to_timedelta_v1(dct: dict, ctx: Context) -> timedelta:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("datetime")
     DECODERS = {
         "datetime.datetime": _json_to_datetime,
         "datetime.time": _json_to_time,
@@ -85,7 +84,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

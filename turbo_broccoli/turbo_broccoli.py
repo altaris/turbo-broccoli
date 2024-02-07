@@ -17,13 +17,12 @@ def _from_jsonable(obj: Any, ctx: Context) -> Any:
     if isinstance(obj, dict):
         obj = {k: _from_jsonable(v, ctx / k) for k, v in obj.items()}
         if "__type__" in obj:
-            base = obj["__type__"].split(".")[0]
-            decoders = get_decoders()
-            if base in decoders:
-                try:
-                    obj = decoders[base](obj, ctx)
-                except TypeIsNodecode:
-                    obj = None
+            try:
+                ctx.raise_if_nodecode(obj["__type__"])
+                base = obj["__type__"].split(".")[0]
+                obj = get_decoders()[base](obj, ctx)
+            except TypeIsNodecode:
+                obj = None
     elif isinstance(obj, list):
         return [_from_jsonable(v, ctx / str(i)) for i, v in enumerate(obj)]
     elif isinstance(obj, tuple):

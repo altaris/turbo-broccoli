@@ -38,13 +38,11 @@ def _json_to_csr_matrix_v2(dct: dict, ctx: Context) -> csr_matrix:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("scipy")
     DECODERS = {
         "scipy.csr_matrix": _json_to_csr_matrix,
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

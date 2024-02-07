@@ -101,7 +101,6 @@ def _variable_to_json(var: tf.Variable, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    ctx.raise_if_nodecode("tensorflow")
     DECODERS = {
         "tensorflow.sparse_tensor": _json_to_sparse_tensor,
         "tensorflow.tensor": _json_to_tensor,
@@ -109,7 +108,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        ctx.raise_if_nodecode(type_name)
         return DECODERS[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc

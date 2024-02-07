@@ -20,5 +20,4 @@ def to_json(obj: Any, ctx: Context) -> dict:
         and isinstance(obj.__turbo_broccoli__, Iterable)
     ):
         raise TypeNotSupported()
-    ctx.raise_if_nodecode("generic")
     return {k: getattr(obj, k) for k in obj.__turbo_broccoli__}
