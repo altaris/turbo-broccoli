@@ -27,6 +27,7 @@ def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
 def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     DECODERS = {
         3: _json_to_tensor_v3,
+        4: _json_to_tensor_v4,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -35,6 +36,10 @@ def _json_to_tensor_v3(dct: dict, ctx: Context) -> tf.Tensor:
     if "data" in dct:
         return st.load(dct["data"])["data"]
     return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
+
+
+def _json_to_tensor_v4(dct: dict, ctx: Context) -> tf.Tensor:
+    return st.load(dct["data"])["data"]
 
 
 def _json_to_variable(dct: dict, ctx: Context) -> tf.Variable:
@@ -52,35 +57,27 @@ def _json_to_variable_v3(dct: dict, ctx: Context) -> tf.Variable:
     )
 
 
-def _ragged_tensor_to_json(tens: tf.Tensor, ctx: Context) -> dict:
+def _ragged_tensor_to_json(obj: tf.Tensor, ctx: Context) -> dict:
     raise NotImplementedError(
         "Serialization of ragged tensors is not supported"
     )
 
 
-def _sparse_tensor_to_json(tens: tf.SparseTensor, ctx: Context) -> dict:
+def _sparse_tensor_to_json(obj: tf.SparseTensor, ctx: Context) -> dict:
     return {
         "__type__": "tensorflow.sparse_tensor",
         "__version__": 2,
-        "indices": tens.indices,
-        "shape": list(tens.dense_shape),
-        "values": tens.values,
+        "indices": obj.indices,
+        "shape": list(obj.dense_shape),
+        "values": obj.values,
     }
 
 
-def _tensor_to_json(tens: tf.Tensor, ctx: Context) -> dict:
-    if tens.numpy().nbytes <= ctx.min_artifact_size:
-        return {
-            "__type__": "tensorflow.tensor",
-            "__version__": 3,
-            "data": st.save({"data": tens}),
-        }
-    path, name = ctx.new_artifact_path()
-    st.save_file({"data": tens}, path)
+def _tensor_to_json(obj: tf.Tensor, ctx: Context) -> dict:
     return {
         "__type__": "tensorflow.tensor",
-        "__version__": 3,
-        "id": name,
+        "__version__": 4,
+        "data": st.save({"data": obj}),
     }
 
 
@@ -133,25 +130,14 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
             {
                 "__type__": "tensorflow.tensor",
-                "__version__": 3,
-                "dtype": <str>,
-                "data": {...},
+                "__version__": 4,
+                "data": {
+                    "__type__": "bytes",
+                    ...
+                },
             }
 
-      If the tensor is too large (i.e. the number of bytes exceeds
-      `TB_MAX_NBYTES` or the value set by the `min_artifact_size` argument when
-      constructing the encoding `turbo_broccoli.context.Context`), then the
-      content of the tensor is stored in a binary artefact. The resulting JSON
-      document looks like
-
-            {
-                "__type__": "tensorflow.tensor",
-                "__version__": 3,
-                "id": <UUID4 str>,
-            }
-
-      By default, `TB_MAX_NBYTES` is `8000` bytes, which should be enough to
-      store an array of 1000 `float64`s.
+      see `turbo_broccoli.custom.bytes.to_json`.
 
     - `tf.Variable`:
 

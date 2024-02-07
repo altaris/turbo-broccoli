@@ -30,6 +30,7 @@ def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
 def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
     DECODERS = {
         4: _json_to_ndarray_v4,
+        5: _json_to_ndarray_v5,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -38,6 +39,10 @@ def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
     if "data" in dct:
         return st.load(dct["data"])["data"]
     return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
+
+
+def _json_to_ndarray_v5(dct: dict, ctx: Context) -> np.ndarray:
+    return st.load(dct["data"])["data"]
 
 
 def _json_to_number(dct: dict, ctx: Context) -> np.number:
@@ -77,18 +82,10 @@ def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:
 
 
 def _ndarray_to_json(arr: np.ndarray, ctx: Context) -> dict:
-    if arr.nbytes <= ctx.min_artifact_size:
-        return {
-            "__type__": "numpy.ndarray",
-            "__version__": 4,
-            "data": st.save({"data": arr}),
-        }
-    path, name = ctx.new_artifact_path()
-    st.save_file({"data": arr}, path)
     return {
         "__type__": "numpy.ndarray",
-        "__version__": 4,
-        "id": name,
+        "__version__": 5,
+        "data": st.save({"data": arr}),
     }
 
 
@@ -144,24 +141,14 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
             {
                 "__type__": "numpy.ndarray",
-                "__version__": 4,
-                "data": <ASCII encoded byte string>,
+                "__version__": 5,
+                "data": {
+                    "__type__": "bytes",
+                    ...
+                }
             }
 
-
-      On the other hand, the array is too large (see
-      `turbo_broccoli.context.Context.min_artifact_size`), then the content of
-      `arr` is stored in an `.npy` file and the resulting JSON document looks
-      like
-
-            {
-                "__type__": "numpy.ndarray",
-                "__version__": 4,
-                "id": <UUID4 str>,
-            }
-
-      where `id` points to an artifact. By default, `TB_MAX_NBYTES` is `8000`
-      bytes, which should be enough to store an array of 1000 `float64`s.
+      see `turbo_broccoli.custom.bytes.to_json`.
 
     - `numpy.number`:
 
