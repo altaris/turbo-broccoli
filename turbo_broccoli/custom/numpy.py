@@ -5,7 +5,6 @@ Todo:
     Handle numpy's `generic` type (which supersedes the `number` type).
 """
 
-import pickle
 from typing import Any, Callable, Tuple
 
 import joblib
@@ -29,16 +28,9 @@ def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
 
 def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
     DECODERS = {
-        4: _json_to_ndarray_v4,
         5: _json_to_ndarray_v5,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
-
-
-def _json_to_ndarray_v4(dct: dict, ctx: Context) -> np.ndarray:
-    if "data" in dct:
-        return st.load(dct["data"])["data"]
-    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _json_to_ndarray_v5(dct: dict, ctx: Context) -> np.ndarray:
@@ -58,15 +50,9 @@ def _json_to_number_v3(dct: dict, ctx: Context) -> np.number:
 
 def _json_to_random_state(dct: dict, ctx: Context) -> np.number:
     DECODERS = {
-        2: _json_to_random_state_v2,
         3: _json_to_random_state_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
-
-
-def _json_to_random_state_v2(dct: dict, ctx: Context) -> np.number:
-    with open(ctx.id_to_artifact_path(dct["data"]), mode="rb") as fp:
-        return pickle.load(fp)
 
 
 def _json_to_random_state_v3(dct: dict, ctx: Context) -> np.number:

@@ -26,16 +26,9 @@ def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     DECODERS = {
-        3: _json_to_tensor_v3,
         4: _json_to_tensor_v4,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
-
-
-def _json_to_tensor_v3(dct: dict, ctx: Context) -> tf.Tensor:
-    if "data" in dct:
-        return st.load(dct["data"])["data"]
-    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _json_to_tensor_v4(dct: dict, ctx: Context) -> tf.Tensor:

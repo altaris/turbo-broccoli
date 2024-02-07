@@ -11,16 +11,9 @@ from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 def _json_to_module(dct: dict, ctx: Context) -> torch.nn.Module:
     DECODERS = {
-        2: _json_to_module_v2,
         3: _json_to_module_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
-
-
-def _json_to_module_v2(dct: dict, ctx: Context) -> torch.nn.Module:
-    module: torch.nn.Module = ctx.pytorch_module_types[dct["class"]]()
-    module.load_state_dict(dct["state"])
-    return module
 
 
 def _json_to_module_v3(dct: dict, ctx: Context) -> torch.nn.Module:
@@ -34,18 +27,9 @@ def _json_to_module_v3(dct: dict, ctx: Context) -> torch.nn.Module:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> torch.Tensor:
     DECODERS = {
-        2: _json_to_tensor_v2,
         3: _json_to_tensor_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
-
-
-def _json_to_tensor_v2(dct: dict, ctx: Context) -> torch.Tensor:
-    if "data" in dct:
-        if dct["data"] is None:  # empty tensor
-            return torch.Tensor()
-        return st.load(dct["data"])["data"]
-    return st.load_file(ctx.id_to_artifact_path(dct["id"]))["data"]
 
 
 def _json_to_tensor_v3(dct: dict, ctx: Context) -> torch.Tensor:

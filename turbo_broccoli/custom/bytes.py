@@ -8,10 +8,6 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
-def _bytes_from_json_v2(dct: dict, ctx: Context) -> bytes:
-    return b64decode(dct["data"])
-
-
 def _bytes_from_json_v3(dct: dict, ctx: Context) -> bytes:
     if "data" in dct:
         return b64decode(dct["data"])
@@ -23,7 +19,6 @@ def _bytes_from_json_v3(dct: dict, ctx: Context) -> bytes:
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> bytes | None:
     DECODERS = {
-        2: _bytes_from_json_v2,
         3: _bytes_from_json_v3,
     }
     try:
