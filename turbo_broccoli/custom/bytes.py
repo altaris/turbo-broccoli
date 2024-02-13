@@ -32,19 +32,23 @@ def to_json(obj: Any, ctx: Context) -> dict:
     Serializes a Python `bytes` object into JSON using a base64 + ASCII
     scheme. The return dict has the following structure
 
-        {
-            "__type__": "bytes",
-            "__version__": 3,
-            "data": <ASCII str>,
-        }
+    ```py
+    {
+        "__type__": "bytes",
+        "__version__": 3,
+        "data": <ASCII str>,
+    }
+    ```
 
     or
 
-        {
-            "__type__": "bytes",
-            "__version__": 3,
-            "id": <uuid4>,
-        }
+    ```py
+    {
+        "__type__": "bytes",
+        "__version__": 3,
+        "id": <uuid4>,
+    }
+    ```
 
     if the base64 encoding of the object is too large.
 

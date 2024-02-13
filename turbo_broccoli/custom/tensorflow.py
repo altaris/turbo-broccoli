@@ -108,42 +108,48 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `tf.SparseTensor`:
 
-            {
-                "__type__": "tensorflow.sparse_tensor",
-                "__version__": 2,
-                "indices": {...},
-                "values": {...},
-                "shape": {...},
-            }
+        ```json
+        {
+            "__type__": "tensorflow.sparse_tensor",
+            "__version__": 2,
+            "indices": {...},
+            "values": {...},
+            "shape": {...},
+        }
+        ```
 
       where the first two `{...}` placeholders result in the serialization of
       `tf.Tensor` (see below).
 
     - other `tf.Tensor` subtypes:
 
-            {
-                "__type__": "tensorflow.tensor",
-                "__version__": 4,
-                "data": {
-                    "__type__": "bytes",
-                    ...
-                },
-            }
+        ```json
+        {
+            "__type__": "tensorflow.tensor",
+            "__version__": 4,
+            "data": {
+                "__type__": "bytes",
+                ...
+            },
+        }
+        ```
 
       see `turbo_broccoli.custom.bytes.to_json`.
 
     - `tf.Variable`:
 
-            {
-                "__type__": "tensorflow.tensor",
-                "__version__": 3,
-                "name": <str>,
-                "value": {...},
-                "trainable": <bool>,
-            }
+        ```json
+        {
+            "__type__": "tensorflow.tensor",
+            "__version__": 3,
+            "name": <str>,
+            "value": {...},
+            "trainable": <bool>,
+        }
+        ```
 
       where `{...}` is the document produced by serializing the value tensor of
-      the variable.
+      the variable, see above.
 
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [

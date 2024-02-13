@@ -26,9 +26,15 @@ class Context:
     (De)Serialization context, which is an object that contains various
     information and parameters about the ongoing operation. If you want your
     (de)serialization to behave a certain way, create a context object and pass
-    it to `turbo_broccoli.from_json` or `turbo_broccoli.to_json`. For
-    convenience, `turbo_broccoli.save_json` and `turbo_broccoli.load_json` take
-    the context parameter's as kwargs.
+    it to
+    [`turbo_broccoli.to_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json)
+    or
+    [`turbo_broccoli.from_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#from_json).
+    For convenience,
+    [`turbo_broccoli.save_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json)
+    and
+    [`turbo_broccoli.load_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json)
+    take the context parameter's as kwargs.
     """
 
     artifact_path: Path
@@ -76,11 +82,40 @@ class Context:
     ) -> None:
         """
         Args:
-            json_path (str, optional): Current JSONpath
-            file_path (str | Path | None, optional): Output JSON file path
+            file_path (str | Path | None, optional): Output JSON file path.
             artifact_path (str | Path | None, optional): Artifact path.
                 Defaults to the parent directory of `file_path`, or a new
                 temporary directory if `file_path` is `None`.
+            min_artifact_size (int, optional): Byte strings (and everything
+                that serialize to byte strings such as numpy arrays) larget
+                than this will be stored in artifact rather than be embedded in
+                the output JSON string/file.
+            nodecode_types (list[str], optional): List of type names which
+                shall be deserialized to `None` rather than their true value.
+                See
+                [`TB_NODECODE`](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#environment-variables)
+            keras_format ("keras", "tf", "h5", optional): Format for Keras
+                artifacts
+            pandas_format ("csv", "excel", "feather", "html", "json", "latex",
+                "orc", "parquet", "pickle", "sql", "stata", "xml", optional):
+                Format for pandas artifacts
+            pandas_kwargs (dict, optional): kwargs to forward to the pandas
+                `to_*` and `read_*` function. For example, if
+                `pandas_format="parquet"`, then the content of `pandas.kwargs`
+                will be forwarded to
+                [`pandas.DataFrame.to_parquet`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html)
+                and
+                [`pandas.read_parquet`](https://pandas.pydata.org/docs/reference/api/pandas.read_parquet.html)
+            nacl_shared_key (bytes, optional): PyNaCl shared key. See also
+                [PyNaCl's
+                documentation](https://pynacl.readthedocs.io/en/latest/secret/#key)
+            dataclass_types (dict[str, type] | list[type], optional): List of
+                dataclass types for deserialization. See the
+                [README](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types).
+            pytorch_module_types (dict[str, type] | list[type], optional): List
+                of pytorch module types for deserialization. See the
+                [README](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types).
+            json_path (str, optional): Current JSONpath. Don't use.
         """
         self.json_path = json_path
         self.file_path = (

@@ -27,12 +27,14 @@ def to_json(obj: Any, ctx: Context) -> dict:
     Serializes a dataclass into JSON by cases. The return dict has the
     following structure
 
-        {
-            "__type__": "dataclass.<CLASS NAME>",
-            "__version__": 3,
-            "class": <str>,
-            "data": {...},
-        }
+    ```json
+    {
+        "__type__": "dataclass.<CLASS NAME>",
+        "__version__": 3,
+        "class": <str>,
+        "data": {...},
+    }
+    ```
 
     where the `{...}` is `obj.__dict__`.
     """

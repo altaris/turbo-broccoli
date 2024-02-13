@@ -2,8 +2,8 @@
 "Native" saving utilities:
 * `turbo_broccoli.native.save` takes a serializable/dumpable object and
   a path, and uses the file extension to choose the correct way to save the
-  object to disk;
-* `turbo_broccoli.native.load` does the opposite
+  object;
+* `turbo_broccoli.native.load` does the opposite.
 """
 
 # pylint: disable=unused-argument
@@ -223,8 +223,9 @@ def load(path: str | Path, **kwargs) -> Any:
     See `turbo_broccoli.native.save` for the list of supported file extensions.
 
     Warning:
-        Safetensors files (`.st` or `.safetensors`) will be loaded as (dicts
-        of) numpy arrays.
+        Safetensors files (`.st` or `.safetensors`) will be loaded as dicts of
+        numpy arrays even of the object was originally a dict of e.g. torch
+        tensors.
     """
     extension = Path(path).suffix
     methods: dict[str, Callable[[str | Path], Any]] = {

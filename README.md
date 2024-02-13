@@ -18,26 +18,27 @@ pip install turbo-broccoli
 
 ## Usage
 
+### To/from string
+
 ```py
 import numpy as np
 import turbo_broccoli as tb
 
-obj = {
-    "an_array": np.array([[1, 2], [3, 4]], dtype="float32")
-}
+obj = {"an_array": np.array([[1, 2], [3, 4]], dtype="float32")}
 tb.to_json(obj)
 ```
 
-produces the following string (modulo indentation):
+produces the following string (modulo indentation and the value of
+`$.an_array.data.data`):
 
 ```json
 {
   "an_array": {
     "__type__": "numpy.ndarray",
-    "__version__": 4,
+    "__version__": 5,
     "data": {
       "__type__": "bytes",
-      "__version__": 2,
+      "__version__": 3,
       "data": "QAAAAAAAAAB7ImRhd..."
     }
   }
@@ -50,40 +51,154 @@ For deserialization, simply use
 tb.from_json(json_string)
 ```
 
-## Artifacts
+### To/from file
 
-During serialization, Turbo Broccoli may create artifacts to which the JSON
-object will point to. For example, if `arr` is a big numpy array,
+Simply replace
+[`turbo_broccoli.to_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json)
+and
+[`turbo_broccoli.from_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#from_json)
+with
+[`turbo_broccoli.save_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json)
+and
+[`turbo_broccoli.load_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json):
 
 ```py
-tb.save_json({"an_array": arr}, "/some/path/foo.json")
+import numpy as np
+import turbo_broccoli as tb
+
+obj = {"an_array": np.array([[1, 2], [3, 4]], dtype="float32")}
+tb.save_json(obj, "foo/bar/foobar.json")
+
+...
+
+obj = tb.load_json("foo/bar/foobar.json")
 ```
 
-will generate the following string (modulo indentation and `id`)
+### [Contexts](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)
+
+The behaviour of
+[`turbo_broccoli.to_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json)
+and
+[`turbo_broccoli.from_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#from_json)
+can be tweaked by using
+[contexts](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context).
+For example, to set a encryption/decryption key for [secret
+types](https://cedric.hothanh.fr/turbo-broccoli/turbo_broccoli/custom/secret.html):
+
+```py
+import nacl.secret
+import nacl.utils
+import turbo_broccoli as tb
+
+key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+ctx = tb.Context(nacl_shared_key=key)
+obj = {"user": "alice", "password": tb.SecretStr("dolphin")}
+doc = tb.to_json(obj, ctx)
+
+...
+
+obj = tb.from_json(doc, ctx)
+```
+
+The behaviour of
+[`turbo_broccoli.save_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json)
+and
+[`turbo_broccoli.load_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json)
+can be tweaked in a similar manner, but for convenience, the argument of the
+context are passed directly to the method:
+
+```py
+import nacl.secret
+import nacl.utils
+import turbo_broccoli as tb
+
+key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+obj = {"user": "alice", "password": tb.SecretStr("dolphin")}
+tb.save_json(obj, "foo/bar/foobar.json", nacl_shared_key=key)
+```
+
+See [the
+documentation](https://altaris.github.io/turbo_broccoli/context.html#Context).
+
+### Artifacts
+
+If an object inside `obj` is too large to be embedded inside the JSON file
+(e.g. a large numpy array), then an *artifact* file is created:
+
+```py
+import numpy as np
+import turbo_broccoli as tb
+
+obj = {"an_array": np.random.rand(1000, 1000)}
+tb.save_json(obj, "foo/bar/foobar.json")
+```
+
+produces the JSON file
 
 ```json
 {
   "an_array": {
     "__type__": "numpy.ndarray",
-    "__version__": 3,
-    "id": "70692d08-c4cf-4231-b3f0-0969ea552d5a"
+    "__version__": 5,
+    "data": {
+      "__type__": "bytes",
+      "__version__": 3,
+      "id": "1e6dff28-5e26-44df-9e7a-75bc726ce9aa"
+    }
   }
 }
 ```
 
-and a `foo.70692d08-c4cf-4231-b3f0-0969ea552d5a.tb` file has been created in
-`/some/path/`. The artifact directory can be explicitely specified by setting
+and a file `foo/bar/foobar.1e6dff28-5e26-44df-9e7a-75bc726ce9aa.tb` containing
+the array data. The artifact directory can be explicitely specified by setting
 it in the [serialization
 context](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)
-or by setting the `TB_ARTIFACT_PATH` environment variable (see below.)
+or by setting the `TB_ARTIFACT_PATH` environment variable (see below.). The
+code for loading the JSON file does not change:
+
+```py
+obj = tb.load_json("foo/bar/foobar.json")
+```
+
+If using
+[`turbo_broccoli.to_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json),
+since there is no output file path specified, the artifacts are storied in a
+temporary directory instead:
+
+```py
+import numpy as np
+import turbo_broccoli as tb
+
+obj = {"an_array": np.random.rand(1000, 1000)}
+doc = tb.to_json(obj)
+# An artifact has been created somewhere in e.g. /tmp
+```
+
+Since no information about this directory is stored in the output JSON string,
+it is not possible to load `doc` using
+[`turbo_broccoli.from_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json).
+If deserialization is necessary, instantiate a [context](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context):
+
+```py
+import numpy as np
+import turbo_broccoli as tb
+
+ctx = tb.Context()
+obj = {"an_array": np.random.rand(1000, 1000)}
+doc = tb.to_json(obj, ctx)
+# An artifact has been created in ctx.artifact_path
+
+...
+
+obj = tb.from_json(doc, ctx)
+```
 
 ## Environment variables
 
 Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
 variables. If you want to modify these parameters programatically, do not do so
-by modifying `os.environ`. Rather, use the
-[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)
-constructor.
+by modifying `os.environ`. Rather, use a
+[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context).
 
 - `TB_ARTIFACT_PATH` (default: output JSON file's parent directory): During
   serialization, Turbo Broccoli may create artifacts to which the JSON object
@@ -109,10 +224,6 @@ constructor.
   - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
 
   - `bytes`,
-
-  - `dict` (this will only disable [Turbo Broccoli's custom
-    serialization](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json)
-    of `dict`s with non `str` keys),
 
   - `collections`, `collections.deque`, `collections.namedtuple`,
     `collections.set`,
@@ -145,12 +256,12 @@ constructor.
     `tensorflow.variable`.
 
 - `TB_SHARED_KEY` (default: empty):
-  Secret key used to encrypt secrets. The encryption uses [`pynacl`'s
+  Secret key used to encrypt/decrypt secrets. The encryption uses [`pynacl`'s
   `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
   An exception is raised when attempting to serialize a secret type while no
   key is set.
 
-## Guarded calls
+## Guarded blocks
 
 This is so cool. Check out
 [`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler).
@@ -161,12 +272,11 @@ This is so cool. Check out
 
 - [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json)
 
-- [`dict` with non `str` keys](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json)
-
 - [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json):
   `collections.deque`, `collections.namedtuple`
 
-- [Dataclasses](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json): serialization is straightforward:
+- [Dataclasses](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json):
+  serialization is straightforward:
 
   ```py
   @dataclass
@@ -180,8 +290,8 @@ This is so cool. Check out
   For deserialization, first register the class:
 
   ```py
-  tb.register_dataclass_type(C)
-  tb.from_json(doc)
+  ctx = tb.Context(dataclass_types=[C])
+  tb.from_json(doc, ctx)
   ```
 
 - [`datetime.datetime`, `datetime.time`,
@@ -205,13 +315,10 @@ x.a, x.b, x.c = 42, 43, 44
 tb.to_json(x)
 ```
 
-produces the following string (modulo indentation):
+produces the following string:
 
 ```json
-{
-  "a": 42,
-  "b": 43,
-}
+{"a": 42,"b": 43,}
 ```
 
 Registered attributes can of course have any type supported by Turbo Broccoli,
@@ -236,20 +343,12 @@ such as numpy arrays. Registered attributes can be `@property` methods.
 
 - the following dtypes are not supported: `complex`, `object`, `timedelta`
 
-- the column / series names must be strings and not numbers. The following
-  is not acceptable:
+- the column / series names cannot be ints or int-strings. The following are
+  not acceptable:
 
   ```py
   df = pd.DataFrame([[1, 2], [3, 4]])
-  ```
-
-  because
-
-  ```py
-  print([c for c in df.columns])
-  # [0, 1]
-  print([type(c) for c in df.columns])
-  # [int, int]
+  df = pd.DataFrame([[1, 2], [3, 4]], columns=["0", "1"])
   ```
 
 ### [Tensorflow](https://altaris.github.io/turbo-broccoli/turbo_broccoli/tensorflow.html#to_json)
@@ -270,16 +369,56 @@ such as numpy arrays. Registered attributes can be `@property` methods.
     ...
 
   module = MyModule()  # Must be instantiable without arguments
-  doc = tb.to_json(x)
+  doc = tb.to_json({"module": module})
 
   # Deserialization
-  tb.register_pytorch_module_type(MyModule)
-  module = tb.from_json(doc)
+  ctx = tb.Context(pytorch_module_types=[MyModule])
+  module = tb.from_json(doc, ctx)
   ```
 
   **Warning**: It is not possible to register and deserialize [standard pytorch
   module containers](https://pytorch.org/docs/stable/nn.html#containers)
-  directly. Wrap them in your own custom module class.
+  directly. Wrap them in your own custom module class. For following is not
+  acceptable
+
+  ```py
+  import turbo_broccoli as tb
+  import torch
+
+  module = torch.nn.Sequential(
+      torch.nn.Linear(4, 2),
+      torch.nn.ReLU(),
+      torch.nn.Linear(2, 1),
+      torch.nn.ReLU(),
+  )
+  obj = {"module": module}
+  doc = tb.to_json(obj)  # works, but...
+  tb.from_json(a, ctx)  # does't work
+  ```
+
+  but the following works:
+
+  ```py
+  class MyModule(torch.nn.Module):
+    module: torch.nn.Sequential  # Wrapped sequential
+
+    def __init__(self):
+        super().__init__()
+        self.module = torch.nn.Sequential(
+            torch.nn.Linear(4, 2),
+            torch.nn.ReLU(),
+            torch.nn.Linear(2, 1),
+            torch.nn.ReLU(),
+        )
+
+    ...
+
+  module = MyModule()  # Must be instantiable without arguments
+  doc = tb.to_json({"module": module})
+
+  ctx = tb.Context(pytorch_module_types=[MyModule])
+  module = tb.from_json(doc, ctx)
+  ```
 
 ### [Scipy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json)
 
@@ -287,11 +426,37 @@ Just `scipy.sparse.csr_matrix`. ^^"
 
 ### [Scikit-learn](https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json)
 
-`sklearn` estimators (i.e. that descent from
+`sklearn` estimators (i.e. that inherit from
 [`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
-To make sure which class is supported, take a look at the [unit
-tests](https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py)
-Doesn't work with:
+Supported estimators are: `AdaBoostClassifier`, `AdaBoostRegressor`,
+`AdditiveChi2Sampler`, `AffinityPropagation`, `AgglomerativeClustering`,
+`ARDRegression`, `BayesianGaussianMixture`, `BayesianRidge`, `BernoulliNB`,
+`BernoulliRBM`, `Binarizer`, `CategoricalNB`, `CCA`, `ComplementNB`, `DBSCAN`,
+`DecisionTreeClassifier`, `DecisionTreeRegressor`, `DictionaryLearning`,
+`ElasticNet`, `EllipticEnvelope`, `EmpiricalCovariance`, `ExtraTreeClassifier`,
+`ExtraTreeRegressor`, `ExtraTreesClassifier`, `ExtraTreesRegressor`,
+`FactorAnalysis`, `GaussianMixture`, `GaussianNB`, `GaussianRandomProjection`,
+`GraphicalLasso`, `HuberRegressor`, `IncrementalPCA`, `IsolationForest`,
+`Isomap`, `KernelCenterer`, `KernelDensity`, `KernelRidge`, `KMeans`,
+`KNNImputer`, `LabelBinarizer`, `LabelEncoder`, `Lars`, `Lasso`, `LassoLars`,
+`LassoLarsIC`, `LatentDirichletAllocation`, `LedoitWolf`,
+`LinearDiscriminantAnalysis`, `LinearRegression`, `LinearSVC`, `LinearSVR`,
+`LocallyLinearEmbedding`, `LogisticRegression`, `MaxAbsScaler`, `MDS`,
+`MeanShift`, `MinCovDet`, `MiniBatchDictionaryLearning`, `MiniBatchKMeans`,
+`MiniBatchSparsePCA`, `MinMaxScaler`, `MLPClassifier`, `MLPRegressor`,
+`MultiLabelBinarizer`, `MultinomialNB`, `MultiTaskElasticNet`,
+`MultiTaskLasso`, `NearestCentroid`, `NearestNeighbors`,
+`NeighborhoodComponentsAnalysis`, `NMF`, `Normalizer`, `Nystroem`, `OAS`,
+`OPTICS`, `OrthogonalMatchingPursuit`, `PassiveAggressiveRegressor`, `PCA`,
+`PLSCanonical`, `PLSRegression`, `PLSSVD`, `PolynomialCountSketch`,
+`PolynomialFeatures`, `QuadraticDiscriminantAnalysis`, `QuantileRegressor`,
+`QuantileTransformer`, `RandomForestClassifier`, `RandomForestRegressor`,
+`RANSACRegressor`, `RBFSampler`, `Ridge`, `RidgeClassifier`, `RobustScaler`,
+`SGDRegressor`, `ShrunkCovariance`, `SimpleImputer`, `SkewedChi2Sampler`,
+`SparsePCA`, `SparseRandomProjection`, `SpectralBiclustering`,
+`SpectralClustering`, `SpectralCoclustering`, `SpectralEmbedding`,
+`StandardScaler`, `SVC`, `SVR`, `TheilSenRegressor`, `TruncatedSVD`, `TSNE`,
+`VarianceThreshold`. Doesn't work with:
 
 - All CV classes because the `score_` attribute is a dict indexed with
   `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
@@ -376,13 +541,13 @@ Bokeh [figures](https://docs.bokeh.org/en/latest) and
 Basic Python types can be wrapped in their corresponding secret type according
 to the following table
 
-| Python type | Secret type                         |
-| ----------- | ----------------------------------- |
-| `dict`      | `turbo_broccoli.secret.SecretDict`  |
-| `float`     | `turbo_broccoli.secret.SecretFloat` |
-| `int`       | `turbo_broccoli.secret.SecretInt`   |
-| `list`      | `turbo_broccoli.secret.SecretList`  |
-| `str`       | `turbo_broccoli.secret.SecretStr`   |
+| Python type | Secret type                  |
+| ----------- | ---------------------------- |
+| `dict`      | `turbo_broccoli.SecretDict`  |
+| `float`     | `turbo_broccoli.SecretFloat` |
+| `int`       | `turbo_broccoli.SecretInt`   |
+| `list`      | `turbo_broccoli.SecretList`  |
+| `str`       | `turbo_broccoli.SecretStr`   |
 
 The secret value can be recovered with the `get_secret_value` method. At
 serialization, the this value will be encrypted. For example,
@@ -391,19 +556,12 @@ serialization, the this value will be encrypted. For example,
 ## See https://pynacl.readthedocs.io/en/latest/secret/#key
 import nacl.secret
 import nacl.utils
+import turbo_broccoli as tb
 
 key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
-
-from turbo_broccoli.secret import SecretStr
-from turbo_broccoli.environment import set_shared_key
-
-set_shared_key(key)
-
-x = {
-    "user": "alice",
-    "password": SecretStr("dolphin")
-}
-tb.to_json(x)
+ctx = tb.Context(nacl_shared_key=key)
+obj = {"user": "alice", "password": tb.SecretStr("dolphin")}
+tb.to_json(obj, ctx)
 ```
 
 produces the following string (modulo indentation and modulo the encrypted
@@ -417,8 +575,8 @@ content):
     "__version__": 2,
     "data": {
       "__type__": "bytes",
-      "__version__": 2,
-      "data": "Wk+42fDb8MoZT..."
+      "__version__": 3,
+      "data": "gbRXF3hq9Q9hIQ9Xz+WdGKYP5meJ4eTmlFt0r0Ov3PV64065plk6RqsFUcynSOqHzA=="
     }
   }
 }
@@ -427,12 +585,26 @@ content):
 Deserialization decrypts the secrets, but they stay wrapped inside the secret
 types above. If the wrong key is provided, an exception is raised. If no key is
 provided, the secret values are replaced by a
-`turbo_broccoli.secret.LockedSecret`. Internally, Turbo Broccoli uses
+`turbo_broccoli.LockedSecret`. Internally, Turbo Broccoli uses
 [`pynacl`](https://pynacl.readthedocs.io/en/latest/)'s
 [`SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
 **Warning**: In the case of `SecretDict` and `SecretList`, the values contained
-within must be JSON-serializable **without** Turbo Broccoli. See also the
-`TB_SHARED_KEY` environment variable below.
+within must be JSON-serializable **without** Turbo Broccoli. The following is
+not acceptable:
+
+```py
+import nacl.secret
+import nacl.utils
+import numpy as np
+import turbo_broccoli as tb
+
+key = nacl.utils.random(nacl.secret.SecretBox.KEY_SIZE)
+ctx = tb.Context(nacl_shared_key=key)
+obj = {"data": tb.SecretList([np.array([1, 2, 3])])}
+tb.to_json(obj, ctx)
+```
+
+See also the `TB_SHARED_KEY` environment variable below.
 
 ## Contributing
 

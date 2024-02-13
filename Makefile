@@ -23,7 +23,7 @@ docs:
 .PHONY: docs-browser
 docs-browser:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	$(PDOC) $(SRC_PATH)
+	PDOC_ALLOW_EXEC=1 $(PDOC) $(SRC_PATH)
 
 .PHONY: format
 format:

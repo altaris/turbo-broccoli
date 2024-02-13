@@ -98,29 +98,35 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `collections.deque`:
 
-            {
-                "__type__": "collections.deque",
-                "__version__": 2,
-                "data": [...],
-                "maxlen": <int or None>,
-            }
+        ```json
+        {
+            "__type__": "collections.deque",
+            "__version__": 2,
+            "data": [...],
+            "maxlen": <int or None>,
+        }
+        ```
 
     - `collections.namedtuple`
 
-            {
-                "__type__": "collections.namedtuple",
-                "__version__": 2,
-                "class": <str>,
-                "data": {...},
-            }
+        ```json
+        {
+            "__type__": "collections.namedtuple",
+            "__version__": 2,
+            "class": <str>,
+            "data": {...},
+        }
+        ```
 
     - `set`
 
-            {
-                "__type__": "collections.set",
-                "__version__": 2,
-                "data": [...],
-            }
+        ```json
+        {
+            "__type__": "collections.set",
+            "__version__": 2,
+            "data": [...],
+        }
+        ```
 
 
     """

@@ -286,26 +286,30 @@ def to_json(obj: Any, ctx: Context) -> dict:
     - `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is
       `json`, the document will look like
 
-            {
+        ```json
+        {
 
-                "__type__": "keras.model",
-                "__version__": 5,
-                "loss": {...} or null,
-                "metrics": [...],
-                "model": {...},
-                "optimizer": {...} or null,
-                "weights": [...],
-            }
+            "__type__": "keras.model",
+            "__version__": 5,
+            "loss": {...} or null,
+            "metrics": [...],
+            "model": {...},
+            "optimizer": {...} or null,
+            "weights": [...],
+        }
+        ```
 
       if `TB_KERAS_FORMAT` is `h5` or `tf`, the document will look like
 
-            {
+        ```json
+        {
 
-                "__type__": "keras.model",
-                "__version__": 5,
-                "format": <str>,
-                "id": <UUID4 str>
-            }
+            "__type__": "keras.model",
+            "__version__": 5,
+            "format": <str>,
+            "id": <uuid4>
+        }
+        ```
 
       where `id` points to an artifact.
 

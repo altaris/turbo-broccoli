@@ -1,4 +1,4 @@
-"""Guarded call"""
+"""Guarded block handler"""
 
 from pathlib import Path
 
@@ -16,8 +16,22 @@ from turbo_broccoli.native import save as native_save
 
 class GuardedBlockHandler:
     """
-    A guarded block handler allows to guard an entire block/loop of code. Use
+    If a block of code produces a JSON file, and if it is not needed to rerun
+    it that the output file exists, then a guarded block handler if an
+    alternative to
+
+    ```py
+    if not Path("out/foo.json").exists():
+        ...
+        if success:
+            tb.save_json(result, "out/foo.json")
+    else:
+        result = tb.load_json("out/foo.json")
+    ```
+
+    A guarded block handler allows to *guard* an entire block of code. Use
     it as follows:
+
     ```py
     h = GuardedBlockHandler("out/foo.json")
     for _ in h.guard():
@@ -26,10 +40,12 @@ class GuardedBlockHandler:
         h.result = ...
     # In any case, the results of the block are available in h.result
     ```
+
     (I know the syntax isn't the prettiest. It would be more natural to use a
     `with h.guard():` syntax but python doesn't allow for context managers that
     don't yield...) The handler's `result` is `None` by default. If left to
     `None`, no output file is created. This allows for scenarios like
+
     ```py
     h = GuardedBlockHandler("out/foo.json")
     for _ in h.guard():
@@ -37,21 +53,25 @@ class GuardedBlockHandler:
         if success:
             h.result = ...
     ```
+
     It is also possible to use "native" saving/loading methods:
+
     ```py
     h = GuardedBlockHandler("out/foo.csv")
     for _ in h.guard():
         ...
         h.result = some_pandas_dataframe
     ```
+
     See `turbo_broccoli.native.save` and `turbo_broccoli.native.load`. Finally,
-    if the actual result of the block are not needed, use
+    if the actual result of the block are not needed, use:
+
     ```py
-    h = GuardedBlockHandler("out/foo.csv", load_if_skip=False)
+    h = GuardedBlockHandler("out/large.json", load_if_skip=False)
     for _ in h.guard():
         ...
-    # If the block was skipped (out/foo.csv already exists), h.result is None
-    # instead of the content of out/foo.csv
+    # If the block was skipped (out/large.json already exists), h.result is
+    # None instead of the content of out/large.json
     ```
     """
 
@@ -69,9 +89,9 @@ class GuardedBlockHandler:
     ) -> None:
         """
         Args:
-            file_path (str | Path): Output file path
-            block_name (str | None, optional): Name of the block, for logging
-                purposes.
+            file_path (str | Path): Output file path.
+            block_name (str, optional): Name of the block, for logging
+                purposes. Can be left to `None` to suppress such logs.
             load_if_skip (bool, optional): Wether to load the output file if
                 the block is skipped.
             **kwargs: Forwarded to the `turbo_broccoli.context.Context`

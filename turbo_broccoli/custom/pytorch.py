@@ -75,27 +75,31 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - Tensor:
 
-            {
-                "__type__": "pytorch.tensor",
-                "__version__": 3,
-                "data": {
-                    "__type__": "bytes",
-                    ...
-                },
-            }
+        ```json
+        {
+            "__type__": "pytorch.tensor",
+            "__version__": 3,
+            "data": {
+                "__type__": "bytes",
+                ...
+            },
+        }
+        ```
 
       see `turbo_broccoli.custom.bytes.to_json`.
 
     - Module:
 
-            {
-                "__type__": "pytorch.module.<class name>",
-                "__version__": 3,
-                "state": {
-                    "__type__": "bytes",
-                    ...
-                },
-            }
+        ```json
+        {
+            "__type__": "pytorch.module.<class name>",
+            "__version__": 3,
+            "state": {
+                "__type__": "bytes",
+                ...
+            },
+        }
+        ```
 
       see `turbo_broccoli.custom.bytes.to_json`.
 

@@ -125,43 +125,51 @@ def to_json(obj: Any, ctx: Context) -> dict:
       small, i.e. `arr.nbytes <= TB_MAX_NBYTES`, then it is directly
       stored in the resulting JSON document as
 
-            {
-                "__type__": "numpy.ndarray",
-                "__version__": 5,
-                "data": {
-                    "__type__": "bytes",
-                    ...
-                }
+        ```json
+        {
+            "__type__": "numpy.ndarray",
+            "__version__": 5,
+            "data": {
+                "__type__": "bytes",
+                ...
             }
+        }
+        ```
 
       see `turbo_broccoli.custom.bytes.to_json`.
 
     - `numpy.number`:
 
-            {
-                "__type__": "numpy.number",
-                "__version__": 3,
-                "value": <float>,
-                "dtype": {...},
-            }
+        ```json
+        {
+            "__type__": "numpy.number",
+            "__version__": 3,
+            "value": <float>,
+            "dtype": {...},
+        }
+        ```
 
         where the `dtype` document follows the specification below.
 
     - `numpy.dtype`:
 
-            {
-                "__type__": "numpy.dtype",
-                "__version__": 2,
-                "dtype": <dtype_to_descr string>,
-            }
+        ```json
+        {
+            "__type__": "numpy.dtype",
+            "__version__": 2,
+            "dtype": <dtype_to_descr string>,
+        }
+        ```
 
     - `numpy.random.RandomState`:
 
-            {
-                "__type__": "numpy.random_state",
-                "__version__": 3,
-                "data": <uuid4>,
-            }
+        ```json
+        {
+            "__type__": "numpy.random_state",
+            "__version__": 3,
+            "data": <uuid4>,
+        }
+        ```
 
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [

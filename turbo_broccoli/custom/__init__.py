@@ -79,19 +79,23 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
     """
     Returns the dict of all available decoders, which looks like this:
 
-        {
-            "mytype": mytype_decoder,
-            ...
-        }
+    ```py
+    {
+        "mytype": mytype_decoder,
+        ...
+    }
+    ```
 
     `mytype_decoder` is a function that takes an vanilla JSON dict that
     looks like this (excluding comments):
 
-        {
-            "__type__": "mytype.mysubtype",  # or simply "mytype"
-            "__version__": <int>,
-            ...
-        }
+    ```py
+    {
+        "__type__": "mytype.mysubtype",  # or simply "mytype"
+        "__version__": <int>,
+        ...
+    }
+    ```
 
     """
     decoders: dict[str, Callable[[dict, Context], Any]] = {
@@ -128,11 +132,13 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
     takes an object and returns a readily vanilla JSON-serializable dict. This
     this should be of the form
 
-        {
-            "__type__": "mytype.mysubtype",  # or simply "mytype"
-            "__version__": <int>,
-            ...
-        }
+    ```py
+    {
+        "__type__": "mytype.mysubtype",  # or simply "mytype"
+        "__version__": <int>,
+        ...
+    }
+    ```
 
     The encoder should raise a `turbo_broccoli.utils.TypeNotSupported` if it
     doesn't handle the kind of object it was given.

@@ -230,25 +230,29 @@ def to_json(obj: BaseEstimator, ctx: Context) -> dict:
     precise list of supported types. The return dict has the following
     structure:
 
-    * if the object is an estimator:
+    - if the object is an estimator:
 
-            {
-                "__type__": "sklearn.estimator.<CLASS NAME>",
-                "__version__": 2,
-                "params": <dict returned by get_params(deep=False)>,
-                "attrs": {...}
-            }
+        ```json
+        {
+            "__type__": "sklearn.estimator.<CLASS NAME>",
+            "__version__": 2,
+            "params": <dict returned by get_params(deep=False)>,
+            "attrs": {...}
+        }
+        ```
 
       where the `attrs` dict contains all the attributes of the estimator as
       specified in the sklearn API documentation.
 
-    * otherwise:
+    - otherwise:
 
-            {
-                "__type__": "sklearn.raw",
-                "__version__": 2,
-                "data": <uuid4>
-            }
+        ```json
+        {
+            "__type__": "sklearn.raw",
+            "__version__": 2,
+            "data": <uuid4>
+        }
+        ```
 
       where the UUID4 value points to an pickle file artifact.
     """

@@ -54,7 +54,7 @@ def _to_jsonable(obj: Any, ctx: Context) -> Any:
 
 
 def from_json(doc: str, ctx: Context | None = None) -> Any:
-    """Deserializes a JSON string"""
+    """Deserializes a JSON string."""
     return _from_jsonable(json.loads(doc), Context() if ctx is None else ctx)
 
 
@@ -66,9 +66,6 @@ def load_json(file_path: str | Path, **kwargs) -> Any:
         file_path (str | Path):
         **kwargs: Forwarded to the `turbo_broccoli.context.Context`
             constructor.
-
-    Returns:
-        Any: _description_
     """
     kwargs["file_path"] = file_path
     ctx = Context(**kwargs)

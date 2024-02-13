@@ -56,11 +56,13 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     The return dict has the following structure
 
-        {
-            "__type__": "XXX",
-            "__version__": 1,
-            ...
-        }
+    ```py
+    {
+        "__type__": "XXX",
+        "__version__": 1,
+        ...
+    }
+    ```
 
     where the `{...}` dict contains the actual data, and whose structure
     depends on the precise type of `obj`.

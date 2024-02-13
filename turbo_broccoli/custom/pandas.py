@@ -111,59 +111,51 @@ def to_json(obj: Any, ctx: Context) -> dict:
       small, i.e. at most `TB_MAX_NBYTES` bytes, then it is directly stored in
       the resulting JSON document as
 
-            {
-                "__type__": "pandas.dataframe",
-                "__version__": 2,
-                "data": {...},
-                "dtypes": [
-                    [col1, dtype1],
-                    [col2, dtype2],
-                    ...
-                ],
-            }
+        ```json
+        {
+            "__type__": "pandas.dataframe",
+            "__version__": 2,
+            "data": {...},
+            "dtypes": [
+                [col1, dtype1],
+                [col2, dtype2],
+                ...
+            ],
+        }
+        ```
 
       where `{...}` is the result of `pandas.DataFrame.to_json` (in `dict`
       form). On the other hand, the dataframe is too large, then its content is
       stored in an artifact, whose format follows the `TB_PANDAS_FORMAT`
       environment (CSV by default). The resulting JSON document looks like
 
-            {
-                "__type__": "pandas.dataframe",
-                "__version__": 2,
-                "dtypes": [
-                    [col1, dtype1],
-                    [col2, dtype2],
-                    ...
-                ],
-                "id": <UUID4 str>,
-                "format": <str>
-            }
+        ```json
+        {
+            "__type__": "pandas.dataframe",
+            "__version__": 2,
+            "dtypes": [
+                [col1, dtype1],
+                [col2, dtype2],
+                ...
+            ],
+            "id": <UUID4 str>,
+            "format": <str>
+        }
+        ```
 
     - `pandas.Series`: A series will be converted to a dataframe before being
       serialized. The final document will look like this
 
-            {
-                "__type__": "pandas.series",
-                "__version__": 2,
-                "data": {...},
-                "name": <str>,
-            }
+        ```json
+        {
+            "__type__": "pandas.series",
+            "__version__": 2,
+            "data": {...},
+            "name": <str>,
+        }
+        ```
 
-      where `{...}` is the document of the dataframe'd series. So for example
-
-            {
-                "__type__": "pandas.series",
-                "__version__": 2,
-                "data": {
-                    "__type__": "pandas.dataframe",
-                    "__version__": 2,
-                    "id": <UUID4 str>,
-                    "format": <str>,
-                },
-                "name": <str>,
-            }
-
-      if the series is large.
+      where `{...}` is the document of the dataframe'd series, see above.
 
     Warning:
         Series and column names must be strings!

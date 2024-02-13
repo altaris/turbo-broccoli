@@ -96,22 +96,27 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `datetime.datetime`:
 
+        ```json
         {
             "__type__": "datetime.datetime",
             "__version__": 1,
             "datetime": <ISO format>,
         }
+        ```
 
     - `datetime.time`:
 
+        ```json
         {
             "__type__": "datetime.time",
             "__version__": 1,
             "time": <ISO format>,
         }
+        ```
 
     - `datetime.timedelta`:
 
+        ```json
         {
             "__type__": "datetime.timedelta",
             "__version__": 1,
@@ -119,6 +124,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
             "microseconds": <int>,
             "seconds": <int>,
         }
+        ```
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (datetime, _datetime_to_json),
