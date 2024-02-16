@@ -11,10 +11,7 @@ from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _dataframe_to_json(df: pd.DataFrame, ctx: Context) -> dict:
-    # Sometimes column names are int, so cannot be used as keys in a JSON
-    # document. Eventhough int column names are not supported, this is
-    # future-proofing.
-    dtypes = [(k, v.name) for k, v in df.dtypes.items()]
+    dtypes = [[str(k), v.name] for k, v in df.dtypes.items()]
     if df.memory_usage(deep=True).sum() <= ctx.min_artifact_size:
         return {
             "__type__": "pandas.dataframe",
