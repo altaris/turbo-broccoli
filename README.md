@@ -431,44 +431,42 @@ Just `scipy.sparse.csr_matrix`. ^^"
 Supported estimators are: `AdaBoostClassifier`, `AdaBoostRegressor`,
 `AdditiveChi2Sampler`, `AffinityPropagation`, `AgglomerativeClustering`,
 `ARDRegression`, `BayesianGaussianMixture`, `BayesianRidge`, `BernoulliNB`,
-`BernoulliRBM`, `Binarizer`, `CategoricalNB`, `CCA`, `ComplementNB`, `DBSCAN`,
-`DecisionTreeClassifier`, `DecisionTreeRegressor`, `DictionaryLearning`,
-`ElasticNet`, `EllipticEnvelope`, `EmpiricalCovariance`, `ExtraTreeClassifier`,
-`ExtraTreeRegressor`, `ExtraTreesClassifier`, `ExtraTreesRegressor`,
-`FactorAnalysis`, `GaussianMixture`, `GaussianNB`, `GaussianRandomProjection`,
-`GraphicalLasso`, `HuberRegressor`, `IncrementalPCA`, `IsolationForest`,
-`Isomap`, `KernelCenterer`, `KernelDensity`, `KernelRidge`, `KMeans`,
-`KNNImputer`, `LabelBinarizer`, `LabelEncoder`, `Lars`, `Lasso`, `LassoLars`,
+`BernoulliRBM`, `Binarizer`, `CategoricalNB`, `CCA`, `ClassifierChain`,
+`ComplementNB`, `DBSCAN`, `DecisionTreeClassifier`, `DecisionTreeRegressor`,
+`DictionaryLearning`, `ElasticNet`, `EllipticEnvelope`, `EmpiricalCovariance`,
+`ExtraTreeClassifier`, `ExtraTreeRegressor`, `ExtraTreesClassifier`,
+`ExtraTreesRegressor`, `FactorAnalysis`, `FeatureUnion`, `GaussianMixture`,
+`GaussianNB`, `GaussianRandomProjection`, `GraphicalLasso`, `HuberRegressor`,
+`IncrementalPCA`, `IsolationForest`, `Isomap`, `KernelCenterer`,
+`KernelDensity`, `KernelPCA`, `KernelRidge`, `KMeans`, `KNeighborsClassifier`,
+`KNeighborsRegressor`, `KNNImputer`, `LabelBinarizer`, `LabelEncoder`,
+`LabelPropagation`, `LabelSpreading`, `Lars`, `Lasso`, `LassoLars`,
 `LassoLarsIC`, `LatentDirichletAllocation`, `LedoitWolf`,
 `LinearDiscriminantAnalysis`, `LinearRegression`, `LinearSVC`, `LinearSVR`,
-`LocallyLinearEmbedding`, `LogisticRegression`, `MaxAbsScaler`, `MDS`,
-`MeanShift`, `MinCovDet`, `MiniBatchDictionaryLearning`, `MiniBatchKMeans`,
-`MiniBatchSparsePCA`, `MinMaxScaler`, `MLPClassifier`, `MLPRegressor`,
-`MultiLabelBinarizer`, `MultinomialNB`, `MultiTaskElasticNet`,
+`LocallyLinearEmbedding`, `LocalOutlierFactor`, `LogisticRegression`,
+`MaxAbsScaler`, `MDS`, `MeanShift`, `MinCovDet`, `MiniBatchDictionaryLearning`,
+`MiniBatchKMeans`, `MiniBatchSparsePCA`, `MinMaxScaler`, `MissingIndicator`,
+`MLPClassifier`, `MLPRegressor`, `MultiLabelBinarizer`, `MultinomialNB`,
+`MultiOutputClassifier`, `MultiOutputRegressor`, `MultiTaskElasticNet`,
 `MultiTaskLasso`, `NearestCentroid`, `NearestNeighbors`,
-`NeighborhoodComponentsAnalysis`, `NMF`, `Normalizer`, `Nystroem`, `OAS`,
+`NeighborhoodComponentsAnalysis`, `NMF`, `Normalizer`, `NuSVC`, `NuSVR`,
+`Nystroem`, `OAS`, `OneClassSVM`, `OneVsOneClassifier`, `OneVsRestClassifier`,
 `OPTICS`, `OrthogonalMatchingPursuit`, `PassiveAggressiveRegressor`, `PCA`,
-`PLSCanonical`, `PLSRegression`, `PLSSVD`, `PolynomialCountSketch`,
-`PolynomialFeatures`, `QuadraticDiscriminantAnalysis`, `QuantileRegressor`,
-`QuantileTransformer`, `RandomForestClassifier`, `RandomForestRegressor`,
-`RANSACRegressor`, `RBFSampler`, `Ridge`, `RidgeClassifier`, `RobustScaler`,
+`Pipeline`, `PLSCanonical`, `PLSRegression`, `PLSSVD`, `PolynomialCountSketch`,
+`PolynomialFeatures`, `PowerTransformer`, `QuadraticDiscriminantAnalysis`,
+`QuantileRegressor`, `QuantileTransformer`, `RadiusNeighborsClassifier`,
+`RadiusNeighborsRegressor`, `RandomForestClassifier`, `RandomForestRegressor`,
+`RANSACRegressor`, `RBFSampler`, `RegressorChain`, `RFE`, `RFECV`, `Ridge`,
+`RidgeClassifier`, `RobustScaler`, `SelectFromModel`, `SelfTrainingClassifier`,
 `SGDRegressor`, `ShrunkCovariance`, `SimpleImputer`, `SkewedChi2Sampler`,
 `SparsePCA`, `SparseRandomProjection`, `SpectralBiclustering`,
 `SpectralClustering`, `SpectralCoclustering`, `SpectralEmbedding`,
-`StandardScaler`, `SVC`, `SVR`, `TheilSenRegressor`, `TruncatedSVD`, `TSNE`,
-`VarianceThreshold`. Doesn't work with:
+`StackingClassifier`, `StackingRegressor`, `StandardScaler`, `SVC`, `SVC`,
+`SVR`, `SVR`, `TheilSenRegressor`, `TruncatedSVD`, `TSNE`, `VarianceThreshold`,
+`VotingClassifier`, `VotingRegressor`. Doesn't work with:
 
 - All CV classes because the `score_` attribute is a dict indexed with
   `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
-
-- All estimator classes that have mandatory arguments: `ClassifierChain`,
-  `ColumnTransformer`, `FeatureUnion`, `GridSearchCV`,
-  `MultiOutputClassifier`, `MultiOutputRegressor`, `OneVsOneClassifier`,
-  `OneVsRestClassifier`, `OutputCodeClassifier`, `Pipeline`,
-  `RandomizedSearchCV`, `RegressorChain`, `RFE`, `RFECV`, `SelectFromModel`,
-  `SelfTrainingClassifier`, `SequentialFeatureSelector`, `SparseCoder`,
-  `StackingClassifier`, `StackingRegressor`, `VotingClassifier`,
-  `VotingRegressor`.
 
 - Everything that is parametrized by an arbitrary object/callable/estimator:
   `FunctionTransformer`, `TransformedTargetRegressor`.
@@ -478,38 +476,19 @@ Supported estimators are: `AdaBoostClassifier`, `AdaBoostRegressor`,
     | Class                       | Non-serializable attr.    |
     | --------------------------- | ------------------------- |
     | `Birch`                     | `_CFNode`                 |
-    | `GaussianProcessRegressor`  | `Sum`                     |
+    | `BisectingKMeans`           | `function`                |
+    | `ColumnTransformer`         | `slice`                   |
+    | `GammaRegressor`            | `HalfGammaLoss`           |
     | `GaussianProcessClassifier` | `Product`                 |
+    | `GaussianProcessRegressor`  | `Sum`                     |
+    | `IsotonicRegression`        | `interp1d`                |
+    | `OutputCodeClassifier`      | `_ConstantPredictor`      |
     | `Perceptron`                | `Hinge`                   |
+    | `PoissonRegressor`          | `HalfPoissonLoss`         |
     | `SGDClassifier`             | `Hinge`                   |
     | `SGDOneClassSVM`            | `Hinge`                   |
-    | `PoissonRegressor`          | `HalfPoissonLoss`         |
-    | `GammaRegressor`            | `HalfGammaLoss`           |
-    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
     | `SplineTransformer`         | `BSpline`                 |
-
-- Some classes have `AttributeErrors`?
-
-    | Class                         | Attribute      |
-    | ----------------------------- | -------------- |
-    | `IsotonicRegression`          | `f_`           |
-    | `KernelPCA`                   | `_centerer`    |
-    | `KNeighborsClassifier`        | `_y`           |
-    | `KNeighborsRegressor`         | `_y`           |
-    | `KNeighborsTransformer`       | `_tree`        |
-    | `LabelPropagation`            | `X_`           |
-    | `LabelSpreading`              | `X_`           |
-    | `LocalOutlierFactor`          | `_lrd`         |
-    | `MissingIndicator`            | `_precomputed` |
-    | `NuSVC`                       | `_sparse`      |
-    | `NuSVR`                       | `_sparse`      |
-    | `OneClassSVM`                 | `_sparse`      |
-    | `PowerTransformer`            | `_scaler`      |
-    | `RadiusNeighborsClassifier`   | `_tree`        |
-    | `RadiusNeighborsRegressor`    | `_tree`        |
-    | `RadiusNeighborsTransformer`  | `_tree`        |
-    | `SVC`                         | `_sparse`      |
-    | `SVR`                         | `_sparse`      |
+    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
 
 - Other errors:
 
@@ -528,8 +507,13 @@ Supported estimators are: `AdaBoostClassifier`, `AdaBoostRegressor`,
 
   - `PassiveAggressiveClassifier`: some unknown label type error...
 
-  - `BisectingKMeans`: `TypeError: Object of type function is not JSON
-    serializable`
+  - `SequentialFeatureSelector`: Problem with the unit test itself ^^"
+
+  - `KNeighborsTransformer`: A serialized-deserialized instance seems to
+    `fit_transform` an array to a sparse matrix whereas the original object
+    returns an array?
+
+  - `RadiusNeighborsTransformer`: Inverse problem from `KNeighborsTransformer`.
 
 ### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json)
 

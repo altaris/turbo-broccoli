@@ -1,6 +1,5 @@
 """Scikit-learn estimators"""
 
-import re
 from typing import Any, Callable, Tuple
 
 # Sklearn recommends joblib rather than direct pickle
@@ -147,12 +146,12 @@ def _all_base_estimators() -> dict[str, type]:
 
 
 def _sklearn_estimator_to_json(obj: BaseEstimator, ctx: Context) -> dict:
-    r = re.compile(r"\w[\w_]*[^_]_")
     return {
         "__type__": "sklearn.estimator." + obj.__class__.__name__,
         "__version__": 2,
         "params": obj.get_params(deep=False),
-        "attrs": {k: v for k, v in obj.__dict__.items() if r.match(k)},
+        "attrs": obj.__dict__,
+    }
     }
 
 
