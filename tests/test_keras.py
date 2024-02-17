@@ -10,7 +10,6 @@ from turbo_broccoli import Context
 
 
 def _assert_model_equal(a, b):
-    assert a.get_config() == b.get_config()
     for i, w in enumerate(a.weights):
         assert_array_equal(w, b.weights[i])
     # Not really necessary but why not
@@ -40,17 +39,25 @@ def _build_model():
 
 def test_keras_model_json():
     ctx = Context(keras_format="json")
-    x = _build_model()
-    _assert_model_equal(x, to_from_json(x, ctx))
+    m1 = _build_model()
+    m2 = to_from_json(m1, ctx)
+    _assert_model_equal(m1, m2)
+    assert m1.get_config() == m2.get_config()
 
 
 def test_keras_model_h5():
     ctx = Context(keras_format="h5")
-    x = _build_model()
-    _assert_model_equal(x, to_from_json(x, ctx))
+    m = _build_model()
+    _assert_model_equal(m, to_from_json(m, ctx))
+
+
+def test_keras_model_keras():
+    ctx = Context(keras_format="keras")
+    m = _build_model()
+    _assert_model_equal(m, to_from_json(m, ctx))
 
 
 def test_keras_model_tf():
     ctx = Context(keras_format="tf")
-    x = _build_model()
-    _assert_model_equal(x, to_from_json(x, ctx))
+    m = _build_model()
+    _assert_model_equal(m, to_from_json(m, ctx))

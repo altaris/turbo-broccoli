@@ -154,6 +154,18 @@ KERAS_OPTIMIZERS = {
     "SGD": keras.optimizers.SGD,
 }
 
+KERAS_LEGACY_OPTIMIZERS = {
+    "Adadelta": keras.optimizers.legacy.Adadelta,
+    "Adagrad": keras.optimizers.legacy.Adagrad,
+    "Adam": keras.optimizers.legacy.Adam,
+    "Adamax": keras.optimizers.legacy.Adamax,
+    "Ftrl": keras.optimizers.legacy.Ftrl,
+    "Nadam": keras.optimizers.legacy.Nadam,
+    "Optimizer": keras.optimizers.legacy.Optimizer,
+    "RMSprop": keras.optimizers.legacy.RMSprop,
+    "SGD": keras.optimizers.legacy.SGD,
+}
+
 
 def _json_to_layer(dct: dict, ctx: Context) -> Any:
     DECODERS = {
@@ -214,12 +226,18 @@ def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
                 kwargs[k] = dct[k]
         model.compile(**kwargs)
         return model
-    return keras.models.load_model(ctx.id_to_artifact_path(dct["id"]))
+    path = (
+        ctx.id_to_artifact_path(dct["id"], extension="keras")
+        if ctx.keras_format == "keras"
+        else ctx.id_to_artifact_path(dct["id"])
+    )
+    return keras.models.load_model(path)
 
 
 def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
     DECODERS = {
         2: _json_to_optimizer_v2,
+        3: _json_to_optimizer_v3,
     }
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -231,7 +249,21 @@ def _json_to_optimizer_v2(dct: dict, ctx: Context) -> Any:
     )
 
 
-def _generic_keras_to_json(obj: Any, type_: str, ctx: Context) -> dict:
+def _json_to_optimizer_v3(dct: dict, ctx: Context) -> Any:
+    return keras.utils.deserialize_keras_object(
+        dct["data"],
+        module_objects=(
+            KERAS_LEGACY_OPTIMIZERS if dct["legacy"] else KERAS_OPTIMIZERS
+        ),
+    )
+
+
+def _generic_to_json(
+    obj: Any,
+    ctx: Context,
+    *,
+    type_: str,
+) -> dict:
     return {
         "__type__": "keras." + type_,
         "__version__": 2,
@@ -250,13 +282,25 @@ def _model_to_json(model: keras.Model, ctx: Context) -> dict:
             "optimizer": getattr(model, "optimizer", None),
             "weights": model.weights,
         }
-    path, name = ctx.new_artifact_path()
+    if ctx.keras_format == "keras":
+        path, name = ctx.new_artifact_path(extension="keras")
+    else:
+        path, name = ctx.new_artifact_path()
     model.save(path, save_format=ctx.keras_format)
     return {
         "__type__": "keras.model",
         "__version__": 5,
         "format": ctx.keras_format,
         "id": name,
+    }
+
+
+def _optimizer_to_json(obj: Any, ctx: Context) -> dict:
+    return {
+        "__type__": "keras.optimizer",
+        "__version__": 3,
+        "data": keras.utils.serialize_keras_object(obj),
+        "legacy": isinstance(obj, keras.optimizers.legacy.Optimizer),
     }
 
 
@@ -311,21 +355,19 @@ def to_json(obj: Any, ctx: Context) -> dict:
         }
         ```
 
-      where `id` points to an artifact.
+      where `id` points to an artifact. Note that if the keras saving format is
+      `keras`, the artifact will have the `.keras` extension instead of the
+      usual `.tb`. Tensorflow/keras [forces this
+      behaviour](https://www.tensorflow.org/api_docs/python/tf/keras/saving/save_model).
 
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (keras.Model, _model_to_json),  # must be first
-        (
-            keras.metrics.Metric,
-            partial(_generic_keras_to_json, type_="metric"),
-        ),
-        (keras.layers.Layer, partial(_generic_keras_to_json, type_="layer")),
-        (keras.losses.Loss, partial(_generic_keras_to_json, type_="loss")),
-        (
-            keras.optimizers.Optimizer,
-            partial(_generic_keras_to_json, type_="optimizer"),
-        ),
+        (keras.metrics.Metric, partial(_generic_to_json, type_="metric")),
+        (keras.layers.Layer, partial(_generic_to_json, type_="layer")),
+        (keras.losses.Loss, partial(_generic_to_json, type_="loss")),
+        (keras.optimizers.Optimizer, _optimizer_to_json),
+        (keras.optimizers.legacy.Optimizer, _optimizer_to_json),
     ]
     for t, f in ENCODERS:
         if isinstance(obj, t):
