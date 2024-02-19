@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="generator" content="pdoc 14.1.0"/>
+    <meta name="generator" content="pdoc 14.4.0"/>
     <title>turbo_broccoli API documentation</title>
 
     <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
@@ -23,56 +23,34 @@
 
             <h2>Contents</h2>
             <ul>
-  <li><a href="#turbo-broccoli">Turbo Broccoli 🥦</a></li>
-  <li><a href="#installation">Installation</a></li>
-  <li><a href="#usage">Usage</a>
+  <li><a href="#turbo-broccoli">Turbo Broccoli 🥦</a>
   <ul>
-    <li><a href="#supported-types">Supported types</a></li>
-    <li><a href="#secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></a></li>
+    <li><a href="#installation">Installation</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#environment-variables">Environment variables</a></li>
-    <li><a href="#guarded-calls">Guarded calls</a></li>
-    <li><a href="#cli"> CLI</a></li>
+    <li><a href="#guarded-blocks">Guarded blocks</a></li>
+    <li><a href="#supported-types">Supported types</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#credits">Credits</a></li>
   </ul></li>
-  <li><a href="#contributing">Contributing</a>
+  <li><a href="#changelog">Changelog</a>
   <ul>
-    <li><a href="#dependencies">Dependencies</a></li>
-    <li><a href="#documentation">Documentation</a></li>
-    <li><a href="#code-quality">Code quality</a></li>
-    <li><a href="#unit-tests">Unit tests</a></li>
+    <li><a href="#v400"><code>v4.0.0</code></a></li>
+    <li><a href="#v210"><code>v2.1.0</code></a></li>
+    <li><a href="#v200"><code>v2.0.0</code></a></li>
   </ul></li>
-  <li><a href="#credits">Credits</a></li>
-  <li><a href="#changelog">Changelog</a></li>
-  <li><a href="#v210"><code>v2.1.0</code></a></li>
-  <li><a href="#v200"><code>v2.0.0</code></a></li>
 </ul>
 
 
             <h2>Submodules</h2>
             <ul>
-                    <li><a href="turbo_broccoli/bokeh.html">bokeh</a></li>
-                    <li><a href="turbo_broccoli/bytes.html">bytes</a></li>
-                    <li><a href="turbo_broccoli/collections.html">collections</a></li>
-                    <li><a href="turbo_broccoli/dataclass.html">dataclass</a></li>
-                    <li><a href="turbo_broccoli/dict.html">dict</a></li>
-                    <li><a href="turbo_broccoli/environment.html">environment</a></li>
-                    <li><a href="turbo_broccoli/generic.html">generic</a></li>
+                    <li><a href="turbo_broccoli/context.html">context</a></li>
+                    <li><a href="turbo_broccoli/custom.html">custom</a></li>
+                    <li><a href="turbo_broccoli/exceptions.html">exceptions</a></li>
                     <li><a href="turbo_broccoli/guard.html">guard</a></li>
-                    <li><a href="turbo_broccoli/keras.html">keras</a></li>
                     <li><a href="turbo_broccoli/native.html">native</a></li>
-                    <li><a href="turbo_broccoli/numpy.html">numpy</a></li>
-                    <li><a href="turbo_broccoli/pandas.html">pandas</a></li>
-                    <li><a href="turbo_broccoli/pytorch.html">pytorch</a></li>
-                    <li><a href="turbo_broccoli/scipy.html">scipy</a></li>
-                    <li><a href="turbo_broccoli/secret.html">secret</a></li>
-                    <li><a href="turbo_broccoli/sklearn.html">sklearn</a></li>
-                    <li><a href="turbo_broccoli/tensorflow.html">tensorflow</a></li>
                     <li><a href="turbo_broccoli/turbo_broccoli.html">turbo_broccoli</a></li>
-                    <li><a href="turbo_broccoli/utils.html">utils</a></li>
             </ul>
-
-            <h2>API Documentation</h2>
-                <ul class="memberlist">
-    </ul>
 
 
 
@@ -100,44 +78,38 @@ style" /></a>
 <p>JSON (de)serialization extensions, originally aimed at <code>numpy</code> and <code>tensorflow</code>
 objects, but now supporting a wide range of objects.</p>
 
-<h1 id="installation">Installation</h1>
+<h2 id="installation">Installation</h2>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>turbo-broccoli
 </code></pre>
 </div>
 
-<h1 id="usage">Usage</h1>
+<h2 id="usage">Usage</h2>
+
+<h3 id="tofrom-string">To/from string</h3>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
 
-<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
-
-<span class="c1"># or even simpler:</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)}</span>
 <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<p>produces the following string (modulo indentation):</p>
+<p>produces the following string (modulo indentation and the value of
+<code>$.an_array.data.data</code>):</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;an_array&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;__numpy__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ndarray&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numpy.ndarray&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;__bytes__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PAAAAA...&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;QAAAAAAAAAB7ImRhd...&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -147,12 +119,219 @@ objects, but now supporting a wide range of objects.</p>
 <p>For deserialization, simply use</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_string</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliDecoder</span><span class="p">)</span>
-
-<span class="c1"># or even simpler:</span>
-<span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span>
+<pre><span></span><code><span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_string</span><span class="p">)</span>
 </code></pre>
 </div>
+
+<h3 id="tofrom-file">To/from file</h3>
+
+<p>Simply replace
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json"><code>turbo_broccoli.to_json</code></a>
+and
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#from_json"><code>turbo_broccoli.from_json</code></a>
+with
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json"><code>turbo_broccoli.save_json</code></a>
+and
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json"><code>turbo_broccoli.load_json</code></a>:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float32&quot;</span><span class="p">)}</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;foo/bar/foobar.json&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">load_json</span><span class="p">(</span><span class="s2">&quot;foo/bar/foobar.json&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h3 id="contextshttpsaltarisgithubioturbo-broccoliturbo_broccolicontexthtmlcontext"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context">Contexts</a></h3>
+
+<p>The behaviour of
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json"><code>turbo_broccoli.to_json</code></a>
+and
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#from_json"><code>turbo_broccoli.from_json</code></a>
+can be tweaked by using
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context">contexts</a>.
+For example, to set a encryption/decryption key for <a href="https://cedric.hothanh.fr/turbo-broccoli/turbo_broccoli/custom/secret.html">secret
+types</a>:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">nacl.secret</span>
+<span class="kn">import</span> <span class="nn">nacl.utils</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">nacl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nacl</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">SecretBox</span><span class="o">.</span><span class="n">KEY_SIZE</span><span class="p">)</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">nacl_shared_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;dolphin&quot;</span><span class="p">)}</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>The behaviour of
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json"><code>turbo_broccoli.save_json</code></a>
+and
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json"><code>turbo_broccoli.load_json</code></a>
+can be tweaked in a similar manner, but for convenience, the argument of the
+context are passed directly to the method:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">nacl.secret</span>
+<span class="kn">import</span> <span class="nn">nacl.utils</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">nacl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nacl</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">SecretBox</span><span class="o">.</span><span class="n">KEY_SIZE</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;dolphin&quot;</span><span class="p">)}</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;foo/bar/foobar.json&quot;</span><span class="p">,</span> <span class="n">nacl_shared_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>See <a href="https://altaris.github.io/turbo_broccoli/context.html#Context">the
+documentation</a>.</p>
+
+<h3 id="artifacts">Artifacts</h3>
+
+<p>If an object inside <code>obj</code> is too large to be embedded inside the JSON file
+(e.g. a large numpy array), then an <em>artifact</em> file is created:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)}</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;foo/bar/foobar.json&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>produces the JSON file</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;an_array&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;numpy.ndarray&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1e6dff28-5e26-44df-9e7a-75bc726ce9aa&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>and a file <code>foo/bar/foobar.1e6dff28-5e26-44df-9e7a-75bc726ce9aa.tb</code> containing
+the array data. The artifact directory can be explicitely specified by setting
+it in the <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context">serialization
+context</a>
+or by setting the <code>TB_ARTIFACT_PATH</code> environment variable (see below.). The
+code for loading the JSON file does not change:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">obj</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">load_json</span><span class="p">(</span><span class="s2">&quot;foo/bar/foobar.json&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>If using
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#to_json"><code>turbo_broccoli.to_json</code></a>,
+since there is no output file path specified, the artifacts are storied in a
+temporary directory instead:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)}</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<span class="c1"># An artifact has been created somewhere in e.g. /tmp</span>
+</code></pre>
+</div>
+
+<p>Since no information about this directory is stored in the output JSON string,
+it is not possible to load <code>doc</code> using
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json"><code>turbo_broccoli.from_json</code></a>.
+If deserialization is necessary, instantiate a <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context">context</a>:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)}</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+<span class="c1"># An artifact has been created in ctx.artifact_path</span>
+
+<span class="o">...</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<h2 id="environment-variables">Environment variables</h2>
+
+<p>Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
+variables. If you want to modify these parameters programatically, do not do so
+by modifying <code>os.environ</code>. Rather, use a
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context"><code>turbo_broccoli.Context</code></a>.</p>
+
+<ul>
+<li><p><code>TB_ARTIFACT_PATH</code> (default: output JSON file's parent directory): During
+serialization, Turbo Broccoli may create artifacts to which the JSON object
+will point to. The artifacts will be stored in <code>TB_ARTIFACT_PATH</code> if
+specified.</p></li>
+<li><p><code>TB_KERAS_FORMAT</code> (default: <code>tf</code>, valid values are <code>keras</code>, <code>tf</code>, and <code>h5</code>):
+The serialization format for keras models. If <code>h5</code> or <code>tf</code> is used, an
+artifact following said format will be created in <code>TB_ARTIFACT_PATH</code>. If
+<code>json</code> is used, the model will be contained in the JSON document (anthough
+the weights may be in artifacts if they are too large).</p></li>
+<li><p><code>TB_MAX_NBYTES</code> (default: <code>8000</code>):
+The maximum byte size of a python object beyond which serialization will
+produce an artifact instead of storing it in the JSON document. This does not
+limit the size of the overall JSON document though. 8000 bytes should be
+enough for a numpy array of 1000 <code>float64</code>s to be stored in-document.</p></li>
+<li><p><code>TB_NODECODE</code> (default: empty):
+Comma-separated list of types to not deserialize, for example
+<code>bytes,numpy.ndarray</code>. Excludable types are:</p>
+
+<ul>
+<li><p><code>bokeh</code>, <code>bokeh.buffer</code>, <code>bokeh.generic</code>,</p></li>
+<li><p><code>bytes</code>,</p></li>
+<li><p><code>collections</code>, <code>collections.deque</code>, <code>collections.namedtuple</code>,
+<code>collections.set</code>,</p></li>
+<li><p><code>dataclass</code>, <code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</p></li>
+<li><p><code>datetime</code>, <code>datetime.datetime</code>, <code>datetime.time</code>, <code>datetime.timedelta</code>,</p></li>
+<li><p><code>generic</code>,</p></li>
+<li><p><code>keras</code>, <code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
+<code>keras.optimizer</code>,</p></li>
+<li><p><code>numpy</code>, <code>numpy.ndarray</code>, <code>numpy.number</code>, <code>numpy.dtype</code>,
+<code>numpy.random_state</code>,</p></li>
+<li><p><code>pandas</code>, <code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>Warning</strong>: excluding
+<code>pandas.dataframe</code> will also exclude <code>pandas.series</code>,</p></li>
+<li><p><code>pytorch</code>, <code>pytorch.tensor</code>, <code>pytorch.module</code>,</p></li>
+<li><p><code>scipy</code>, <code>scipy.csr_matrix</code>,</p></li>
+<li><p><code>secret</code>,</p></li>
+<li><p><code>sklearn</code>, <code>sklearn.estimator</code>, <code>sklearn.estimator.&lt;estimator name&gt;</code> (case
+sensitive, see the list of supported sklearn estimators below),</p></li>
+<li><p><code>tensorflow</code>, <code>tensorflow.sparse_tensor</code>, <code>tensorflow.tensor</code>,
+<code>tensorflow.variable</code>.</p></li>
+</ul></li>
+<li><p><code>TB_SHARED_KEY</code> (default: empty):
+Secret key used to encrypt/decrypt secrets. The encryption uses <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>pynacl</code>'s
+<code>SecretBox</code></a>.
+An exception is raised when attempting to serialize a secret type while no
+key is set.</p></li>
+</ul>
+
+<h2 id="guarded-blocks">Guarded blocks</h2>
+
+<p>This is so cool. Check out
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler"><code>turbo_broccoli.GuardedBlockHandler</code></a>.</p>
 
 <h2 id="supported-types">Supported types</h2>
 
@@ -160,10 +339,10 @@ objects, but now supporting a wide range of objects.</p>
 
 <ul>
 <li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json"><code>bytes</code></a></p></li>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json"><code>dict</code> with non <code>str</code> keys</a></p></li>
 <li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json">Collections</a>:
 <code>collections.deque</code>, <code>collections.namedtuple</code></p></li>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json">Dataclasses</a>: serialization is straightforward:</p>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json">Dataclasses</a>:
+serialization is straightforward:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="nd">@dataclass</span>
@@ -171,17 +350,19 @@ objects, but now supporting a wide range of objects.</p>
   <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
   <span class="n">b</span><span class="p">:</span> <span class="nb">str</span>
 
-<span class="n">doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">)},</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">({</span><span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">)})</span>
 </code></pre>
 </div>
 
 <p>For deserialization, first register the class:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">tb</span><span class="o">.</span><span class="n">register_dataclass_type</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
-<span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliDecoder</span><span class="p">)</span>
+<pre><span></span><code><span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">dataclass_types</span><span class="o">=</span><span class="p">[</span><span class="n">C</span><span class="p">])</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div></li>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json"><code>datetime.datetime</code>, <code>datetime.time</code>,
+<code>datetime.timedelta</code></a></p></li>
 </ul>
 
 <h3 id="generic-objectshttpsaltarisgithubioturbo-broccoliturbo_broccoligenerichtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json">Generic objects</a></h3>
@@ -192,27 +373,21 @@ of attributes whose values will be serialized. For example,</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="k">class</span> <span class="nc">C</span><span class="p">:</span>
-    <span class="n">__turbo_broccoli__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
+    <span class="n">__turbo_broccoli__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]</span>
     <span class="n">a</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">b</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">c</span><span class="p">:</span> <span class="nb">int</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">C</span><span class="p">()</span>
-<span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">43</span>
-<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+<span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">44</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<p>produces the following string (modulo indentation):</p>
+<p>produces the following string:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;__generic__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
+<pre><span></span><code><span class="p">{</span><span class="nt">&quot;a&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="nt">&quot;b&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">43</span><span class="p">,}</span>
 </code></pre>
 </div>
 
@@ -239,21 +414,12 @@ such as numpy arrays. Registered attributes can be <code>@property</code> method
 
 <ul>
 <li><p>the following dtypes are not supported: <code>complex</code>, <code>object</code>, <code>timedelta</code></p></li>
-<li><p>the column / series names must be strings and not numbers. The following
-is not acceptable:</p>
+<li><p>the column / series names cannot be ints or int-strings. The following are
+not acceptable:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
-</code></pre>
-</div>
-
-<p>because</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="nb">print</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
-<span class="c1"># [0, 1]</span>
-<span class="nb">print</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">])</span>
-<span class="c1"># [int, int]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">])</span>
 </code></pre>
 </div></li>
 </ul>
@@ -267,9 +433,8 @@ is not acceptable:</p>
 <ul>
 <li><p><code>torch.Tensor</code>, <strong>Warning</strong>: loaded tensors are automatically placed on the
 CPU and gradients are lost;</p></li>
-<li><p><code>torch.nn.Module</code>, don't forget to register your
-module type using
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#register_pytorch_module_type"><code>turbo_broccoli.register_pytorch_module_type</code></a>:</p>
+<li><p><code>torch.nn.Module</code>, don't forget to register your module type using a
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context"><code>turbo_broccoli.Context</code></a>:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="c1"># Serialization</span>
@@ -277,17 +442,59 @@ module type using
 <span class="o">...</span>
 
 <span class="n">module</span> <span class="o">=</span> <span class="n">MyModule</span><span class="p">()</span>  <span class="c1"># Must be instantiable without arguments</span>
-<span class="n">doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">({</span><span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">module</span><span class="p">})</span>
 
 <span class="c1"># Deserialization</span>
-<span class="n">tb</span><span class="o">.</span><span class="n">register_pytorch_module_type</span><span class="p">(</span><span class="n">MyModule</span><span class="p">)</span>
-<span class="n">module</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliDecoder</span><span class="p">)</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">pytorch_module_types</span><span class="o">=</span><span class="p">[</span><span class="n">MyModule</span><span class="p">])</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div>
 
 <p><strong>Warning</strong>: It is not possible to register and deserialize <a href="https://pytorch.org/docs/stable/nn.html#containers">standard pytorch
 module containers</a>
-directly. Wrap them in your own custom module class.</p></li>
+directly. Wrap them in your own custom module class. For following is not
+acceptable</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+  <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">module</span><span class="p">}</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>  <span class="c1"># works, but...</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>  <span class="c1"># does&#39;t work</span>
+</code></pre>
+</div>
+
+<p>but the following works:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="k">class</span> <span class="nc">MyModule</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="n">module</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span>  <span class="c1"># Wrapped sequential</span>
+
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">MyModule</span><span class="p">()</span>  <span class="c1"># Must be instantiable without arguments</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">({</span><span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">module</span><span class="p">})</span>
+
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">pytorch_module_types</span><span class="o">=</span><span class="p">[</span><span class="n">MyModule</span><span class="p">])</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
+</code></pre>
+</div></li>
 </ul>
 
 <h3 id="scipyhttpsaltarisgithubioturbo-broccoliturbo_broccoliscipyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json">Scipy</a></h3>
@@ -296,23 +503,48 @@ directly. Wrap them in your own custom module class.</p></li>
 
 <h3 id="scikit-learnhttpsaltarisgithubioturbo-broccoliturbo_broccolisklearnhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json">Scikit-learn</a></h3>
 
-<p><code>sklearn</code> estimators (i.e. that descent from
+<p><code>sklearn</code> estimators (i.e. that inherit from
 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html"><code>sklean.base.BaseEstimator</code></a>).
-To make sure which class is supported, take a look at the <a href="https://github.com/altaris/turbo-broccoli/blob/main/tests/test_sklearn.py">unit
-tests</a>
-Doesn't work with:</p>
+Supported estimators are: <code>AdaBoostClassifier</code>, <code>AdaBoostRegressor</code>,
+<code>AdditiveChi2Sampler</code>, <code>AffinityPropagation</code>, <code>AgglomerativeClustering</code>,
+<code>ARDRegression</code>, <code>BayesianGaussianMixture</code>, <code>BayesianRidge</code>, <code>BernoulliNB</code>,
+<code>BernoulliRBM</code>, <code>Binarizer</code>, <code>CategoricalNB</code>, <code>CCA</code>, <code>ClassifierChain</code>,
+<code>ComplementNB</code>, <code>DBSCAN</code>, <code>DecisionTreeClassifier</code>, <code>DecisionTreeRegressor</code>,
+<code>DictionaryLearning</code>, <code>ElasticNet</code>, <code>EllipticEnvelope</code>, <code>EmpiricalCovariance</code>,
+<code>ExtraTreeClassifier</code>, <code>ExtraTreeRegressor</code>, <code>ExtraTreesClassifier</code>,
+<code>ExtraTreesRegressor</code>, <code>FactorAnalysis</code>, <code>FeatureUnion</code>, <code>GaussianMixture</code>,
+<code>GaussianNB</code>, <code>GaussianRandomProjection</code>, <code>GraphicalLasso</code>, <code>HuberRegressor</code>,
+<code>IncrementalPCA</code>, <code>IsolationForest</code>, <code>Isomap</code>, <code>KernelCenterer</code>,
+<code>KernelDensity</code>, <code>KernelPCA</code>, <code>KernelRidge</code>, <code>KMeans</code>, <code>KNeighborsClassifier</code>,
+<code>KNeighborsRegressor</code>, <code>KNNImputer</code>, <code>LabelBinarizer</code>, <code>LabelEncoder</code>,
+<code>LabelPropagation</code>, <code>LabelSpreading</code>, <code>Lars</code>, <code>Lasso</code>, <code>LassoLars</code>,
+<code>LassoLarsIC</code>, <code>LatentDirichletAllocation</code>, <code>LedoitWolf</code>,
+<code>LinearDiscriminantAnalysis</code>, <code>LinearRegression</code>, <code>LinearSVC</code>, <code>LinearSVR</code>,
+<code>LocallyLinearEmbedding</code>, <code>LocalOutlierFactor</code>, <code>LogisticRegression</code>,
+<code>MaxAbsScaler</code>, <code>MDS</code>, <code>MeanShift</code>, <code>MinCovDet</code>, <code>MiniBatchDictionaryLearning</code>,
+<code>MiniBatchKMeans</code>, <code>MiniBatchSparsePCA</code>, <code>MinMaxScaler</code>, <code>MissingIndicator</code>,
+<code>MLPClassifier</code>, <code>MLPRegressor</code>, <code>MultiLabelBinarizer</code>, <code>MultinomialNB</code>,
+<code>MultiOutputClassifier</code>, <code>MultiOutputRegressor</code>, <code>MultiTaskElasticNet</code>,
+<code>MultiTaskLasso</code>, <code>NearestCentroid</code>, <code>NearestNeighbors</code>,
+<code>NeighborhoodComponentsAnalysis</code>, <code>NMF</code>, <code>Normalizer</code>, <code>NuSVC</code>, <code>NuSVR</code>,
+<code>Nystroem</code>, <code>OAS</code>, <code>OneClassSVM</code>, <code>OneVsOneClassifier</code>, <code>OneVsRestClassifier</code>,
+<code>OPTICS</code>, <code>OrthogonalMatchingPursuit</code>, <code>PassiveAggressiveRegressor</code>, <code>PCA</code>,
+<code>Pipeline</code>, <code>PLSCanonical</code>, <code>PLSRegression</code>, <code>PLSSVD</code>, <code>PolynomialCountSketch</code>,
+<code>PolynomialFeatures</code>, <code>PowerTransformer</code>, <code>QuadraticDiscriminantAnalysis</code>,
+<code>QuantileRegressor</code>, <code>QuantileTransformer</code>, <code>RadiusNeighborsClassifier</code>,
+<code>RadiusNeighborsRegressor</code>, <code>RandomForestClassifier</code>, <code>RandomForestRegressor</code>,
+<code>RANSACRegressor</code>, <code>RBFSampler</code>, <code>RegressorChain</code>, <code>RFE</code>, <code>RFECV</code>, <code>Ridge</code>,
+<code>RidgeClassifier</code>, <code>RobustScaler</code>, <code>SelectFromModel</code>, <code>SelfTrainingClassifier</code>,
+<code>SGDRegressor</code>, <code>ShrunkCovariance</code>, <code>SimpleImputer</code>, <code>SkewedChi2Sampler</code>,
+<code>SparsePCA</code>, <code>SparseRandomProjection</code>, <code>SpectralBiclustering</code>,
+<code>SpectralClustering</code>, <code>SpectralCoclustering</code>, <code>SpectralEmbedding</code>,
+<code>StackingClassifier</code>, <code>StackingRegressor</code>, <code>StandardScaler</code>, <code>SVC</code>, <code>SVC</code>,
+<code>SVR</code>, <code>SVR</code>, <code>TheilSenRegressor</code>, <code>TruncatedSVD</code>, <code>TSNE</code>, <code>VarianceThreshold</code>,
+<code>VotingClassifier</code>, <code>VotingRegressor</code>. Doesn't work with:</p>
 
 <ul>
 <li><p>All CV classes because the <code>score_</code> attribute is a dict indexed with
 <code>np.int64</code>, which <code>json.JSONEncoder._iterencode_dict</code> rejects.</p></li>
-<li><p>All estimator classes that have mandatory arguments: <code>ClassifierChain</code>,
-<code>ColumnTransformer</code>, <code>FeatureUnion</code>, <code>GridSearchCV</code>,
-<code>MultiOutputClassifier</code>, <code>MultiOutputRegressor</code>, <code>OneVsOneClassifier</code>,
-<code>OneVsRestClassifier</code>, <code>OutputCodeClassifier</code>, <code>Pipeline</code>,
-<code>RandomizedSearchCV</code>, <code>RegressorChain</code>, <code>RFE</code>, <code>RFECV</code>, <code>SelectFromModel</code>,
-<code>SelfTrainingClassifier</code>, <code>SequentialFeatureSelector</code>, <code>SparseCoder</code>,
-<code>StackingClassifier</code>, <code>StackingRegressor</code>, <code>VotingClassifier</code>,
-<code>VotingRegressor</code>.</p></li>
 <li><p>Everything that is parametrized by an arbitrary object/callable/estimator:
 <code>FunctionTransformer</code>, <code>TransformedTargetRegressor</code>.</p></li>
 <li><p>Other classes that have non JSON-serializable attributes:</p>
@@ -330,16 +562,40 @@ Doesn't work with:</p>
   <td><code>_CFNode</code></td>
 </tr>
 <tr>
-  <td><code>GaussianProcessRegressor</code></td>
-  <td><code>Sum</code></td>
+  <td><code>BisectingKMeans</code></td>
+  <td><code>function</code></td>
+</tr>
+<tr>
+  <td><code>ColumnTransformer</code></td>
+  <td><code>slice</code></td>
+</tr>
+<tr>
+  <td><code>GammaRegressor</code></td>
+  <td><code>HalfGammaLoss</code></td>
 </tr>
 <tr>
   <td><code>GaussianProcessClassifier</code></td>
   <td><code>Product</code></td>
 </tr>
 <tr>
+  <td><code>GaussianProcessRegressor</code></td>
+  <td><code>Sum</code></td>
+</tr>
+<tr>
+  <td><code>IsotonicRegression</code></td>
+  <td><code>interp1d</code></td>
+</tr>
+<tr>
+  <td><code>OutputCodeClassifier</code></td>
+  <td><code>_ConstantPredictor</code></td>
+</tr>
+<tr>
   <td><code>Perceptron</code></td>
   <td><code>Hinge</code></td>
+</tr>
+<tr>
+  <td><code>PoissonRegressor</code></td>
+  <td><code>HalfPoissonLoss</code></td>
 </tr>
 <tr>
   <td><code>SGDClassifier</code></td>
@@ -350,104 +606,12 @@ Doesn't work with:</p>
   <td><code>Hinge</code></td>
 </tr>
 <tr>
-  <td><code>PoissonRegressor</code></td>
-  <td><code>HalfPoissonLoss</code></td>
-</tr>
-<tr>
-  <td><code>GammaRegressor</code></td>
-  <td><code>HalfGammaLoss</code></td>
+  <td><code>SplineTransformer</code></td>
+  <td><code>BSpline</code></td>
 </tr>
 <tr>
   <td><code>TweedieRegressor</code></td>
   <td><code>HalfTweedieLossIdentity</code></td>
-</tr>
-<tr>
-  <td><code>SplineTransformer</code></td>
-  <td><code>BSpline</code></td>
-</tr>
-</tbody>
-</table></li>
-<li><p>Some classes have <code>AttributeErrors</code>?</p>
-
-<table>
-<thead>
-<tr>
-  <th>Class</th>
-  <th>Attribute</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td><code>IsotonicRegression</code></td>
-  <td><code>f_</code></td>
-</tr>
-<tr>
-  <td><code>KernelPCA</code></td>
-  <td><code>_centerer</code></td>
-</tr>
-<tr>
-  <td><code>KNeighborsClassifier</code></td>
-  <td><code>_y</code></td>
-</tr>
-<tr>
-  <td><code>KNeighborsRegressor</code></td>
-  <td><code>_y</code></td>
-</tr>
-<tr>
-  <td><code>KNeighborsTransformer</code></td>
-  <td><code>_tree</code></td>
-</tr>
-<tr>
-  <td><code>LabelPropagation</code></td>
-  <td><code>X_</code></td>
-</tr>
-<tr>
-  <td><code>LabelSpreading</code></td>
-  <td><code>X_</code></td>
-</tr>
-<tr>
-  <td><code>LocalOutlierFactor</code></td>
-  <td><code>_lrd</code></td>
-</tr>
-<tr>
-  <td><code>MissingIndicator</code></td>
-  <td><code>_precomputed</code></td>
-</tr>
-<tr>
-  <td><code>NuSVC</code></td>
-  <td><code>_sparse</code></td>
-</tr>
-<tr>
-  <td><code>NuSVR</code></td>
-  <td><code>_sparse</code></td>
-</tr>
-<tr>
-  <td><code>OneClassSVM</code></td>
-  <td><code>_sparse</code></td>
-</tr>
-<tr>
-  <td><code>PowerTransformer</code></td>
-  <td><code>_scaler</code></td>
-</tr>
-<tr>
-  <td><code>RadiusNeighborsClassifier</code></td>
-  <td><code>_tree</code></td>
-</tr>
-<tr>
-  <td><code>RadiusNeighborsRegressor</code></td>
-  <td><code>_tree</code></td>
-</tr>
-<tr>
-  <td><code>RadiusNeighborsTransformer</code></td>
-  <td><code>_tree</code></td>
-</tr>
-<tr>
-  <td><code>SVC</code></td>
-  <td><code>_sparse</code></td>
-</tr>
-<tr>
-  <td><code>SVR</code></td>
-  <td><code>_sparse</code></td>
 </tr>
 </tbody>
 </table></li>
@@ -464,16 +628,20 @@ dtype object is not covered</code>.</p></li>
 <li><p><code>HistGradientBoostingClassifier</code>: Problems with deserialization of
 <code>_BinMapper</code> object?</p></li>
 <li><p><code>PassiveAggressiveClassifier</code>: some unknown label type error...</p></li>
-<li><p><code>BisectingKMeans</code>: <code>TypeError: Object of type function is not JSON serializable</code></p></li>
+<li><p><code>SequentialFeatureSelector</code>: Problem with the unit test itself ^^"</p></li>
+<li><p><code>KNeighborsTransformer</code>: A serialized-deserialized instance seems to
+<code>fit_transform</code> an array to a sparse matrix whereas the original object
+returns an array?</p></li>
+<li><p><code>RadiusNeighborsTransformer</code>: Inverse problem from <code>KNeighborsTransformer</code>.</p></li>
 </ul></li>
 </ul>
 
 <h3 id="bokehhttpsaltarisgithubioturbo-broccoliturbo_broccolibokehhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json">Bokeh</a></h3>
 
-<p>Bokeh <a href="https://docs<a href="turbo_broccoli/bokeh.html">turbo_broccoli.bokeh</a>.org/en/latest">figures</a> and
-<a href="https://docs<a href="turbo_broccoli/bokeh.html">turbo_broccoli.bokeh</a>.org/en/latest/docs/reference/models.html">models</a>.</p>
+<p>Bokeh <a href="https://docs.bokeh.org/en/latest">figures</a> and
+<a href="https://docs.bokeh.org/en/latest/docs/reference/models.html">models</a>.</p>
 
-<h2 id="secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></h2>
+<h3 id="secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></h3>
 
 <p>Basic Python types can be wrapped in their corresponding secret type according
 to the following table</p>
@@ -488,23 +656,23 @@ to the following table</p>
 <tbody>
 <tr>
   <td><code>dict</code></td>
-  <td><code><a href="turbo_broccoli/secret.html#SecretDict">turbo_broccoli.secret.SecretDict</a></code></td>
+  <td><code>turbo_broccoli.SecretDict</code></td>
 </tr>
 <tr>
   <td><code>float</code></td>
-  <td><code><a href="turbo_broccoli/secret.html#SecretFloat">turbo_broccoli.secret.SecretFloat</a></code></td>
+  <td><code>turbo_broccoli.SecretFloat</code></td>
 </tr>
 <tr>
   <td><code>int</code></td>
-  <td><code><a href="turbo_broccoli/secret.html#SecretInt">turbo_broccoli.secret.SecretInt</a></code></td>
+  <td><code>turbo_broccoli.SecretInt</code></td>
 </tr>
 <tr>
   <td><code>list</code></td>
-  <td><code><a href="turbo_broccoli/secret.html#SecretList">turbo_broccoli.secret.SecretList</a></code></td>
+  <td><code>turbo_broccoli.SecretList</code></td>
 </tr>
 <tr>
   <td><code>str</code></td>
-  <td><code><a href="turbo_broccoli/secret.html#SecretStr">turbo_broccoli.secret.SecretStr</a></code></td>
+  <td><code>turbo_broccoli.SecretStr</code></td>
 </tr>
 </tbody>
 </table>
@@ -513,22 +681,15 @@ to the following table</p>
 serialization, the this value will be encrypted. For example,</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="c1"># See https://pynacl.readthedocs.io/en/latest/secret/#key</span>
+<pre><span></span><code><span class="c1">## See https://pynacl.readthedocs.io/en/latest/secret/#key</span>
 <span class="kn">import</span> <span class="nn">nacl.secret</span>
 <span class="kn">import</span> <span class="nn">nacl.utils</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
 
 <span class="n">key</span> <span class="o">=</span> <span class="n">nacl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nacl</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">SecretBox</span><span class="o">.</span><span class="n">KEY_SIZE</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn"><a href="turbo_broccoli/secret.html">turbo_broccoli.secret</a></span> <span class="kn">import</span> <span class="n">SecretStr</span>
-<span class="kn">from</span> <span class="nn"><a href="turbo_broccoli/environment.html">turbo_broccoli.environment</a></span> <span class="kn">import</span> <span class="n">set_shared_key</span>
-
-<span class="n">set_shared_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-<span class="n">x</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;dolphin&quot;</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">nacl_shared_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;dolphin&quot;</span><span class="p">)}</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div>
 
@@ -539,14 +700,12 @@ content):</p>
 <pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;__secret__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;__bytes__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qPSsruu...&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;secret&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;gbRXF3hq9Q9hIQ9Xz+WdGKYP5meJ4eTmlFt0r0Ov3PV64065plk6RqsFUcynSOqHzA==&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
@@ -556,128 +715,34 @@ content):</p>
 <p>Deserialization decrypts the secrets, but they stay wrapped inside the secret
 types above. If the wrong key is provided, an exception is raised. If no key is
 provided, the secret values are replaced by a
-<code><a href="turbo_broccoli/secret.html#LockedSecret">turbo_broccoli.secret.LockedSecret</a></code>. Internally, Turbo Broccoli uses
+<code>turbo_broccoli.LockedSecret</code>. Internally, Turbo Broccoli uses
 <a href="https://pynacl.readthedocs.io/en/latest/"><code>pynacl</code></a>'s
 <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>SecretBox</code></a>.
 <strong>Warning</strong>: In the case of <code>SecretDict</code> and <code>SecretList</code>, the values contained
-within must be JSON-serializable <strong>without</strong> Turbo Broccoli. See also the
-<code>TB_SHARED_KEY</code> environment variable below.</p>
-
-<h2 id="environment-variables">Environment variables</h2>
-
-<p>Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
-variables. If you want to modify these parameters programatically, do not do so
-by modifying <code>os.environ</code>. Rather, use the methods of
-<code><a href="turbo_broccoli/environment.html">turbo_broccoli.environment</a></code>.</p>
-
-<ul>
-<li><p><code>TB_ARTIFACT_PATH</code> (default: <code>./</code>; see also
-<a href="(https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_artifact_path)"><code>turbo_broccoli.set_artifact_path</code></a>,
-<a href="(https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#get_artifact_path)"><code><a href="turbo_broccoli/environment.html#get_artifact_path">turbo_broccoli.environment.get_artifact_path</a></code></a>):
-During serialization, Turbo Broccoli may create artifacts to which the JSON
-object will point to. The artifacts will be stored in <code>TB_ARTIFACT_PATH</code>. For
-example, if <code>arr</code> is a big numpy array,</p>
+within must be JSON-serializable <strong>without</strong> Turbo Broccoli. The following is
+not acceptable:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;an_array&quot;</span><span class="p">:</span> <span class="n">arr</span><span class="p">}</span>
-<span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">tb</span><span class="o">.</span><span class="n">TurboBroccoliEncoder</span><span class="p">)</span>
+<pre><span></span><code><span class="kn">import</span> <span class="nn">nacl.secret</span>
+<span class="kn">import</span> <span class="nn">nacl.utils</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">turbo_broccoli</span> <span class="k">as</span> <span class="nn">tb</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="n">nacl</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="n">nacl</span><span class="o">.</span><span class="n">secret</span><span class="o">.</span><span class="n">SecretBox</span><span class="o">.</span><span class="n">KEY_SIZE</span><span class="p">)</span>
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">Context</span><span class="p">(</span><span class="n">nacl_shared_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">tb</span><span class="o">.</span><span class="n">SecretList</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])])}</span>
+<span class="n">tb</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<p>will generate the following string (modulo indentation and id)</p>
+<p>See also the <code>TB_SHARED_KEY</code> environment variable below.</p>
 
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;an_array&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;__numpy__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ndarray&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;70692d08-c4cf-4231-b3f0-0969ea552d5a&quot;</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
-</div>
+<h2 id="contributing">Contributing</h2>
 
-<p>and a <code>70692d08-c4cf-4231-b3f0-0969ea552d5a</code> file has been created in
-<code>TB_ARTIFACT_PATH</code>.</p></li>
-<li><p><code>TB_KERAS_FORMAT</code> (default: <code>tf</code>, valid values are <code>json</code>, <code>h5</code>, and <code>tf</code>;
-see also
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_keras_format"><code>turbo_broccoli.set_keras_format</code></a>,
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#get_keras_format"><code><a href="turbo_broccoli/environment.html#get_keras_format">turbo_broccoli.environment.get_keras_format</a></code></a>):
-The serialization format for keras models. If <code>h5</code> or <code>tf</code> is used, an
-artifact following said format will be created in <code>TB_ARTIFACT_PATH</code>. If
-<code>json</code> is used, the model will be contained in the JSON document (anthough
-the weights may be in artifacts if they are too large).</p></li>
-<li><p><code>TB_MAX_NBYTES</code> (default: <code>8000</code>, see also
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_max_nbytes"><code>turbo_broccoli.set_max_nbytes</code></a>,
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#get_max_nbytes"><code><a href="turbo_broccoli/environment.html#get_max_nbytes">turbo_broccoli.environment.get_max_nbytes</a></code></a>):
-The maximum byte size of an numpy array or pandas object beyond which
-serialization will produce an artifact instead of storing it in the JSON
-document. This does not limit the size of the overall JSON document though.
-8000 bytes should be enough for a numpy array of 1000 <code>float64</code>s to be stored
-in-document.</p></li>
-<li><p><code>TB_NODECODE</code> (default: empty; see also
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_nodecode"><code>turbo_broccoli.set_nodecode</code></a>,
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#is_nodecode"><code><a href="turbo_broccoli/environment.html#is_nodecode">turbo_broccoli.environment.is_nodecode</a></code></a>):
-Comma-separated list of types to not deserialize, for example
-<code>bytes,numpy.ndarray</code>. Excludable types are:</p>
+<h3 id="dependencies">Dependencies</h3>
 
 <ul>
-<li><p><code>bokeh</code>, <code>bokeh.buffer</code>, <code>bokeh.generic</code>,</p></li>
-<li><p><code>bytes</code>,</p></li>
-<li><p><code>dict</code> (this will only disable <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dict.html#to_json">Turbo Broccoli's custom
-serialization</a>
-of <code>dict</code>s with non <code>str</code> keys),</p></li>
-<li><p><code>collections</code>, <code>collections.deque</code>, <code>collections.namedtuple</code>,</p></li>
-<li><p><code>dataclass</code>, <code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</p></li>
-<li><p><code>generic</code>,</p></li>
-<li><p><code>keras</code>, <code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
-<code>keras.optimizer</code>,</p></li>
-<li><p><code>numpy</code>, <code>numpy.ndarray</code>, <code>numpy.number</code>, <code>numpy.dtype</code>,</p></li>
-<li><p><code>pandas</code>, <code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>Warning</strong>: excluding
-<code>pandas.dataframe</code> will crash any deserialization of <code>pandas.series</code>,</p></li>
-<li><p><code>pytorch</code>, <code>pytorch.tensor</code>, <code>pytorch.module</code>,</p></li>
-<li><p><code>scipy</code>, <code>scipy.csr_matrix</code>,</p></li>
-<li><p><code>secret</code>,</p></li>
-<li><p><code>sklearn</code>, <code>sklearn.estimator</code>, <code>sklearn.estimator.&lt;estimator name&gt;</code> (case
-sensitive, see the list of supported sklearn estimators), <code>sklearn.tree</code>,</p></li>
-<li><p><code>tensorflow</code>, <code>tensorflow.sparse_tensor</code>, <code>tensorflow.tensor</code>,
-<code>tensorflow.variable</code>.</p></li>
-</ul></li>
-<li><p><code>TB_SHARED_KEY</code> (default: empty; see also
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#set_shared_key"><code>turbo_broccoli.set_shared_key</code></a>,
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/environment.html#get_shared_key"><code><a href="turbo_broccoli/environment.html#get_shared_key">turbo_broccoli.environment.get_shared_key</a></code></a>):
-Secret key used to encrypt secrets. The encryption uses <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>pynacl</code>'s
-<code>SecretBox</code></a>.
-An exception is raised when attempting to serialize a secret type while no
-key is set.</p></li>
-</ul>
-
-<h2 id="guarded-calls">Guarded calls</h2>
-
-<p>This is so cool. Check out
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler"><code>turbo_broccoli.GuardedBlockHandler</code></a>,
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#guarded_call"><code>turbo_broccoli.guarded_call</code></a>,
-and
-<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#produces_document"><code>turbo_broccoli.produces_document</code></a>.</p>
-
-<h2 id="cli"> CLI</h2>
-
-<p>Turbo Broccoli has a few utilities that can be accessed from the CLI.</p>
-
-<ul>
-<li><p><code>list-artifacts</code>: Prints all the artifacts filenames or file paths that are
-referenced by a given json file.</p></li>
-<li><p><code>rm</code>: Removes a json file and all the artifacts it references.</p></li>
-</ul>
-
-<h1 id="contributing">Contributing</h1>
-
-<h2 id="dependencies">Dependencies</h2>
-
-<ul>
-<li><p><code>python3.9</code> or newer;</p></li>
+<li><p><code>python3.10</code> or newer;</p></li>
 <li><p><code>requirements.txt</code> for runtime dependencies;</p></li>
 <li><p><code>requirements.dev.txt</code> for development dependencies.</p></li>
 <li><p><code>make</code> (optional);</p></li>
@@ -686,7 +751,7 @@ referenced by a given json file.</p></li>
 <p>Simply run</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code>virtualenv<span class="w"> </span>venv<span class="w"> </span>-p<span class="w"> </span>python3.9
+<pre><span></span><code>virtualenv<span class="w"> </span>venv<span class="w"> </span>-p<span class="w"> </span>python3.10
 .<span class="w"> </span>./venv/bin/activate
 pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
 pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
@@ -694,7 +759,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 </code></pre>
 </div>
 
-<h2 id="documentation">Documentation</h2>
+<h3 id="documentation">Documentation</h3>
 
 <p>Simply run</p>
 
@@ -711,7 +776,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 </code></pre>
 </div>
 
-<h2 id="code-quality">Code quality</h2>
+<h3 id="code-quality">Code quality</h3>
 
 <p>Don't forget to run</p>
 
@@ -724,7 +789,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </s
 typecheck it using <a href="http://mypy-lang.org/">mypy</a>, and check it against coding
 standards using <a href="https://pylint.org/">pylint</a>.</p>
 
-<h2 id="unit-tests">Unit tests</h2>
+<h3 id="unit-tests">Unit tests</h3>
 
 <p>Run</p>
 
@@ -735,14 +800,87 @@ standards using <a href="https://pylint.org/">pylint</a>.</p>
 
 <p>to have <a href="https://docs.pytest.org/">pytest</a> run the unit tests in <code>tests/</code>.</p>
 
-<h1 id="credits">Credits</h1>
+<h2 id="credits">Credits</h2>
 
 <p>This project takes inspiration from
 <a href="https://github.com/Crimson-Crow/json-numpy">Crimson-Crow/json-numpy</a>.</p>
 
 <h1 id="changelog">Changelog</h1>
 
-<h1 id="v210"><code>v2.1.0</code></h1>
+<h2 id="v400"><code>v4.0.0</code></h2>
+
+<ul>
+<li><p><code>safetensors</code> is not required for (de)serializing <code>numpy.ndarray</code>,
+<code>torch.Tensor</code>, and <code>tensorflow.Tensor</code>.</p></li>
+<li><p>Before <code>v4</code>, JSON document looked like</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;__TYPE__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="err">...</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>and</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;__TYPE__&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SUBTYPE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>now they look like</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TYPE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>and</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TYPE.SUBTYPE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="err">...</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+<p>This declutters the overall structure of the JSON documents.</p></li>
+<li><p>Introduction of (de)serialization context objects
+(<code><a href="turbo_broccoli/context.html#Context">turbo_broccoli.context.Context</a></code>), which contain various information and
+parameters about the ongoing (de)serialization operation. You can use it when
+calling <code>turbo_broccoli.from_json</code> or <code>turbo_broccoli.to_json</code>. For
+convenience, <code>turbo_broccoli.save_json</code> and <code>turbo_broccoli.load_json</code> take
+the context parameter's as kwargs.</p></li>
+<li><p>Removal of <code>turbo_broccoli.environment</code>. Use <code><a href="turbo_broccoli/context.html#Context">turbo_broccoli.context.Context</a></code>
+instead.</p></li>
+<li><p>Sentinel booleans like <code>HAS_NUMPY</code>, <code>HAS_PANDA</code> etc. are now in
+<code><a href="turbo_broccoli/custom.html">turbo_broccoli.custom</a></code>.</p></li>
+<li><p>Deleted <code>turbo_broccoli.guard.guarded_call</code> and
+<code>turbo_broccoli.guard.produces_document</code>. The iterable version of
+<code><a href="turbo_broccoli/guard.html#GuardedBlockHandler.guard">turbo_broccoli.guard.GuardedBlockHandler.guard</a></code> no longer exist.</p></li>
+<li><p>Removal of the CLI.</p></li>
+<li><p>With a <code><a href="turbo_broccoli/guard.html#GuardedBlockHandler">turbo_broccoli.guard.GuardedBlockHandler</a></code>, it is now possible to not
+load the block's results if the block is skipped. See the class
+documentation.</p></li>
+<li><p>Artifacts not have the output JSON filename's stem as a prefix and the <code>.tb</code>
+extension. For example, if the output file is <code>test.json</code>, then an artifact
+filename would be <code>test.&lt;UUID4&gt;.tb</code>. If no output filename is set in the
+serialization context, then artifact filenames simply have the form
+<code>&lt;UUID4&gt;.tb</code>.</p></li>
+<li><p><code>turbo_broccoli.utils</code> has been renamed to <code><a href="turbo_broccoli/exceptions.html">turbo_broccoli.exceptions</a></code>.</p></li>
+</ul>
+
+<h2 id="v210"><code>v2.1.0</code></h2>
 
 <ul>
 <li><p><code>sklearn</code> (de)serialization of most estimator classes, see <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types">the list of
@@ -754,7 +892,7 @@ for more details.</p></li>
 for some basic usage.</p></li>
 </ul>
 
-<h1 id="v200"><code>v2.0.0</code></h1>
+<h2 id="v200"><code>v2.0.0</code></h2>
 
 <ul>
 <li><p><code>turbo-broccoli</code> now uses <a href="https://huggingface.co/docs/safetensors/index">Huggingface's
@@ -772,37 +910,32 @@ for some basic usage.</p></li>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">.. include:: ../README.md</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">.. include:: ../CHANGELOG.md</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">&quot;&quot;&quot;</span>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;google&quot;</span>
-</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
-</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span><span class="p">,</span> <span class="n">get_distribution</span>
-</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>
-</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.environment</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">register_dataclass_type</span><span class="p">,</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">register_pytorch_module_type</span><span class="p">,</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">set_artifact_path</span><span class="p">,</span>
-</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">set_keras_format</span><span class="p">,</span>
-</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">set_max_nbytes</span><span class="p">,</span>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">set_pandas_format</span><span class="p">,</span>
-</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="p">)</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.guard</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>    <span class="n">GuardedBlockHandler</span><span class="p">,</span>
-</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>    <span class="n">guarded_call</span><span class="p">,</span>
-</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">produces_document</span><span class="p">,</span>
-</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a><span class="p">)</span>
-</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.native</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">save</span>
-</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.turbo_broccoli</span> <span class="kn">import</span> <span class="p">(</span>
-</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">TurboBroccoliDecoder</span><span class="p">,</span>
-</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>    <span class="n">TurboBroccoliEncoder</span><span class="p">,</span>
-</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>    <span class="n">from_json</span><span class="p">,</span>
-</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>    <span class="n">load_json</span><span class="p">,</span>
-</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">save_json</span><span class="p">,</span>
-</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>    <span class="n">to_json</span><span class="p">,</span>
-</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a><span class="p">)</span>
-</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>
-</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a><span class="k">try</span><span class="p">:</span>
-</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s2">&quot;turbo-broccoli&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span>
-</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="k">except</span> <span class="n">DistributionNotFound</span><span class="p">:</span>
-</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a>
+</span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a><span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">DistributionNotFound</span><span class="p">,</span> <span class="n">get_distribution</span>
+</span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
+</span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.context</span> <span class="kn">import</span> <span class="n">Context</span>
+</span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.custom.secret</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>    <span class="n">LockedSecret</span><span class="p">,</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="n">Secret</span><span class="p">,</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a>    <span class="n">SecretDict</span><span class="p">,</span>
+</span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>    <span class="n">SecretFloat</span><span class="p">,</span>
+</span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>    <span class="n">SecretInt</span><span class="p">,</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>    <span class="n">SecretList</span><span class="p">,</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a>    <span class="n">SecretStr</span><span class="p">,</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="p">)</span>
+</span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.guard</span> <span class="kn">import</span> <span class="n">GuardedBlockHandler</span>
+</span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.native</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">save</span>
+</span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a><span class="kn">from</span> <span class="nn">turbo_broccoli.turbo_broccoli</span> <span class="kn">import</span> <span class="p">(</span>
+</span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>    <span class="n">from_json</span><span class="p">,</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>    <span class="n">load_json</span><span class="p">,</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="n">save_json</span><span class="p">,</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="n">to_json</span><span class="p">,</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a><span class="p">)</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a><span class="k">try</span><span class="p">:</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s2">&quot;turbo-broccoli&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">version</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a><span class="k">except</span> <span class="n">DistributionNotFound</span><span class="p">:</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>    <span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;local&quot;</span>
 </span></pre></div>
 
 
