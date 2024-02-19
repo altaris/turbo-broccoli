@@ -594,7 +594,7 @@ See also the `TB_SHARED_KEY` environment variable below.
 
 ### Dependencies
 
-- `python3.9` or newer;
+- `python3.10` or newer;
 
 - `requirements.txt` for runtime dependencies;
 
@@ -605,7 +605,7 @@ See also the `TB_SHARED_KEY` environment variable below.
 Simply run
 
 ```sh
-virtualenv venv -p python3.9
+virtualenv venv -p python3.10
 . ./venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
