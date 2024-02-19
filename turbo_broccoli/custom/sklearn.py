@@ -152,7 +152,6 @@ def _sklearn_estimator_to_json(obj: BaseEstimator, ctx: Context) -> dict:
         "params": obj.get_params(deep=False),
         "attrs": obj.__dict__,
     }
-    }
 
 
 def _sklearn_to_raw(obj: Any, ctx: Context) -> dict:
