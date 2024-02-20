@@ -313,7 +313,8 @@ Comma-separated list of types to not deserialize, for example
 <code>numpy.random_state</code>,</p></li>
 <li><p><code>pandas</code>, <code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>Warning</strong>: excluding
 <code>pandas.dataframe</code> will also exclude <code>pandas.series</code>,</p></li>
-<li><p><code>pytorch</code>, <code>pytorch.tensor</code>, <code>pytorch.module</code>,</p></li>
+<li><p><code>pytorch</code>, <code>pytorch.tensor</code>, <code>pytorch.module</code>, <code>pytorch.concatdataset</code>,
+<code>pytorch.stackdataset</code>, <code>pytorch.subset</code>, <code>pytorch.tensordataset</code></p></li>
 <li><p><code>scipy</code>, <code>scipy.csr_matrix</code>,</p></li>
 <li><p><code>secret</code>,</p></li>
 <li><p><code>sklearn</code>, <code>sklearn.estimator</code>, <code>sklearn.estimator.&lt;estimator name&gt;</code> (case
@@ -495,6 +496,11 @@ acceptable</p>
 <span class="n">module</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div></li>
+<li><p><code>torch.utils.data.ConcatDataset</code>, <code>torch.utils.data.StackDataset</code>,
+<code>torch.utils.data.Subset</code>, <code>torch.utils.data.TensorDataset</code>, as long as the
+nested structure of datasets ultimately lead to
+<code>torch.utils.data.TensorDataset</code>s (e.g. a subset of a stack of subsets of
+tensor datasets is supported)</p></li>
 </ul>
 
 <h3 id="scipyhttpsaltarisgithubioturbo-broccoliturbo_broccoliscipyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json">Scipy</a></h3>
