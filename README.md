@@ -243,7 +243,8 @@ by modifying `os.environ`. Rather, use a
   - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
     `pandas.dataframe` will also exclude `pandas.series`,
 
-  - `pytorch`, `pytorch.tensor`, `pytorch.module`,
+  - `pytorch`, `pytorch.tensor`, `pytorch.module`, `pytorch.concatdataset`,
+    `pytorch.stackdataset`, `pytorch.subset`, `pytorch.tensordataset`
 
   - `scipy`, `scipy.csr_matrix`,
 
@@ -419,6 +420,12 @@ such as numpy arrays. Registered attributes can be `@property` methods.
   ctx = tb.Context(pytorch_module_types=[MyModule])
   module = tb.from_json(doc, ctx)
   ```
+
+- `torch.utils.data.ConcatDataset`, `torch.utils.data.StackDataset`,
+  `torch.utils.data.Subset`, `torch.utils.data.TensorDataset`, as long as the
+  nested structure of datasets ultimately lead to
+  `torch.utils.data.TensorDataset`s (e.g. a subset of a stack of subsets of
+  tensor datasets is supported)
 
 ### [Scipy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json)
 
