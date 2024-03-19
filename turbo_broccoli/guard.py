@@ -34,7 +34,7 @@ class GuardedBlockHandler:
 
     ```py
     h = GuardedBlockHandler("out/foo.json")
-    for _ in h.guard():
+    for _ in h:
         # This whole block will be skipped if out/foo.json exists
         # If not, don't forget to set the results:
         h.result = ...
@@ -42,13 +42,13 @@ class GuardedBlockHandler:
     ```
 
     (I know the syntax isn't the prettiest. It would be more natural to use a
-    `with h.guard():` syntax but python doesn't allow for context managers that
+    `with h:` syntax but python doesn't allow for context managers that
     don't yield...) The handler's `result` is `None` by default. If left to
     `None`, no output file is created. This allows for scenarios like
 
     ```py
     h = GuardedBlockHandler("out/foo.json")
-    for _ in h.guard():
+    for _ in h:
         ... # Guarded code
         if success:
             h.result = ...
@@ -58,7 +58,7 @@ class GuardedBlockHandler:
 
     ```py
     h = GuardedBlockHandler("out/foo.csv")
-    for _ in h.guard():
+    for _ in h:
         ...
         h.result = some_pandas_dataframe
     ```
@@ -68,7 +68,7 @@ class GuardedBlockHandler:
 
     ```py
     h = GuardedBlockHandler("out/large.json", load_if_skip=False)
-    for _ in h.guard():
+    for _ in h:
         ...
     # If the block was skipped (out/large.json already exists), h.result is
     # None instead of the content of out/large.json
@@ -100,6 +100,10 @@ class GuardedBlockHandler:
         kwargs["file_path"] = file_path
         self.block_name, self.context = block_name, Context(**kwargs)
         self.load_if_skip = load_if_skip
+
+    def __iter__(self) -> Generator[Any, None, None]:
+        """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
+        return self.guard()
 
     def guard(self) -> Generator[Any, None, None]:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""

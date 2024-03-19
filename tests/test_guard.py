@@ -24,6 +24,18 @@ def test_guarded_bloc_handler():
     assert h.result == 42
     assert h.result == load_json(path)
 
+def test_guarded_bloc_handler_iter():
+    path = TEST_PATH / "test_guarded_bloc_handler_iter.json"
+    h = GuardedBlockHandler(path)
+    for _ in h:
+        h.result = 41
+        h.result = 42
+    # Block should be skipped
+    for _ in h:
+        assert False
+    assert h.result == 42
+    assert h.result == load_json(path)
+
 
 def test_guarded_bloc_handler_native():
     import pandas as pd
