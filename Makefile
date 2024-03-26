@@ -33,8 +33,8 @@ format:
 
 .PHONY: lint
 lint:
-	pylint $(TST_PATH)
 	pylint $(SRC_PATH)
+	pylint $(TST_PATH)
 
 .PHONY: test
 test:
