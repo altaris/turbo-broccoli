@@ -2,7 +2,7 @@
 
 # TODO: Write module documentation
 # TODO: Replace all the XXX placeholders
-# TODO: Register in main module
+# TODO: Register in custom/__init__.py (get_encoders, get_decoders)
 # TODO: Document in README (Supported types)
 # TODO: Document in README (nodecode types)
 
