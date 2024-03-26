@@ -3,14 +3,9 @@
 from typing import Any, Callable, Tuple
 
 import safetensors.torch as st
-from torch.nn import Module
 from torch import Tensor
-from torch.utils.data import (
-    TensorDataset,
-    StackDataset,
-    ConcatDataset,
-    Subset,
-)
+from torch.nn import Module
+from torch.utils.data import ConcatDataset, StackDataset, Subset, TensorDataset
 
 from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
@@ -24,7 +19,7 @@ def _concatdataset_to_json(obj: ConcatDataset, ctx: Context) -> dict:
     }
 
 
-def _json_to_concatdataset(dct: dict, ctx: Context) -> dict:
+def _json_to_concatdataset(dct: dict, ctx: Context) -> ConcatDataset:
     DECODERS = {1: _json_to_concatdataset_v1}
     return DECODERS[dct["__version__"]](dct, ctx)
 
@@ -45,28 +40,28 @@ def _json_to_module_v3(dct: dict, ctx: Context) -> Module:
     return module
 
 
-def _json_to_concatdataset_v1(dct: dict, ctx: Context) -> dict:
+def _json_to_concatdataset_v1(dct: dict, ctx: Context) -> ConcatDataset:
     return ConcatDataset(dct["datasets"])
 
 
-def _json_to_stackdataset(dct: dict, ctx: Context) -> dict:
+def _json_to_stackdataset(dct: dict, ctx: Context) -> StackDataset:
     DECODERS = {1: _json_to_stackdataset_v1}
     return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_stackdataset_v1(dct: dict, ctx: Context) -> dict:
+def _json_to_stackdataset_v1(dct: dict, ctx: Context) -> StackDataset:
     d = dct["datasets"]
     if isinstance(d, dict):
         return StackDataset(**d)
     return StackDataset(*d)
 
 
-def _json_to_subset(dct: dict, ctx: Context) -> dict:
+def _json_to_subset(dct: dict, ctx: Context) -> Subset:
     DECODERS = {1: _json_to_subset_v1}
     return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_subset_v1(dct: dict, ctx: Context) -> dict:
+def _json_to_subset_v1(dct: dict, ctx: Context) -> Subset:
     return Subset(dct["dataset"], dct["indices"])
 
 
@@ -82,12 +77,12 @@ def _json_to_tensor_v3(dct: dict, ctx: Context) -> Tensor:
     return Tensor() if data is None else st.load(data)["data"]
 
 
-def _json_to_tensordataset(dct: dict, ctx: Context) -> dict:
+def _json_to_tensordataset(dct: dict, ctx: Context) -> TensorDataset:
     DECODERS = {1: _json_to_tensordataset_v1}
     return DECODERS[dct["__version__"]](dct, ctx)
 
 
-def _json_to_tensordataset_v1(dct: dict, ctx: Context) -> dict:
+def _json_to_tensordataset_v1(dct: dict, ctx: Context) -> TensorDataset:
     return TensorDataset(*dct["tensors"])
 
 

@@ -1,5 +1,6 @@
 # pylint: disable=missing-class-docstring
 # pylint: disable=missing-function-docstring
+# pylint: disable=no-member
 # pylint: disable=too-many-lines
 # pylint: disable=unbalanced-tuple-unpacking
 # pylint: disable=unused-import
@@ -1714,7 +1715,7 @@ def test_classifierchain():
     x, y = make_multilabel_classification(
         n_samples=12, n_classes=3, random_state=0
     )
-    x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
+    x_train, x_test, y_train, _ = train_test_split(x, y, random_state=0)
     base_lr = LogisticRegression(solver="lbfgs", random_state=0)
     chain = ClassifierChain(base_lr, order="random", random_state=0)
     _fit_predict_x_y_z_test(chain, x_train, y_train, x_test)
@@ -1782,7 +1783,7 @@ def test_multioutputregressor():
 def test_onevsoneclassifier():
     """https://scikit-learn.org/stable/modules/generated/sklearn.multiclass.OneVsOneClassifier.html"""
     x, y = load_iris(return_X_y=True)
-    x_train, x_test, y_train, y_test = train_test_split(
+    x_train, x_test, y_train, _ = train_test_split(
         x, y, test_size=0.33, shuffle=True, random_state=0
     )
     clf = OneVsOneClassifier(LinearSVC(dual="auto", random_state=0))

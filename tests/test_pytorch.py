@@ -2,17 +2,17 @@
 """Pytorch (de)serialization test suite"""
 
 import torch
-from torch.nn import Module
-from torch import Tensor
-from torch.utils.data import (
-    TensorDataset,
-    StackDataset,
-    ConcatDataset,
-    Subset,
-    IterableDataset,
-)
-from torch.testing import assert_close
 from common import to_from_json
+from torch import Tensor
+from torch.nn import Module
+from torch.testing import assert_close
+from torch.utils.data import (
+    ConcatDataset,
+    IterableDataset,
+    StackDataset,
+    Subset,
+    TensorDataset,
+)
 
 from turbo_broccoli import Context
 
