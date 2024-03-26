@@ -104,8 +104,9 @@ The behaviour of
 [`turbo_broccoli.save_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#save_json)
 and
 [`turbo_broccoli.load_json`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/turbo_broccoli.html#load_json)
-can be tweaked in a similar manner, but for convenience, the argument of the
-context are passed directly to the method:
+can be tweaked in a similar manner. For convenience, the argument of the
+context can be passed directly to the method instead of creating a context
+object manually:
 
 ```py
 import nacl.secret

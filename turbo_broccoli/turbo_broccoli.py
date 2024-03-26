@@ -58,23 +58,30 @@ def from_json(doc: str, ctx: Context | None = None) -> Any:
     return _from_jsonable(json.loads(doc), Context() if ctx is None else ctx)
 
 
-def load_json(file_path: str | Path, **kwargs) -> Any:
+def load_json(
+    file_path: str | Path, ctx: Context | None = None, **kwargs
+) -> Any:
     """
     Loads a JSON file.
 
     Args:
         file_path (str | Path):
+        ctx (Context | None): The context to use. If `None`, a new context will
+            be created with the kwargs.
         **kwargs: Forwarded to the `turbo_broccoli.context.Context`
             constructor.
     """
-    kwargs["file_path"] = file_path
-    ctx = Context(**kwargs)
+    if ctx is None:
+        kwargs["file_path"] = file_path
+        ctx = Context(**kwargs)
     assert isinstance(ctx.file_path, Path)  # for typechecking
     with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
         return _from_jsonable(json.load(fp), ctx)
 
 
-def save_json(obj: Any, file_path: str | Path, **kwargs) -> None:
+def save_json(
+    obj: Any, file_path: str | Path, ctx: Context | None = None, **kwargs
+) -> None:
     """
     Serializes an object and writes the result to a file. The artifact path and
     the output file's parent folder will be created if they don't exist.
@@ -82,11 +89,14 @@ def save_json(obj: Any, file_path: str | Path, **kwargs) -> None:
     Args:
         obj (Any):
         file_path (str | Path):
+        ctx (Context | None): The context to use. If `None`, a new context will
+            be created with the kwargs.
         **kwargs: Forwarded to the `turbo_broccoli.context.Context`
             constructor.
     """
-    kwargs["file_path"] = file_path
-    ctx = Context(**kwargs)
+    if ctx is None:
+        kwargs["file_path"] = file_path
+        ctx = Context(**kwargs)
     data = json.dumps(_to_jsonable(obj, ctx))
     assert isinstance(ctx.file_path, Path)  # for typechecking
     if not ctx.file_path.parent.exists():
