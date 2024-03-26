@@ -77,6 +77,7 @@ class GuardedBlockHandler:
 
     block_name: str | None
     context: Context
+    file_path: Path
     load_if_skip: bool
     result: Any = None
 
@@ -97,7 +98,7 @@ class GuardedBlockHandler:
             **kwargs: Forwarded to the `turbo_broccoli.context.Context`
                 constructor.
         """
-        kwargs["file_path"] = file_path
+        self.file_path = kwargs["file_path"] = Path(file_path)
         self.block_name, self.context = block_name, Context(**kwargs)
         self.load_if_skip = load_if_skip
 
@@ -107,24 +108,18 @@ class GuardedBlockHandler:
 
     def guard(self) -> Generator[Any, None, None]:
         """See `turbo_broccoli.guard.GuardedBlockHandler`'s documentation"""
-        assert isinstance(self.context.file_path, Path)  # for typechecking
-        if self.context.file_path.is_file():
+        if self.file_path.is_file():
             if self.load_if_skip:
-                self.result = native_load(self.context.file_path)
+                self.result = native_load(self.file_path)
             if self.block_name:
                 logging.debug(f"Skipped guarded block '{self.block_name}'")
         else:
             yield self
             if self.result is not None:
-                assert isinstance(
-                    self.context.file_path, Path
-                )  # for typechecking
-                self.context.file_path.parent.mkdir(
-                    parents=True, exist_ok=True
-                )
-                native_save(self.result, self.context.file_path)
+                self.file_path.parent.mkdir(parents=True, exist_ok=True)
+                native_save(self.result, self.file_path)
                 if self.block_name is not None:
                     logging.debug(
                         f"Saved guarded block '{self.block_name}' results to "
-                        f"'{self.context.file_path}'"
+                        f"'{self.file_path}'"
                     )
