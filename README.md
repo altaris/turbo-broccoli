@@ -232,6 +232,8 @@ by modifying `os.environ`. Rather, use a
 
   - `datetime`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
 
+  - `embedded`, `embedded.dict`, `embedded.list`,
+
   - `generic`,
 
   - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
@@ -596,6 +598,42 @@ tb.to_json(obj, ctx)
 ```
 
 See also the `TB_SHARED_KEY` environment variable below.
+
+### Embedded dict/lists
+
+Sometimes, it may be useful to store part of a document in its own file and
+have referrenced in the main file. This is possible using
+[`EmbeddedDict`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/embedded.html)
+and
+[`EmbeddedList`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/embedded.html).
+For example,
+
+```py
+from turbo_broccoli import save_json, EmbeddedDict
+
+data = {"a": 1, "b": EmbeddedDict({"c": 2, "d": 3})}
+save_json(data, "data.json")
+```
+
+will result in a `data.json` file containing
+
+```json
+{
+  "a": 1,
+  "b": {
+    "__type__": "embedded.dict",
+    "__version__": 1,
+    "id": "4ea0b3f3-f3e4-42bd-9db9-1e4e0b9f4fae"
+  }
+}
+```
+
+(modulo indentation and the id), and an artefact file
+`data.4ea0b3f3-f3e4-42bd-9db9-1e4e0b9f4fae.json` containing
+
+```json
+{"c": 2, "d": 3}
+```
 
 ## Contributing
 

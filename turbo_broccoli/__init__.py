@@ -6,6 +6,7 @@
 from pkg_resources import DistributionNotFound, get_distribution
 
 from turbo_broccoli.context import Context
+from turbo_broccoli.custom.embedded import EmbeddedDict, EmbeddedList
 from turbo_broccoli.custom.secret import (
     LockedSecret,
     Secret,

@@ -8,6 +8,7 @@ from turbo_broccoli.custom import bytes as _bytes
 from turbo_broccoli.custom import collections as _collections
 from turbo_broccoli.custom import dataclass as _dataclass
 from turbo_broccoli.custom import datetime as _datetime
+from turbo_broccoli.custom import embedded as _embedded
 from turbo_broccoli.custom import generic as _generic
 
 try:
@@ -96,7 +97,6 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         ...
     }
     ```
-
     """
     decoders: dict[str, Callable[[dict, Context], Any]] = {
         "bytes": _bytes.from_json,
@@ -123,6 +123,7 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
     # Intentionally put last
     decoders["collections"] = _collections.from_json
     decoders["dataclass"] = _dataclass.from_json
+    decoders["embedded"] = _embedded.from_json
     return decoders
 
 
@@ -143,7 +144,6 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
     The encoder should raise a `turbo_broccoli.utils.TypeNotSupported` if it
     doesn't handle the kind of object it was given.
     """
-
     encoders: list[Callable[[Any, Context], dict]] = [
         _bytes.to_json,
         _datetime.to_json,
@@ -171,5 +171,6 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         _collections.to_json,
         _dataclass.to_json,
         _generic.to_json,
+        _embedded.to_json,
     ]
     return encoders
