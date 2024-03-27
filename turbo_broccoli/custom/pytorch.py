@@ -25,6 +25,7 @@ def _json_to_concatdataset(dct: dict, ctx: Context) -> ConcatDataset:
 
 
 def _json_to_module(dct: dict, ctx: Context) -> Module:
+    ctx.raise_if_nodecode("bytes")
     DECODERS = {
         3: _json_to_module_v3,
     }
@@ -66,6 +67,7 @@ def _json_to_subset_v1(dct: dict, ctx: Context) -> Subset:
 
 
 def _json_to_tensor(dct: dict, ctx: Context) -> Tensor:
+    ctx.raise_if_nodecode("bytes")
     DECODERS = {
         3: _json_to_tensor_v3,
     }

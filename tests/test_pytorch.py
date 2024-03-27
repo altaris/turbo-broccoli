@@ -17,7 +17,9 @@ from torch.utils.data import (
 from turbo_broccoli import Context
 
 
-class _TestModule(Module):
+class TestModule(Module):
+    """A test module to test things with pytorch modules"""
+
     module: torch.nn.Module
 
     def __init__(self):
@@ -62,9 +64,9 @@ def test_pytorch_numerical_large():
 
 
 def test_pytorch_module():
-    ctx = Context(pytorch_module_types=[_TestModule])
+    ctx = Context(pytorch_module_types=[TestModule])
     x = torch.ones(4)
-    a = _TestModule()
+    a = TestModule()
     b = to_from_json(a, ctx)
     assert_close(a(x), b(x))
 

@@ -25,6 +25,7 @@ def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
 
 
 def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
+    ctx.raise_if_nodecode("bytes")
     DECODERS = {
         4: _json_to_tensor_v4,
     }

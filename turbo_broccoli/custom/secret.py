@@ -86,6 +86,7 @@ def _from_json_v2(dct: dict, ctx: Context) -> Any:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
+    ctx.raise_if_nodecode("bytes")
     DECODERS = {
         # 1: _from_json_v1,  # Use turbo_broccoli v3
         2: _from_json_v2,

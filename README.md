@@ -225,7 +225,9 @@ by modifying `os.environ`. Rather, use a
 
   - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
 
-  - `bytes`,
+  - `bytes`, **Warning** excluding `bytes` will also exclude `bokeh`,
+    `numpy.ndarray`, `pytorch.module`, `pytorch.tensor`, `secret`,
+    `tensorflow.tensor`,
 
   - `collections`, `collections.deque`, `collections.namedtuple`,
     `collections.set`,

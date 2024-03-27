@@ -27,6 +27,7 @@ def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
 
 
 def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
+    ctx.raise_if_nodecode("bytes")
     DECODERS = {
         5: _json_to_ndarray_v5,
     }
