@@ -22,7 +22,7 @@ def _from_jsonable(obj: Any, ctx: Context) -> Any:
                 base = obj["__type__"].split(".")[0]
                 obj = get_decoders()[base](obj, ctx)
             except TypeIsNodecode:
-                obj = None
+                pass
     elif isinstance(obj, list):
         return [_from_jsonable(v, ctx / str(i)) for i, v in enumerate(obj)]
     elif isinstance(obj, tuple):
