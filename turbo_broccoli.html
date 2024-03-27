@@ -68,12 +68,13 @@ turbo_broccoli    </h1>
 
                         <div class="docstring"><h1 id="turbo-broccoli">Turbo Broccoli 🥦</h1>
 
-<p><a href="https://pypi.org/project/turbo-broccoli/"><img src="https://img.shields.io/pypi/v/turbo-broccoli" alt="PyPI" /></a>
+<p><a href="https://github.com/altaris/turbo-broccoli"><img src="https://img.shields.io/badge/repo-github-pink" alt="Repository" /></a>
+<a href="https://pypi.org/project/turbo-broccoli/"><img src="https://img.shields.io/pypi/v/turbo-broccoli" alt="PyPI" /></a>
 <img src="https://img.shields.io/github/license/altaris/turbo-broccoli" alt="License" />
 <a href="https://pypi.org/project/black"><img src="https://img.shields.io/badge/style-black-black" alt="Code
 style" /></a>
 <img src="https://img.shields.io/badge/project%20name%20by-github-pink" alt="hehe" />
-<a href="https://https://altaris.github.io/turbo-broccoli/turbo_broccoli.html"><img src="https://badgen.net/badge/documentation/here/green" alt="Documentation" /></a></p>
+<a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli.html"><img src="https://badgen.net/badge/documentation/here/green" alt="Documentation" /></a></p>
 
 <p>JSON (de)serialization extensions, originally aimed at <code>numpy</code> and <code>tensorflow</code>
 objects, but now supporting a wide range of objects.</p>
@@ -302,7 +303,9 @@ Comma-separated list of types to not deserialize, for example
 
 <ul>
 <li><p><code>bokeh</code>, <code>bokeh.buffer</code>, <code>bokeh.generic</code>,</p></li>
-<li><p><code>bytes</code>,</p></li>
+<li><p><code>bytes</code>, <strong>Warning</strong> excluding <code>bytes</code> will also exclude <code>bokeh</code>,
+<code>numpy.ndarray</code>, <code>pytorch.module</code>, <code>pytorch.tensor</code>, <code>secret</code>,
+<code>tensorflow.tensor</code>,</p></li>
 <li><p><code>collections</code>, <code>collections.deque</code>, <code>collections.namedtuple</code>,
 <code>collections.set</code>,</p></li>
 <li><p><code>dataclass</code>, <code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</p></li>
