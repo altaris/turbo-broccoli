@@ -1,11 +1,12 @@
 # Turbo Broccoli 🥦
 
+[![Repository](https://img.shields.io/badge/repo-github-pink)](https://github.com/altaris/turbo-broccoli)
 [![PyPI](https://img.shields.io/pypi/v/turbo-broccoli)](https://pypi.org/project/turbo-broccoli/)
 ![License](https://img.shields.io/github/license/altaris/turbo-broccoli)
 [![Code
 style](https://img.shields.io/badge/style-black-black)](https://pypi.org/project/black)
 ![hehe](https://img.shields.io/badge/project%20name%20by-github-pink)
-[![Documentation](https://badgen.net/badge/documentation/here/green)](https://https://altaris.github.io/turbo-broccoli/turbo_broccoli.html)
+[![Documentation](https://badgen.net/badge/documentation/here/green)](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html)
 
 JSON (de)serialization extensions, originally aimed at `numpy` and `tensorflow`
 objects, but now supporting a wide range of objects.
