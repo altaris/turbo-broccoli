@@ -327,6 +327,7 @@ Comma-separated list of types to not deserialize, for example
 sensitive, see the list of supported sklearn estimators below),</p></li>
 <li><p><code>tensorflow</code>, <code>tensorflow.sparse_tensor</code>, <code>tensorflow.tensor</code>,
 <code>tensorflow.variable</code>.</p></li>
+<li><p><code>uuid</code></p></li>
 </ul></li>
 <li><p><code>TB_SHARED_KEY</code> (default: empty):
 Secret key used to encrypt/decrypt secrets. The encryption uses <a href="https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox"><code>pynacl</code>'s
@@ -372,6 +373,7 @@ serialization is straightforward:</p>
 <code>datetime.timedelta</code></a></p></li>
 <li><p>Non JSON-able dicts, i.e. dicts whose keys are not all <code>str</code>, <code>int</code>, <code>float</code>,
 <code>bool</code> or <code>None</code></p></li>
+<li><p><a href="https://docs.python.org/3/library/uuid.html">UUID objects</a></p></li>
 </ul>
 
 <h3 id="generic-objectshttpsaltarisgithubioturbo-broccoliturbo_broccoligenerichtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json">Generic objects</a></h3>
