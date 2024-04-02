@@ -10,6 +10,7 @@ document.
 # pylint: disable=import-outside-toplevel
 
 
+from pathlib import Path
 from typing import Any, Callable, Tuple
 
 from turbo_broccoli.context import Context
@@ -19,17 +20,39 @@ from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 class EmbeddedDict(dict):
     """See module documentation"""
 
+    _tb_artifact_id: str | None = None
+
 
 class EmbeddedList(list):
     """See module documentation"""
+
+    _tb_artifact_id: str | None = None
+
+
+def _get_artifact_path(
+    obj: EmbeddedDict | EmbeddedList, ctx: Context
+) -> tuple[Path, str]:
+    """
+    If the object has an `_tb_artifact_id`, return the corresponding path and
+    id. Otherwise, generate new ones.
+
+    Warning:
+        Does not NOT set the `_tb_artifact_id` attribute.
+    """
+    if obj._tb_artifact_id is None:
+        return ctx.new_artifact_path(extension="json")
+    name = obj._tb_artifact_id
+    path = ctx.id_to_artifact_path(name, extension="json")
+    return path, name
 
 
 def _embedded_dict_to_json(obj: EmbeddedDict, ctx: Context) -> dict:
     from turbo_broccoli.turbo_broccoli import to_json as _to_json
 
-    path, name = ctx.new_artifact_path(extension="json")
+    path, name = _get_artifact_path(obj, ctx)
     with path.open("w", encoding="utf-8") as fp:
         fp.write(_to_json(dict(obj), ctx))
+    obj._tb_artifact_id = name
     return {"__type__": "embedded.dict", "__version__": 1, "id": name}
 
 
@@ -37,9 +60,10 @@ def _embedded_dict_to_json(obj: EmbeddedDict, ctx: Context) -> dict:
 def _embedded_list_to_json(obj: EmbeddedList, ctx: Context) -> dict:
     from turbo_broccoli.turbo_broccoli import to_json as _to_json
 
-    path, name = ctx.new_artifact_path(extension="json")
+    path, name = _get_artifact_path(obj, ctx)
     with path.open("w", encoding="utf-8") as fp:
         fp.write(_to_json(list(obj), ctx))
+    obj._tb_artifact_id = name
     return {"__type__": "embedded.list", "__version__": 1, "id": name}
 
 
@@ -55,7 +79,9 @@ def _json_to_embedded_dict_v1(dct: dict, ctx: Context) -> EmbeddedDict:
 
     path = ctx.id_to_artifact_path(dct["id"], extension="json")
     with path.open("r", encoding="utf-8") as fp:
-        return EmbeddedDict(_from_json(fp.read(), ctx))
+        obj = EmbeddedDict(_from_json(fp.read(), ctx))
+    obj._tb_artifact_id = dct["id"]
+    return obj
 
 
 def _json_to_embedded_list(dct: dict, ctx: Context) -> EmbeddedList:
@@ -71,7 +97,9 @@ def _json_to_embedded_list_v1(dct: dict, ctx: Context) -> EmbeddedList:
 
     path = ctx.id_to_artifact_path(dct["id"], extension="json")
     with path.open("r", encoding="utf-8") as fp:
-        return EmbeddedList(_from_json(fp.read(), ctx))
+        obj = EmbeddedList(_from_json(fp.read(), ctx))
+    obj._tb_artifact_id = dct["id"]
+    return obj
 
 
 # pylint: disable=missing-function-docstring
