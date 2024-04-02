@@ -310,6 +310,7 @@ Comma-separated list of types to not deserialize, for example
 <code>collections.set</code>,</p></li>
 <li><p><code>dataclass</code>, <code>dataclass.&lt;dataclass_name&gt;</code> (case sensitive),</p></li>
 <li><p><code>datetime</code>, <code>datetime.datetime</code>, <code>datetime.time</code>, <code>datetime.timedelta</code>,</p></li>
+<li><p><code>dict</code> (this only prevents decoding dicts with non-string keys),</p></li>
 <li><p><code>embedded</code>, <code>embedded.dict</code>, <code>embedded.list</code>,</p></li>
 <li><p><code>generic</code>,</p></li>
 <li><p><code>keras</code>, <code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
@@ -369,6 +370,8 @@ serialization is straightforward:</p>
 </div></li>
 <li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json"><code>datetime.datetime</code>, <code>datetime.time</code>,
 <code>datetime.timedelta</code></a></p></li>
+<li><p>Non JSON-able dicts, i.e. dicts whose keys are not all <code>str</code>, <code>int</code>, <code>float</code>,
+<code>bool</code> or <code>None</code></p></li>
 </ul>
 
 <h3 id="generic-objectshttpsaltarisgithubioturbo-broccoliturbo_broccoligenerichtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json">Generic objects</a></h3>
