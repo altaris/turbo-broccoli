@@ -11,6 +11,7 @@ from turbo_broccoli.custom import datetime as _datetime
 from turbo_broccoli.custom import dct as _dict
 from turbo_broccoli.custom import embedded as _embedded
 from turbo_broccoli.custom import generic as _generic
+from turbo_broccoli.custom import uuid as _uuid
 
 try:
     from turbo_broccoli.custom import keras as _keras
@@ -103,6 +104,7 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         "bytes": _bytes.from_json,
         "datetime": _datetime.from_json,
         "dict": _dict.from_json,
+        "uuid": _uuid.from_json,
     }
     if HAS_KERAS:
         decoders["keras"] = _keras.from_json
@@ -150,6 +152,7 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         _bytes.to_json,
         _datetime.to_json,
         _dict.to_json,
+        _uuid.to_json,
     ]
     if HAS_KERAS:
         encoders.append(_keras.to_json)

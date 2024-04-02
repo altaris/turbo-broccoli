@@ -264,6 +264,8 @@ by modifying `os.environ`. Rather, use a
   - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
     `tensorflow.variable`.
 
+  - `uuid`
+
 - `TB_SHARED_KEY` (default: empty):
   Secret key used to encrypt/decrypt secrets. The encryption uses [`pynacl`'s
   `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
@@ -308,6 +310,8 @@ This is so cool. Check out
 
 - Non JSON-able dicts, i.e. dicts whose keys are not all `str`, `int`, `float`,
   `bool` or `None`
+
+- [UUID objects](https://docs.python.org/3/library/uuid.html)
 
 ### [Generic objects](https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json)
 
