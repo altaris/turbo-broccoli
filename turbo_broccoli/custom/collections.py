@@ -49,31 +49,42 @@ def _json_to_set_v2(dct: dict, ctx: Context) -> Any:
     return set(dct["data"])
 
 
-def _namedtuple_to_json(tup: tuple, ctx: Context) -> dict:
-    """
-    Converts a namedtuple into a JSON document. This method makes sure that the
-    `tup` argument is truly a namedtuple by checking that it has the following
-    attributes: `_asdict`, `_field_defaults`, `_fields`, `_make`, `_replace`.
-    See
-    https://docs.python.org/3/library/collections.html#collections.namedtuple .
-    """
-    attributes = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
-    if not all(map(lambda a: hasattr(tup, a), attributes)):
-        raise TypeNotSupported(
-            "This object does not have all the attributes expected from a "
-            "namedtuple. The expected attributes are `_asdict`, "
-            "`_field_defaults`, `_fields`, `_make`, and `_replace`."
-        )
-    return {
-        "__type__": "collections.namedtuple",
-        "__version__": 2,
-        "class": tup.__class__.__name__,
-        "data": tup._asdict(),  # type: ignore
+def _json_to_tuple(dct: dict, ctx: Context) -> tuple:
+    DECODERS = {
+        1: _json_to_tuple_v1,
     }
+    return DECODERS[dct["__version__"]](dct, ctx)
+
+
+def _json_to_tuple_v1(dct: dict, ctx: Context) -> Any:
+    return tuple(dct["data"])
 
 
 def _set_to_json(obj: set, ctx: Context) -> dict:
     return {"__type__": "collections.set", "__version__": 2, "data": list(obj)}
+
+
+def _tuple_to_json(obj: tuple, ctx: Context) -> dict:
+    """
+    Converts a tuple or namedtuple into a JSON document.
+
+    A tuple is a namedtuple if it has the following attributes: `_asdict`,
+    `_field_defaults`, `_fields`, `_make`, `_replace`. See
+    https://docs.python.org/3/library/collections.html#collections.namedtuple .
+    """
+    attributes = ["_asdict", "_field_defaults", "_fields", "_make", "_replace"]
+    if not all(map(lambda a: hasattr(obj, a), attributes)):
+        return {
+            "__type__": "collections.tuple",
+            "__version__": 1,
+            "data": list(obj),
+        }
+    return {
+        "__type__": "collections.namedtuple",
+        "__version__": 2,
+        "class": obj.__class__.__name__,
+        "data": obj._asdict(),  # type: ignore
+    }
 
 
 # pylint: disable=missing-function-docstring
@@ -82,6 +93,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
         "collections.deque": _json_to_deque,
         "collections.namedtuple": _json_to_namedtuple,
         "collections.set": _json_to_set,
+        "collections.tuple": _json_to_tuple,
     }
     try:
         type_name = dct["__type__"]
@@ -128,11 +140,20 @@ def to_json(obj: Any, ctx: Context) -> dict:
         }
         ```
 
+    - `tuple`
+
+        ```json
+        {
+            "__type__": "collections.tuple",
+            "__version__": 1,
+            "data": [...],
+        }
+        ```
 
     """
     ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (deque, _deque_to_json),
-        (tuple, _namedtuple_to_json),
+        (tuple, _tuple_to_json),
         (set, _set_to_json),
     ]
     for t, f in ENCODERS:

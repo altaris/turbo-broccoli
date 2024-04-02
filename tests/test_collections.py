@@ -78,3 +78,7 @@ def test_set():
 
 def test_set_empty():
     assert_to_from_json({})
+
+
+def test_tuple():
+    assert_to_from_json((1, 2, 3))

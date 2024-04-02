@@ -16,7 +16,16 @@ def test_dict_normal():
     assert x == v
 
 
-def test_dict_basic():
+def test_dict():
     # pylint: disable=duplicate-key
-    x = {"a": "a", 1: 1, 2.3: 2.3, True: True, False: False, None: None}
+    x = {
+        "a": "a",
+        1: 1,
+        2.3: 2.3,
+        True: True,
+        False: False,
+        None: None,
+        (1, 2): (1, 2),
+        b"abc": b"abc",
+    }
     assert_to_from_json(x)
