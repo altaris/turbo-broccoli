@@ -236,6 +236,8 @@ by modifying `os.environ`. Rather, use a
 
   - `datetime`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
 
+  - `dict` (this only prevents decoding dicts with non-string keys),
+
   - `embedded`, `embedded.dict`, `embedded.list`,
 
   - `generic`,
@@ -303,6 +305,9 @@ This is so cool. Check out
 
 - [`datetime.datetime`, `datetime.time`,
   `datetime.timedelta`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json)
+
+- Non JSON-able dicts, i.e. dicts whose keys are not all `str`, `int`, `float`,
+  `bool` or `None`
 
 ### [Generic objects](https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json)
 
