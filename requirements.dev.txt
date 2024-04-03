@@ -2,6 +2,7 @@ black
 bokeh
 fastparquet
 isort
+joblib
 loguru
 mypy
 numpy

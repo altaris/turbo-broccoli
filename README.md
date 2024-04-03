@@ -274,8 +274,25 @@ by modifying `os.environ`. Rather, use a
 
 ## Guarded blocks
 
-This is so cool. Check out
-[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler).
+A
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler)
+"guards" a block of code, meaning it prevents it from being executed if it has
+been in the past. Check out [the
+documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html)
+for some examples.
+
+## Guarded-parallel executors
+
+A mix of
+[`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
+and
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler):
+a
+[`turbo_broccoli.Parallel`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html#Parallel)
+object can be used to execute jobs in parallel, but those whose results have
+already been obtained in the past are skipped. See [the
+documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html)
+for some examples.
 
 ## Supported types
 

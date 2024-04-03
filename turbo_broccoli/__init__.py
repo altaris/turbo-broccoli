@@ -9,6 +9,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.custom.embedded import EmbeddedDict, EmbeddedList
 from turbo_broccoli.guard import GuardedBlockHandler
 from turbo_broccoli.native import load, save
+from turbo_broccoli.parallel import Parallel, delayed
 from turbo_broccoli.turbo_broccoli import (
     from_json,
     load_json,
