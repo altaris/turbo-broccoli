@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from turbo_broccoli import user
 from turbo_broccoli.context import Context
 from turbo_broccoli.custom import get_decoders, get_encoders
 from turbo_broccoli.exceptions import TypeIsNodecode, TypeNotSupported
@@ -20,7 +21,12 @@ def _from_jsonable(obj: Any, ctx: Context) -> Any:
             try:
                 ctx.raise_if_nodecode(obj["__type__"])
                 base = obj["__type__"].split(".")[0]
-                obj = get_decoders()[base](obj, ctx)
+                if base == "user":
+                    name = ".".join(obj["__type__"].split(".")[1:])
+                    if decoder := user.DECODERS.get(name):
+                        obj = decoder(obj, ctx)
+                else:
+                    obj = get_decoders()[base](obj, ctx)
             except TypeIsNodecode:
                 pass
     elif isinstance(obj, list):
@@ -38,6 +44,9 @@ def _to_jsonable(obj: Any, ctx: Context) -> Any:
     that TurboBroccoli's custom encoders support, and returns an object that is
     readily vanilla JSON-serializable.
     """
+    name = obj.__class__.__name__
+    if name in user.ENCODERS:
+        obj = user.ENCODERS[name](obj, ctx)
     for encoder in get_encoders():
         try:
             obj = encoder(obj, ctx)
