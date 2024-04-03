@@ -216,7 +216,7 @@
 </span><span id="L-155"><a href="#L-155"><span class="linenos">155</span></a>
 </span><span id="L-156"><a href="#L-156"><span class="linenos">156</span></a><span class="sd">    - Tensor:</span>
 </span><span id="L-157"><a href="#L-157"><span class="linenos">157</span></a>
-</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="sd">        ```json</span>
+</span><span id="L-158"><a href="#L-158"><span class="linenos">158</span></a><span class="sd">        ```py</span>
 </span><span id="L-159"><a href="#L-159"><span class="linenos">159</span></a><span class="sd">        {</span>
 </span><span id="L-160"><a href="#L-160"><span class="linenos">160</span></a><span class="sd">            &quot;__type__&quot;: &quot;pytorch.tensor&quot;,</span>
 </span><span id="L-161"><a href="#L-161"><span class="linenos">161</span></a><span class="sd">            &quot;__version__&quot;: 3,</span>
@@ -231,7 +231,7 @@
 </span><span id="L-170"><a href="#L-170"><span class="linenos">170</span></a>
 </span><span id="L-171"><a href="#L-171"><span class="linenos">171</span></a><span class="sd">    - Module:</span>
 </span><span id="L-172"><a href="#L-172"><span class="linenos">172</span></a>
-</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">        ```json</span>
+</span><span id="L-173"><a href="#L-173"><span class="linenos">173</span></a><span class="sd">        ```py</span>
 </span><span id="L-174"><a href="#L-174"><span class="linenos">174</span></a><span class="sd">        {</span>
 </span><span id="L-175"><a href="#L-175"><span class="linenos">175</span></a><span class="sd">            &quot;__type__&quot;: &quot;pytorch.module.&lt;class name&gt;&quot;,</span>
 </span><span id="L-176"><a href="#L-176"><span class="linenos">176</span></a><span class="sd">            &quot;__version__&quot;: 3,</span>
@@ -311,7 +311,7 @@
 </span><span id="to_json-156"><a href="#to_json-156"><span class="linenos">156</span></a>
 </span><span id="to_json-157"><a href="#to_json-157"><span class="linenos">157</span></a><span class="sd">    - Tensor:</span>
 </span><span id="to_json-158"><a href="#to_json-158"><span class="linenos">158</span></a>
-</span><span id="to_json-159"><a href="#to_json-159"><span class="linenos">159</span></a><span class="sd">        ```json</span>
+</span><span id="to_json-159"><a href="#to_json-159"><span class="linenos">159</span></a><span class="sd">        ```py</span>
 </span><span id="to_json-160"><a href="#to_json-160"><span class="linenos">160</span></a><span class="sd">        {</span>
 </span><span id="to_json-161"><a href="#to_json-161"><span class="linenos">161</span></a><span class="sd">            &quot;__type__&quot;: &quot;pytorch.tensor&quot;,</span>
 </span><span id="to_json-162"><a href="#to_json-162"><span class="linenos">162</span></a><span class="sd">            &quot;__version__&quot;: 3,</span>
@@ -326,7 +326,7 @@
 </span><span id="to_json-171"><a href="#to_json-171"><span class="linenos">171</span></a>
 </span><span id="to_json-172"><a href="#to_json-172"><span class="linenos">172</span></a><span class="sd">    - Module:</span>
 </span><span id="to_json-173"><a href="#to_json-173"><span class="linenos">173</span></a>
-</span><span id="to_json-174"><a href="#to_json-174"><span class="linenos">174</span></a><span class="sd">        ```json</span>
+</span><span id="to_json-174"><a href="#to_json-174"><span class="linenos">174</span></a><span class="sd">        ```py</span>
 </span><span id="to_json-175"><a href="#to_json-175"><span class="linenos">175</span></a><span class="sd">        {</span>
 </span><span id="to_json-176"><a href="#to_json-176"><span class="linenos">176</span></a><span class="sd">            &quot;__type__&quot;: &quot;pytorch.module.&lt;class name&gt;&quot;,</span>
 </span><span id="to_json-177"><a href="#to_json-177"><span class="linenos">177</span></a><span class="sd">            &quot;__version__&quot;: 3,</span>
@@ -363,12 +363,12 @@ of supported types. The return dict has the following structure:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pytorch.tensor&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;data&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="err">...</span>
-<span class="w">    </span><span class="p">},</span>
+    <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;pytorch.tensor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__version__&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 </code></pre>
 </div>
@@ -378,12 +378,12 @@ of supported types. The return dict has the following structure:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pytorch.module.&lt;class name&gt;&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="err">...</span>
-<span class="w">    </span><span class="p">},</span>
+    <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;pytorch.module.&lt;class name&gt;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__version__&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;bytes&quot;</span><span class="p">,</span>
+        <span class="o">...</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 </code></pre>
 </div>

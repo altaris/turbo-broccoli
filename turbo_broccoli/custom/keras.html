@@ -485,7 +485,7 @@
 </span><span id="L-409"><a href="#L-409"><span class="linenos">409</span></a><span class="sd">    - `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is</span>
 </span><span id="L-410"><a href="#L-410"><span class="linenos">410</span></a><span class="sd">      `json`, the document will look like</span>
 </span><span id="L-411"><a href="#L-411"><span class="linenos">411</span></a>
-</span><span id="L-412"><a href="#L-412"><span class="linenos">412</span></a><span class="sd">        ```json</span>
+</span><span id="L-412"><a href="#L-412"><span class="linenos">412</span></a><span class="sd">        ```py</span>
 </span><span id="L-413"><a href="#L-413"><span class="linenos">413</span></a><span class="sd">        {</span>
 </span><span id="L-414"><a href="#L-414"><span class="linenos">414</span></a>
 </span><span id="L-415"><a href="#L-415"><span class="linenos">415</span></a><span class="sd">            &quot;__type__&quot;: &quot;keras.model&quot;,</span>
@@ -500,7 +500,7 @@
 </span><span id="L-424"><a href="#L-424"><span class="linenos">424</span></a>
 </span><span id="L-425"><a href="#L-425"><span class="linenos">425</span></a><span class="sd">      if `TB_KERAS_FORMAT` is `h5` or `tf`, the document will look like</span>
 </span><span id="L-426"><a href="#L-426"><span class="linenos">426</span></a>
-</span><span id="L-427"><a href="#L-427"><span class="linenos">427</span></a><span class="sd">        ```json</span>
+</span><span id="L-427"><a href="#L-427"><span class="linenos">427</span></a><span class="sd">        ```py</span>
 </span><span id="L-428"><a href="#L-428"><span class="linenos">428</span></a><span class="sd">        {</span>
 </span><span id="L-429"><a href="#L-429"><span class="linenos">429</span></a>
 </span><span id="L-430"><a href="#L-430"><span class="linenos">430</span></a><span class="sd">            &quot;__type__&quot;: &quot;keras.model&quot;,</span>
@@ -648,7 +648,7 @@
 </span><span id="to_json-410"><a href="#to_json-410"><span class="linenos">410</span></a><span class="sd">    - `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is</span>
 </span><span id="to_json-411"><a href="#to_json-411"><span class="linenos">411</span></a><span class="sd">      `json`, the document will look like</span>
 </span><span id="to_json-412"><a href="#to_json-412"><span class="linenos">412</span></a>
-</span><span id="to_json-413"><a href="#to_json-413"><span class="linenos">413</span></a><span class="sd">        ```json</span>
+</span><span id="to_json-413"><a href="#to_json-413"><span class="linenos">413</span></a><span class="sd">        ```py</span>
 </span><span id="to_json-414"><a href="#to_json-414"><span class="linenos">414</span></a><span class="sd">        {</span>
 </span><span id="to_json-415"><a href="#to_json-415"><span class="linenos">415</span></a>
 </span><span id="to_json-416"><a href="#to_json-416"><span class="linenos">416</span></a><span class="sd">            &quot;__type__&quot;: &quot;keras.model&quot;,</span>
@@ -663,7 +663,7 @@
 </span><span id="to_json-425"><a href="#to_json-425"><span class="linenos">425</span></a>
 </span><span id="to_json-426"><a href="#to_json-426"><span class="linenos">426</span></a><span class="sd">      if `TB_KERAS_FORMAT` is `h5` or `tf`, the document will look like</span>
 </span><span id="to_json-427"><a href="#to_json-427"><span class="linenos">427</span></a>
-</span><span id="to_json-428"><a href="#to_json-428"><span class="linenos">428</span></a><span class="sd">        ```json</span>
+</span><span id="to_json-428"><a href="#to_json-428"><span class="linenos">428</span></a><span class="sd">        ```py</span>
 </span><span id="to_json-429"><a href="#to_json-429"><span class="linenos">429</span></a><span class="sd">        {</span>
 </span><span id="to_json-430"><a href="#to_json-430"><span class="linenos">430</span></a>
 </span><span id="to_json-431"><a href="#to_json-431"><span class="linenos">431</span></a><span class="sd">            &quot;__type__&quot;: &quot;keras.model&quot;,</span>
@@ -706,13 +706,13 @@ exceptions:</p>
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
 
-<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keras.model&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;loss&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;metrics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
-<span class="w">    </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">},</span>
-<span class="w">    </span><span class="nt">&quot;optimizer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">...</span><span class="p">}</span><span class="w"> </span><span class="err">or</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;weights&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+    <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;keras.model&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__version__&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span> <span class="ow">or</span> <span class="n">null</span><span class="p">,</span>
+    <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span>
+    <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span> <span class="ow">or</span> <span class="n">null</span><span class="p">,</span>
+    <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
 <span class="p">}</span>
 </code></pre>
 </div>
@@ -722,10 +722,10 @@ exceptions:</p>
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="p">{</span>
 
-<span class="w">    </span><span class="nt">&quot;__type__&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;keras.model&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;__version__&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;s</span><span class="kc">tr</span><span class="err">&gt;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="err">&lt;uuid</span><span class="mi">4</span><span class="err">&gt;</span>
+    <span class="s2">&quot;__type__&quot;</span><span class="p">:</span> <span class="s2">&quot;keras.model&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__version__&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">str</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">uuid4</span><span class="o">&gt;</span>
 <span class="p">}</span>
 </code></pre>
 </div>
