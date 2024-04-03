@@ -68,8 +68,7 @@ gives
     executor = tb.Parallel(...)
     results = executor(jobs)
     ```
-    because `f` is in effect multiple times with value `0`. This is not checked
-    because I'm too lazy but I promise you it'll fuck shit up. In particular,
+    because `f` is in effect multiple times with value `0`. In particular,
     TurboBroccoli's `Parallel` is not suited for functions with no arguments
     (unless if they are executed only once but that kind of defeats the idea of
     parallelism).
@@ -108,6 +107,7 @@ gives
     ```
 """
 
+from itertools import combinations
 from pathlib import Path
 from typing import Any, Callable, Generator, Iterable
 
@@ -185,13 +185,15 @@ class Parallel:
     def __call__(
         self, jobs: Iterable[_DelayedCall]
     ) -> dict | Generator[tuple[Any, Any], None, None]:
-        g = self._call(jobs)
+        jobs = list(jobs)
+        self.sanity_check(jobs)
+        g = self._execute(jobs)
         if self.executor.return_generator:
             return g
         return dict(g)
 
     # pylint: disable=stop-iteration-return
-    def _call(
+    def _execute(
         self, jobs: Iterable[_DelayedCall]
     ) -> Generator[tuple[Any, Any], None, None]:
         """
@@ -251,6 +253,24 @@ class Parallel:
             raise RuntimeError("The executor returned too many results")
         except StopIteration:
             pass
+
+    def sanity_check(self, jobs: list[_DelayedCall]) -> None:
+        """
+        Performs various sanity checks on a list of jobs.
+        """
+        if self.only_one_arg:
+            for i, j in enumerate(jobs):
+                if len(j.args) != 1:
+                    raise ValueError(
+                        f"The only_one_arg option is set to True but job {i} "
+                        f"has {len(j.args)} arguments: {j.args}"
+                    )
+        for i1, i2 in combinations(range(len(jobs)), 2):
+            if jobs[i1].args == jobs[i2].args:
+                raise ValueError(
+                    f"Jobs {i1} and {i2} have the same arguments: "
+                    f"{jobs[i1].args}"
+                )
 
 
 def delayed(function: Callable) -> Callable:

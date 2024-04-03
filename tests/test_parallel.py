@@ -4,6 +4,8 @@
 
 from pathlib import Path
 
+import pytest
+
 from turbo_broccoli import Parallel, delayed
 from turbo_broccoli.turbo_broccoli import load_json
 
@@ -76,3 +78,39 @@ def test_parallel_2():
         ("3", 3): "3333",
     }
     assert results == load_json(path)
+
+
+def test_parallel_sanity_same_args_1():
+    path = _get_path("test_parallel_sanity_same_args_1")
+    f = lambda a: 2 * a
+    lst = [1, 2, 3, 1]
+    jobs = [delayed(f)(x) for x in lst]
+    with pytest.raises(ValueError):
+        Parallel(path, n_jobs=1, only_one_arg=True)(jobs)
+
+
+def test_parallel_sanity_same_args_2():
+    path = _get_path("test_parallel_sanity_same_args_2")
+    f = lambda a, b: a * b
+    lst = [(0, 0), (0, 1), (1, 1), (0, 0)]
+    jobs = [delayed(f)(*x) for x in lst]
+    with pytest.raises(ValueError):
+        Parallel(path, n_jobs=1, only_one_arg=False)(jobs)
+
+
+def test_parallel_sanity_only_one_arg():
+    path = _get_path("test_parallel_sanity_only_one_arg")
+    f = lambda a, b: a * b
+    lst = [(0, 0), (0, 1), (1, 1)]
+    jobs = [delayed(f)(*x) for x in lst]
+    with pytest.raises(ValueError):
+        Parallel(path, n_jobs=1, only_one_arg=True)(jobs)
+
+
+def test_parallel_sanity_kwargs():
+    def f(x):
+        return x + x
+
+    with pytest.raises(ValueError):
+        # pylint: disable=expression-not-assigned
+        [delayed(f)(x=x) for x in range(5)]
