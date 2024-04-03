@@ -230,7 +230,7 @@ def to_json(obj: BaseEstimator, ctx: Context) -> dict:
 
     - if the object is an estimator:
 
-        ```json
+        ```py
         {
             "__type__": "sklearn.estimator.<CLASS NAME>",
             "__version__": 2,
@@ -244,7 +244,7 @@ def to_json(obj: BaseEstimator, ctx: Context) -> dict:
 
     - otherwise:
 
-        ```json
+        ```py
         {
             "__type__": "sklearn.raw",
             "__version__": 2,

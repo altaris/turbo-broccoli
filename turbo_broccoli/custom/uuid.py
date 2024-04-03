@@ -33,7 +33,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
     [`uuid.UUID`](https://docs.python.org/3/library/uuid.html#uuid.UUID) object
     into JSON. The return dict has the following structure
 
-    ```json
+    ```py
     {
         "__type__": "uuid",
         "__version__": 1,

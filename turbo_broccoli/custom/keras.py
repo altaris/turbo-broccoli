@@ -409,7 +409,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
     - `keras.Model` (the model must have weights). If `TB_KERAS_FORMAT` is
       `json`, the document will look like
 
-        ```json
+        ```py
         {
 
             "__type__": "keras.model",
@@ -424,7 +424,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
       if `TB_KERAS_FORMAT` is `h5` or `tf`, the document will look like
 
-        ```json
+        ```py
         {
 
             "__type__": "keras.model",

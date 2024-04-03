@@ -77,7 +77,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `bokeh.plotting._figure.figure` or `bokeh.models.Model`:
 
-        ```json
+        ```py
         {
             "__type__": "bokeh.generic",
             "__version__": 2,
@@ -88,7 +88,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `bokeh.core.serialization.Buffer`: (for internal use)
 
-        ```json
+        ```py
         {
             "__type__": "bokeh.buffer",
             "__version__": 2,

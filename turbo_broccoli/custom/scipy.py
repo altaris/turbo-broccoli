@@ -55,7 +55,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - [`csr_matrix`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix)
 
-        ```json
+        ```py
         {
             "__type__": "scipy.csr_matrix",
             "__version__": 2,

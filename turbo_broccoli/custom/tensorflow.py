@@ -109,7 +109,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `tf.SparseTensor`:
 
-        ```json
+        ```py
         {
             "__type__": "tensorflow.sparse_tensor",
             "__version__": 2,
@@ -124,7 +124,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - other `tf.Tensor` subtypes:
 
-        ```json
+        ```py
         {
             "__type__": "tensorflow.tensor",
             "__version__": 4,
@@ -139,7 +139,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `tf.Variable`:
 
-        ```json
+        ```py
         {
             "__type__": "tensorflow.tensor",
             "__version__": 3,

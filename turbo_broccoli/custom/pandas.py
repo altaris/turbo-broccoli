@@ -108,7 +108,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
       small, i.e. at most `TB_MAX_NBYTES` bytes, then it is directly stored in
       the resulting JSON document as
 
-        ```json
+        ```py
         {
             "__type__": "pandas.dataframe",
             "__version__": 2,
@@ -126,7 +126,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
       stored in an artifact, whose format follows the `TB_PANDAS_FORMAT`
       environment (CSV by default). The resulting JSON document looks like
 
-        ```json
+        ```py
         {
             "__type__": "pandas.dataframe",
             "__version__": 2,
@@ -143,7 +143,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
     - `pandas.Series`: A series will be converted to a dataframe before being
       serialized. The final document will look like this
 
-        ```json
+        ```py
         {
             "__type__": "pandas.series",
             "__version__": 2,

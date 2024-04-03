@@ -96,7 +96,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `datetime.datetime`:
 
-        ```json
+        ```py
         {
             "__type__": "datetime.datetime",
             "__version__": 1,
@@ -106,7 +106,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `datetime.time`:
 
-        ```json
+        ```py
         {
             "__type__": "datetime.time",
             "__version__": 1,
@@ -116,7 +116,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `datetime.timedelta`:
 
-        ```json
+        ```py
         {
             "__type__": "datetime.timedelta",
             "__version__": 1,

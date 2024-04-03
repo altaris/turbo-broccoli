@@ -155,7 +155,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - Tensor:
 
-        ```json
+        ```py
         {
             "__type__": "pytorch.tensor",
             "__version__": 3,
@@ -170,7 +170,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - Module:
 
-        ```json
+        ```py
         {
             "__type__": "pytorch.module.<class name>",
             "__version__": 3,

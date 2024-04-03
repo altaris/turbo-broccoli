@@ -126,7 +126,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
       small, i.e. `arr.nbytes <= TB_MAX_NBYTES`, then it is directly
       stored in the resulting JSON document as
 
-        ```json
+        ```py
         {
             "__type__": "numpy.ndarray",
             "__version__": 5,
@@ -141,7 +141,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `numpy.number`:
 
-        ```json
+        ```py
         {
             "__type__": "numpy.number",
             "__version__": 3,
@@ -154,7 +154,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `numpy.dtype`:
 
-        ```json
+        ```py
         {
             "__type__": "numpy.dtype",
             "__version__": 2,
@@ -164,7 +164,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `numpy.random.RandomState`:
 
-        ```json
+        ```py
         {
             "__type__": "numpy.random_state",
             "__version__": 3,

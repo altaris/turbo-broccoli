@@ -110,7 +110,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `collections.deque`:
 
-        ```json
+        ```py
         {
             "__type__": "collections.deque",
             "__version__": 2,
@@ -121,7 +121,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `collections.namedtuple`
 
-        ```json
+        ```py
         {
             "__type__": "collections.namedtuple",
             "__version__": 2,
@@ -132,7 +132,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `set`
 
-        ```json
+        ```py
         {
             "__type__": "collections.set",
             "__version__": 2,
@@ -142,7 +142,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     - `tuple`
 
-        ```json
+        ```py
         {
             "__type__": "collections.tuple",
             "__version__": 1,
