@@ -1,4 +1,4 @@
-# Turbo Broccoli 🥦
+# TurboBroccoli 🥦
 
 [![Repository](https://img.shields.io/badge/repo-github-pink)](https://github.com/altaris/turbo-broccoli)
 [![PyPI](https://img.shields.io/pypi/v/turbo-broccoli)](https://pypi.org/project/turbo-broccoli/)
@@ -84,7 +84,7 @@ and
 can be tweaked by using
 [contexts](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context).
 For example, to set a encryption/decryption key for [secret
-types](https://cedric.hothanh.fr/turbo-broccoli/turbo_broccoli/custom/secret.html):
+types](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/secret.html):
 
 ```py
 import nacl.secret
@@ -121,6 +121,76 @@ tb.save_json(obj, "foo/bar/foobar.json", nacl_shared_key=key)
 
 See [the
 documentation](https://altaris.github.io/turbo_broccoli/context.html#Context).
+
+### Guarded blocks
+
+A
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler)
+"guards" a block of code, meaning it prevents it from being executed if it has
+been in the past. Check out [the
+documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html)
+for some examples.
+
+### Guarded-parallel executors
+
+A mix of
+[`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
+and
+[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler):
+a
+[`turbo_broccoli.Parallel`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html#Parallel)
+object can be used to execute jobs in parallel, but those whose results have
+already been obtained in the past are skipped. See [the
+documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html)
+for some examples.
+
+### Custom encoders/decoders
+
+You can register you own custom encoders and decoders using
+[`turbo_broccoli.register_encoder`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/user.html#register_encoder)
+and
+[`turbo_broccoli.register_decoder`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/user.html#register_decoder):
+
+```py
+import turbo_broccoli as tb
+
+class MyClass:
+    a: int
+    b: np.ndarray
+    c: np.ndarray
+    def __init__(self, a: int, b: np.ndarray):
+        self.a, self.b = a, b
+        self.c = a + b
+
+def encoder_c(obj: MyClass, ctx: tb.Context) -> dict:
+    # If you register a decoder, you must include the key "__type__" and it
+    # must have value "user.<name_of_type>"
+    #       ↓
+    return {"__type__": "user.MyClass", "a": obj.a, "b": obj.b}
+
+def decoder_c(obj: dict, ctx: tb.Context) -> MyClass:
+    return MyClass(obj["a"], obj["b"])
+
+tb.register_encoder(encoder_c, "MyClass")
+tb.register_decoder(decoder_c, "MyClass")
+```
+
+An encoder (for `MyClass`) is a function that takes two arguments: an object of
+type `MyClass` and a
+[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context),
+and returns a `dict`. That dict must contain objects that can be further
+serialized using TurboBroccoli (which includes all [supported
+types](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types)
+and any other type for which you registered an encoder). The return dict needs
+not be flat.
+
+If you register a decoder for `MyClass` (as in the example above), the dict
+must contain the key/value `"__type__": "user.MyClass"`.
+
+A decoder (for `MyClass`) is a function that takes two arguments: a dict and a
+[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context),
+and returns an object of type `MyClass`. The dict's values have already been
+deserialized.
 
 ### Artifacts
 
@@ -195,105 +265,6 @@ doc = tb.to_json(obj, ctx)
 obj = tb.from_json(doc, ctx)
 ```
 
-## Environment variables
-
-Some behaviors of Turbo Broccoli can be tweaked by setting specific environment
-variables. If you want to modify these parameters programatically, do not do so
-by modifying `os.environ`. Rather, use a
-[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context).
-
-- `TB_ARTIFACT_PATH` (default: output JSON file's parent directory): During
-  serialization, Turbo Broccoli may create artifacts to which the JSON object
-  will point to. The artifacts will be stored in `TB_ARTIFACT_PATH` if
-  specified.
-
-- `TB_KERAS_FORMAT` (default: `tf`, valid values are `keras`, `tf`, and `h5`):
-  The serialization format for keras models. If `h5` or `tf` is used, an
-  artifact following said format will be created in `TB_ARTIFACT_PATH`. If
-  `json` is used, the model will be contained in the JSON document (anthough
-  the weights may be in artifacts if they are too large).
-
-- `TB_MAX_NBYTES` (default: `8000`):
-  The maximum byte size of a python object beyond which serialization will
-  produce an artifact instead of storing it in the JSON document. This does not
-  limit the size of the overall JSON document though. 8000 bytes should be
-  enough for a numpy array of 1000 `float64`s to be stored in-document.
-
-- `TB_NODECODE` (default: empty):
-  Comma-separated list of types to not deserialize, for example
-  `bytes,numpy.ndarray`. Excludable types are:
-
-  - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
-
-  - `bytes`, **Warning** excluding `bytes` will also exclude `bokeh`,
-    `numpy.ndarray`, `pytorch.module`, `pytorch.tensor`, `secret`,
-    `tensorflow.tensor`,
-
-  - `collections`, `collections.deque`, `collections.namedtuple`,
-    `collections.set`,
-
-  - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
-
-  - `datetime`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
-
-  - `dict` (this only prevents decoding dicts with non-string keys),
-
-  - `embedded`, `embedded.dict`, `embedded.list`,
-
-  - `generic`,
-
-  - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
-    `keras.optimizer`,
-
-  - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
-    `numpy.random_state`,
-
-  - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
-    `pandas.dataframe` will also exclude `pandas.series`,
-
-  - `pytorch`, `pytorch.tensor`, `pytorch.module`, `pytorch.concatdataset`,
-    `pytorch.stackdataset`, `pytorch.subset`, `pytorch.tensordataset`
-
-  - `scipy`, `scipy.csr_matrix`,
-
-  - `secret`,
-
-  - `sklearn`, `sklearn.estimator`, `sklearn.estimator.<estimator name>` (case
-    sensitive, see the list of supported sklearn estimators below),
-
-  - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
-    `tensorflow.variable`.
-
-  - `uuid`
-
-- `TB_SHARED_KEY` (default: empty):
-  Secret key used to encrypt/decrypt secrets. The encryption uses [`pynacl`'s
-  `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
-  An exception is raised when attempting to serialize a secret type while no
-  key is set.
-
-## Guarded blocks
-
-A
-[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler)
-"guards" a block of code, meaning it prevents it from being executed if it has
-been in the past. Check out [the
-documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html)
-for some examples.
-
-## Guarded-parallel executors
-
-A mix of
-[`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
-and
-[`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler):
-a
-[`turbo_broccoli.Parallel`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html#Parallel)
-object can be used to execute jobs in parallel, but those whose results have
-already been obtained in the past are skipped. See [the
-documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html)
-for some examples.
-
 ## Supported types
 
 ### Basic types
@@ -330,9 +301,9 @@ for some examples.
 
 - [UUID objects](https://docs.python.org/3/library/uuid.html)
 
-### [Generic objects](https://altaris.github.io/turbo-broccoli/turbo_broccoli/generic.html#to_json)
+### Generic objects
 
-**serialization only**. A generic object is an object that
+**Serialization only**. A generic object is an object that
 has the `__turbo_broccoli__` attribute. This attribute is expected to be a list
 of attributes whose values will be serialized. For example,
 
@@ -351,10 +322,10 @@ tb.to_json(x)
 produces the following string:
 
 ```json
-{"a": 42,"b": 43,}
+{"a": 42,"b": 43}
 ```
 
-Registered attributes can of course have any type supported by Turbo Broccoli,
+Registered attributes can of course have any type supported by TurboBroccoli,
 such as numpy arrays. Registered attributes can be `@property` methods.
 
 ### [Keras](https://altaris.github.io/turbo-broccoli/turbo_broccoli/keras.html#to_json)
@@ -374,10 +345,10 @@ such as numpy arrays. Registered attributes can be `@property` methods.
 
 `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
 
-- the following dtypes are not supported: `complex`, `object`, `timedelta`
+- the following dtypes are not supported: `complex`, `object`, `timedelta`;
 
-- the column / series names cannot be ints or int-strings. The following are
-  not acceptable:
+- the column / series names cannot be ints or int-strings: the following are
+  not acceptable
 
   ```py
   df = pd.DataFrame([[1, 2], [3, 4]])
@@ -453,6 +424,8 @@ such as numpy arrays. Registered attributes can be `@property` methods.
   module = tb.from_json(doc, ctx)
   ```
 
+  To circumvent all these limitations, use custom encoders / decoders.
+
 - `torch.utils.data.ConcatDataset`, `torch.utils.data.StackDataset`,
   `torch.utils.data.Subset`, `torch.utils.data.TensorDataset`, as long as the
   nested structure of datasets ultimately lead to
@@ -502,7 +475,9 @@ Supported estimators are: `AdaBoostClassifier`, `AdaBoostRegressor`,
 `SpectralClustering`, `SpectralCoclustering`, `SpectralEmbedding`,
 `StackingClassifier`, `StackingRegressor`, `StandardScaler`, `SVC`, `SVC`,
 `SVR`, `SVR`, `TheilSenRegressor`, `TruncatedSVD`, `TSNE`, `VarianceThreshold`,
-`VotingClassifier`, `VotingRegressor`. Doesn't work with:
+`VotingClassifier`, `VotingRegressor`.
+
+Doesn't work with:
 
 - All CV classes because the `score_` attribute is a dict indexed with
   `np.int64`, which `json.JSONEncoder._iterencode_dict` rejects.
@@ -608,11 +583,11 @@ content):
 Deserialization decrypts the secrets, but they stay wrapped inside the secret
 types above. If the wrong key is provided, an exception is raised. If no key is
 provided, the secret values are replaced by a
-`turbo_broccoli.LockedSecret`. Internally, Turbo Broccoli uses
+`turbo_broccoli.LockedSecret`. Internally, TurboBroccoli uses
 [`pynacl`](https://pynacl.readthedocs.io/en/latest/)'s
 [`SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
 **Warning**: In the case of `SecretDict` and `SecretList`, the values contained
-within must be JSON-serializable **without** Turbo Broccoli. The following is
+within must be JSON-serializable **without** TurboBroccoli. The following is
 not acceptable:
 
 ```py
@@ -664,6 +639,83 @@ will result in a `data.json` file containing
 ```json
 {"c": 2, "d": 3}
 ```
+
+## Environment variables
+
+Some behaviors of TurboBroccoli can be tweaked by setting specific environment
+variables. If you want to modify these parameters programatically, do not do so
+by modifying `os.environ`. Rather, use a
+[`turbo_broccoli.Context`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context).
+
+- `TB_ARTIFACT_PATH` (default: output JSON file's parent directory): During
+  serialization, TurboBroccoli may create artifacts to which the JSON object
+  will point to. The artifacts will be stored in `TB_ARTIFACT_PATH` if
+  specified.
+
+- `TB_KERAS_FORMAT` (default: `tf`, valid values are `keras`, `tf`, and `h5`):
+  The serialization format for keras models. If `h5` or `tf` is used, an
+  artifact following said format will be created in `TB_ARTIFACT_PATH`. If
+  `json` is used, the model will be contained in the JSON document (anthough
+  the weights may be in artifacts if they are too large).
+
+- `TB_MAX_NBYTES` (default: `8000`):
+  The maximum byte size of a python object beyond which serialization will
+  produce an artifact instead of storing it in the JSON document. This does not
+  limit the size of the overall JSON document though. 8000 bytes should be
+  enough for a numpy array of 1000 `float64`s to be stored in-document.
+
+- `TB_NODECODE` (default: empty):
+  Comma-separated list of types to not deserialize, for example
+  `bytes,numpy.ndarray`. Excludable types are:
+
+  - `bokeh`, `bokeh.buffer`, `bokeh.generic`,
+
+  - `bytes`, **Warning** excluding `bytes` will also exclude `bokeh`,
+    `numpy.ndarray`, `pytorch.module`, `pytorch.tensor`, `secret`,
+    `tensorflow.tensor`,
+
+  - `collections`, `collections.deque`, `collections.namedtuple`,
+    `collections.set`,
+
+  - `dataclass`, `dataclass.<dataclass_name>` (case sensitive),
+
+  - `datetime`, `datetime.datetime`, `datetime.time`, `datetime.timedelta`,
+
+  - `dict` (this only prevents decoding dicts with non-string keys),
+
+  - `embedded`, `embedded.dict`, `embedded.list`,
+
+  - `generic`,
+
+  - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
+    `keras.optimizer`,
+
+  - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
+    `numpy.random_state`,
+
+  - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
+    `pandas.dataframe` will also exclude `pandas.series`,
+
+  - `pytorch`, `pytorch.tensor`, `pytorch.module`, `pytorch.concatdataset`,
+    `pytorch.stackdataset`, `pytorch.subset`, `pytorch.tensordataset`
+
+  - `scipy`, `scipy.csr_matrix`,
+
+  - `secret`,
+
+  - `sklearn`, `sklearn.estimator`, `sklearn.estimator.<estimator name>` (case
+    sensitive, see the list of supported sklearn estimators below),
+
+  - `tensorflow`, `tensorflow.sparse_tensor`, `tensorflow.tensor`,
+    `tensorflow.variable`.
+
+  - `uuid`
+
+- `TB_SHARED_KEY` (default: empty):
+  Secret key used to encrypt/decrypt secrets. The encryption uses [`pynacl`'s
+  `SecretBox`](https://pynacl.readthedocs.io/en/latest/secret/#nacl.secret.SecretBox).
+  An exception is raised when attempting to serialize a secret type while no
+  key is set.
 
 ## Contributing
 

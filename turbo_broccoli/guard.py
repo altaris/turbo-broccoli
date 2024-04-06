@@ -1,6 +1,4 @@
 """
-Guarded block handler
-
 If a block of code produces a JSON file, say `out/foo.json`, and if it is not
 needed to rerun the block if the output file exists, then a guarded block
 handler if an alternative to
@@ -114,14 +112,17 @@ for i, x in h(an_iterable, result_type="list"):
 
 - Recall that in the case of simple blocks, setting/leaving `h.result` to
   `None` is understood as a failed computation:
+
   ```py
   for _ in h:
-    h.result = None
-  for _ in h:  # This block isn't skipped
-    h.result = "Hello world"
+      h.result = None
+  for Z_ in h:  # This block isn't skipped
+      h.result = "Hello world"
   ```
+
   In the case of loops however, if an entry of `h.result` is set to `None`, the
   corresponding iteration is not treated as failed. For example:
+
   ```py
   for i, x in h(["a", "b", "c"]):
       h.result[x] = x * 3 if x != "b" else None
@@ -131,17 +132,20 @@ for i, x in h(an_iterable, result_type="list"):
   # The second loop has been completely skipped, h.result is still
   # {"a": "aaa", "b": None, "c": "ccc"}
   ```
+
 - The `load_if_skip` constructor argument has no effect, meaning that the JSON
   file is always loaded if it exists. If you want some level of laziness,
   consider the following trick:
+
   ```py
   from turbo_broccoli.context import EmbeddedDict
 
   h = GuardedBlockHandler("out/foo.json", nodecode_types=["embedded"])
   for i, x in h(["a", "b", "c"]):
-    y = ...  # a dict that is expensive to compute
-    h.result[x] = EmbeddedDict(y)
+      y = ...  # a dict that is expensive to compute
+      h.result[x] = EmbeddedDict(y)
   ```
+
   By changing the type of `y` from a dict to an `EmbeddedDict`, and setting the
   `"embedded"` type in the guarded block handler's internal context's
   `nodecode_types`, results that were already present in the JSON file will not

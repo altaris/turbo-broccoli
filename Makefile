@@ -1,4 +1,4 @@
-DOCS_PATH 		= docs
+DOCS_PATH 		= out/docs
 SRC_PATH 		= turbo_broccoli
 TST_PATH 		= tests
 VENV			= ./venv

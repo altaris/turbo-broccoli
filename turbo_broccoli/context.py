@@ -198,13 +198,13 @@ class Context:
 
     def raise_if_nodecode(self, type_name: str) -> None:
         """
-        Raises a `TypeIsNodecode` exception if `type_name` or any prefix is set
-        to not be decoded in this context (see `nodecode_types` constructor
-        argument).
+        Raises a `turbo_broccoli.exceptions.TypeIsNodecode` exception if
+        `type_name` or any prefix is set to not be decoded in this context (see
+        `nodecode_types` constructor argument).
 
         For example, if `type_name` is `a.b.c`, then this method raises
-        `TypeIsNodecode` if either `a`, `a.b`, or `a.b.c` is set as a nodecode
-        type.
+        `turbo_broccoli.exceptions.TypeIsNodecode` if either `a`, `a.b`, or
+        `a.b.c` is set as a nodecode type.
         """
         parts = type_name.split(".")
         for i in range(1, len(parts) + 1):

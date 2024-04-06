@@ -68,10 +68,10 @@ gives
     executor = tb.Parallel(...)
     results = executor(jobs)
     ```
-    because `f` is in effect multiple times with value `0`. In particular,
-    TurboBroccoli's `Parallel` is not suited for functions with no arguments
-    (unless if they are executed only once but that kind of defeats the idea of
-    parallelism).
+    because `f` is in effect called multiple times with value `0`. In
+    particular, TurboBroccoli's `Parallel` is not suited for functions with no
+    arguments (unless if they are executed only once but that kind of defeats
+    the idea of parallelism).
 
 * Beyond the arguments documented in `Parallel`, [`joblib.Parallel`
   arguments](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
