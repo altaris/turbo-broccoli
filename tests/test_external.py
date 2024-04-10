@@ -11,6 +11,7 @@ from common import to_from_json
 from numpy.testing import assert_array_equal
 
 from turbo_broccoli import Context, ExternalData, save
+from turbo_broccoli.turbo_broccoli import load_json, save_json
 
 TEST_PATH = "out/test/test_external/"
 
@@ -67,3 +68,15 @@ def test_external_absolute_2():
     assert_array_equal(a, x["a"].data)
     y = to_from_json(x, ctx)
     assert_array_equal(a, y["a"].data)
+
+
+def test_external_nodecode_path():
+    p = TEST_PATH + "test_external_nodecode_path.json"
+    q = "test_external_nodecode_path/a.np"
+    ctx = Context(p)
+    a = np.arange(10)
+    save(a, TEST_PATH + q)
+    x = {"a": ExternalData(q, ctx)}
+    save_json(x, ctx.file_path, ctx)
+    y = load_json(ctx.file_path, nodecode_types=["pathlib"])
+    assert isinstance(y["a"], dict)

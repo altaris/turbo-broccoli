@@ -301,6 +301,8 @@ obj = tb.from_json(doc, ctx)
 
 - [UUID objects](https://docs.python.org/3/library/uuid.html)
 
+- [`pathlib.Path`](https://docs.python.org/3/library/pathlib.html#pathlib.Path)
+
 ### Generic objects
 
 **Serialization only**. A generic object is an object that
@@ -748,6 +750,8 @@ by modifying `os.environ`. Rather, use a
 
   - `embedded`, `embedded.dict`, `embedded.list`,
 
+  - `external`,
+
   - `generic`,
 
   - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
@@ -758,6 +762,9 @@ by modifying `os.environ`. Rather, use a
 
   - `pandas`, `pandas.dataframe`, `pandas.series`, **Warning**: excluding
     `pandas.dataframe` will also exclude `pandas.series`,
+
+  - `pathlib`, `pathlib.path`, **Warning**: excluding `pathlib.path` will also
+    exclude `external`,
 
   - `pytorch`, `pytorch.tensor`, `pytorch.module`, `pytorch.concatdataset`,
     `pytorch.stackdataset`, `pytorch.subset`, `pytorch.tensordataset`

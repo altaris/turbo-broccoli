@@ -12,6 +12,7 @@ from turbo_broccoli.custom import dct as _dict
 from turbo_broccoli.custom import embedded as _embedded
 from turbo_broccoli.custom import external as _external
 from turbo_broccoli.custom import generic as _generic
+from turbo_broccoli.custom import pathlib as _pathlib
 from turbo_broccoli.custom import uuid as _uuid
 
 try:
@@ -106,6 +107,7 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         "datetime": _datetime.from_json,
         "dict": _dict.from_json,
         "external": _external.from_json,
+        "pathlib": _pathlib.from_json,
         "uuid": _uuid.from_json,
     }
     if HAS_KERAS:
@@ -155,6 +157,7 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         _datetime.to_json,
         _dict.to_json,
         _external.to_json,
+        _pathlib.to_json,
         _uuid.to_json,
     ]
     if HAS_KERAS:

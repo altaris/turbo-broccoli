@@ -50,11 +50,17 @@ class ExternalData:
 def _json_to_externaldata(dct: dict, ctx: Context) -> ExternalData:
     decoders = {
         1: _json_to_externaldata_v1,
+        2: _json_to_externaldata_v2,
     }
     return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_externaldata_v1(dct: dict, ctx: Context) -> ExternalData:
+    return ExternalData(dct["path"], ctx)
+
+
+def _json_to_externaldata_v2(dct: dict, ctx: Context) -> ExternalData:
+    ctx.raise_if_nodecode("pathlib.path")
     return ExternalData(dct["path"], ctx)
 
 
@@ -78,17 +84,14 @@ def to_json(obj: Any, ctx: Context) -> dict:
     ```py
     {
         "__type__": "external",
-        "__version__": 1,
-        "path": <str>
+        "__version__": 2,
+        "path": {...}
     }
     ```
 
-    where the `path` is relative to the path of the input/output JSON file.
+    where `path` is a (serialized) `pathlib.Path` object, and relative to the
+    path of the input/output JSON file.
     """
     if not isinstance(obj, ExternalData):
         raise TypeNotSupported()
-    return {
-        "__type__": "external",
-        "__version__": 1,
-        "path": str(obj.path),
-    }
+    return {"__type__": "external", "__version__": 2, "path": obj.path}
