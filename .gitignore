@@ -174,3 +174,4 @@ docs/
 out/
 playground.py
 *.test.py
+*.wip
