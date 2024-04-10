@@ -10,6 +10,7 @@ from turbo_broccoli.custom import dataclass as _dataclass
 from turbo_broccoli.custom import datetime as _datetime
 from turbo_broccoli.custom import dct as _dict
 from turbo_broccoli.custom import embedded as _embedded
+from turbo_broccoli.custom import external as _external
 from turbo_broccoli.custom import generic as _generic
 from turbo_broccoli.custom import uuid as _uuid
 
@@ -104,6 +105,7 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         "bytes": _bytes.from_json,
         "datetime": _datetime.from_json,
         "dict": _dict.from_json,
+        "external": _external.from_json,
         "uuid": _uuid.from_json,
     }
     if HAS_KERAS:
@@ -152,6 +154,7 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         _bytes.to_json,
         _datetime.to_json,
         _dict.to_json,
+        _external.to_json,
         _uuid.to_json,
     ]
     if HAS_KERAS:

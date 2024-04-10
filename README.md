@@ -640,6 +640,69 @@ will result in a `data.json` file containing
 {"c": 2, "d": 3}
 ```
 
+###  External data
+
+If you are serializing/deserializing from a file, you can use
+[`turbo_broccoli.ExternalData`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/external.html)
+to point to data contained in another file without integrating it to the
+current document.
+
+For example, let's say you want to create `foo/bar.json` where the `a` key
+points to the data contained in `foo/foooooo/data.np`:
+
+```py
+import turbo_broccoli as tb
+
+document = {
+  "a": tb.ExternalData("foooooo/data.np"),
+  ...
+}
+
+# data.np is loaded when creating the ExternalData object
+print(document["a"].data)
+
+# Saving
+tb.save_json(document, "foo/bar.json")
+
+# Loading
+document2 = tb.load_json("foo/bar.json")
+
+from numpy.testing import assert_array_equal
+assert_array_equal(document["a"].data, document2["a"].data)
+```
+
+Warnings:
+
+- `document["a"].data` is read only, the following will have no effect on
+  `foo/foooooo/data.np`:
+
+  ```py
+  document["a"].data += 1
+  tb.save_json(document, "foo/bar.json")
+  ```
+
+- When serializing/deserializing a `ExternalData` object, an actual JSON
+  document must be involved. In particular, using `tb.to_json` or
+  `tb.from_json` is not possible.
+
+- The external data file's path must be a subpath of the output/intput JSON
+  file, and provided either relative to the output/intput JSON file, or in
+  absolute form:
+
+  ```py
+  # OK, relative
+  document = {"a": tb.ExternalData("foooooo/data.np")}
+  tb.save_json(document, "foo/bar.json")
+
+  # OK, absolute
+  document = {"a": tb.ExternalData("/home/alice/foo/foooooo/data.np")}
+  tb.save_json(document, "foo/bar.json")
+
+  # ERROR, not subpath
+  document = {"a": tb.ExternalData("/home/alice/data.np")}
+  tb.save_json(document, "/home/alice/foo/bar.json")
+  ```
+
 ## Environment variables
 
 Some behaviors of TurboBroccoli can be tweaked by setting specific environment
@@ -710,6 +773,8 @@ by modifying `os.environ`. Rather, use a
     `tensorflow.variable`.
 
   - `uuid`
+
+  - `external`
 
 - `TB_SHARED_KEY` (default: empty):
   Secret key used to encrypt/decrypt secrets. The encryption uses [`pynacl`'s

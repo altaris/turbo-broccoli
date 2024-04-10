@@ -7,6 +7,7 @@ from pkg_resources import DistributionNotFound, get_distribution
 
 from turbo_broccoli.context import Context
 from turbo_broccoli.custom.embedded import EmbeddedDict, EmbeddedList
+from turbo_broccoli.custom.external import ExternalData
 from turbo_broccoli.guard import GuardedBlockHandler
 from turbo_broccoli.native import load, save
 from turbo_broccoli.parallel import Parallel, delayed
