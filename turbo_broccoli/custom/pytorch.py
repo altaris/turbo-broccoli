@@ -20,16 +20,16 @@ def _concatdataset_to_json(obj: ConcatDataset, ctx: Context) -> dict:
 
 
 def _json_to_concatdataset(dct: dict, ctx: Context) -> ConcatDataset:
-    DECODERS = {1: _json_to_concatdataset_v1}
-    return DECODERS[dct["__version__"]](dct, ctx)
+    decoders = {1: _json_to_concatdataset_v1}
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_module(dct: dict, ctx: Context) -> Module:
     ctx.raise_if_nodecode("bytes")
-    DECODERS = {
+    decoders = {
         3: _json_to_module_v3,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_module_v3(dct: dict, ctx: Context) -> Module:
@@ -46,8 +46,8 @@ def _json_to_concatdataset_v1(dct: dict, ctx: Context) -> ConcatDataset:
 
 
 def _json_to_stackdataset(dct: dict, ctx: Context) -> StackDataset:
-    DECODERS = {1: _json_to_stackdataset_v1}
-    return DECODERS[dct["__version__"]](dct, ctx)
+    decoders = {1: _json_to_stackdataset_v1}
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_stackdataset_v1(dct: dict, ctx: Context) -> StackDataset:
@@ -58,8 +58,8 @@ def _json_to_stackdataset_v1(dct: dict, ctx: Context) -> StackDataset:
 
 
 def _json_to_subset(dct: dict, ctx: Context) -> Subset:
-    DECODERS = {1: _json_to_subset_v1}
-    return DECODERS[dct["__version__"]](dct, ctx)
+    decoders = {1: _json_to_subset_v1}
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_subset_v1(dct: dict, ctx: Context) -> Subset:
@@ -68,10 +68,10 @@ def _json_to_subset_v1(dct: dict, ctx: Context) -> Subset:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> Tensor:
     ctx.raise_if_nodecode("bytes")
-    DECODERS = {
+    decoders = {
         3: _json_to_tensor_v3,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_tensor_v3(dct: dict, ctx: Context) -> Tensor:
@@ -80,8 +80,8 @@ def _json_to_tensor_v3(dct: dict, ctx: Context) -> Tensor:
 
 
 def _json_to_tensordataset(dct: dict, ctx: Context) -> TensorDataset:
-    DECODERS = {1: _json_to_tensordataset_v1}
-    return DECODERS[dct["__version__"]](dct, ctx)
+    decoders = {1: _json_to_tensordataset_v1}
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_tensordataset_v1(dct: dict, ctx: Context) -> TensorDataset:
@@ -132,7 +132,7 @@ def _tensordataset_to_json(obj: TensorDataset, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "pytorch.concatdataset": _json_to_concatdataset,
         "pytorch.stackdataset": _json_to_stackdataset,
         "pytorch.subset": _json_to_subset,
@@ -143,7 +143,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
         type_name = dct["__type__"]
         if type_name.startswith("pytorch.module."):
             return _json_to_module(dct, ctx)
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -184,7 +184,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
       see `turbo_broccoli.custom.bytes.to_json`.
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (Module, _module_to_json),
         (Tensor, _tensor_to_json),
         (ConcatDataset, _concatdataset_to_json),
@@ -192,7 +192,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
         (Subset, _subset_to_json),
         (TensorDataset, _tensordataset_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

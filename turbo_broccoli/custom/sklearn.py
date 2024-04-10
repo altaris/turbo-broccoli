@@ -108,7 +108,7 @@ _SKLEARN_TREE_ATTRIBUTES = [
 ]
 
 _SUPPORTED_PICKLABLE_TYPES = [
-    tree._tree.Tree,
+    tree._tree.Tree,  # pylint: disable=protected-access
     neighbors.KDTree,
 ]
 """sklearn types that shall be pickled"""
@@ -181,11 +181,11 @@ def _sklearn_tree_to_json(obj: Tree, ctx: Context) -> dict:
 
 
 def _json_raw_to_sklearn(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         # 1: _json_raw_to_sklearn_v1,  # Use turbo_broccoli v3
         2: _json_raw_to_sklearn_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_raw_to_sklearn_v2(dct: dict, ctx: Context) -> Any:
@@ -193,10 +193,10 @@ def _json_raw_to_sklearn_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_sklearn_estimator(dct: dict, ctx: Context) -> BaseEstimator:
-    DECODERS = {
+    decoders = {
         2: _json_to_sklearn_estimator_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_sklearn_estimator_v2(dct: dict, ctx: Context) -> BaseEstimator:
@@ -210,14 +210,14 @@ def _json_to_sklearn_estimator_v2(dct: dict, ctx: Context) -> BaseEstimator:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> BaseEstimator:
-    DECODERS = {  # Except sklearn estimators
+    decoders = {  # Except sklearn estimators
         "sklearn.raw": _json_raw_to_sklearn,
     }
     try:
         type_name = dct["__type__"]
         if type_name.startswith("sklearn.estimator."):
             return _json_to_sklearn_estimator(dct, ctx)
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -255,12 +255,12 @@ def to_json(obj: BaseEstimator, ctx: Context) -> dict:
       where the UUID4 value points to an pickle file artifact.
     """
 
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (t, _sklearn_to_raw) for t in _SUPPORTED_PICKLABLE_TYPES
     ] + [
         (BaseEstimator, _sklearn_estimator_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

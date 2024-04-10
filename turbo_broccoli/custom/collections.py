@@ -17,10 +17,10 @@ def _deque_to_json(deq: deque, ctx: Context) -> dict:
 
 
 def _json_to_deque(dct: dict, ctx: Context) -> deque | None:
-    DECODERS = {
+    decoders = {
         2: _json_to_deque_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_deque_v2(dct: dict, ctx: Context) -> Any:
@@ -28,10 +28,10 @@ def _json_to_deque_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_namedtuple(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         2: _json_to_namedtuple_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_namedtuple_v2(dct: dict, ctx: Context) -> Any:
@@ -39,10 +39,10 @@ def _json_to_namedtuple_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_set(dct: dict, ctx: Context) -> set:
-    DECODERS = {
+    decoders = {
         2: _json_to_set_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_set_v2(dct: dict, ctx: Context) -> Any:
@@ -50,10 +50,10 @@ def _json_to_set_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_tuple(dct: dict, ctx: Context) -> tuple:
-    DECODERS = {
+    decoders = {
         1: _json_to_tuple_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_tuple_v1(dct: dict, ctx: Context) -> Any:
@@ -89,7 +89,7 @@ def _tuple_to_json(obj: tuple, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "collections.deque": _json_to_deque,
         "collections.namedtuple": _json_to_namedtuple,
         "collections.set": _json_to_set,
@@ -97,7 +97,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -151,12 +151,12 @@ def to_json(obj: Any, ctx: Context) -> dict:
         ```
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (deque, _deque_to_json),
         (tuple, _tuple_to_json),
         (set, _set_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

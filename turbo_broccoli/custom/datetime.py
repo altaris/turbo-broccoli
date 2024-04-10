@@ -39,10 +39,10 @@ def _timedelta_to_json(obj: timedelta, ctx: Context) -> dict:
 
 
 def _json_to_datetime(dct: dict, ctx: Context) -> datetime:
-    DECODERS = {
+    decoders = {
         1: _json_to_datetime_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_datetime_v1(dct: dict, ctx: Context) -> datetime:
@@ -50,10 +50,10 @@ def _json_to_datetime_v1(dct: dict, ctx: Context) -> datetime:
 
 
 def _json_to_time(dct: dict, ctx: Context) -> time:
-    DECODERS = {
+    decoders = {
         1: _json_to_time_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_time_v1(dct: dict, ctx: Context) -> time:
@@ -61,10 +61,10 @@ def _json_to_time_v1(dct: dict, ctx: Context) -> time:
 
 
 def _json_to_timedelta(dct: dict, ctx: Context) -> timedelta:
-    DECODERS = {
+    decoders = {
         1: _json_to_timedelta_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_timedelta_v1(dct: dict, ctx: Context) -> timedelta:
@@ -77,14 +77,14 @@ def _json_to_timedelta_v1(dct: dict, ctx: Context) -> timedelta:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "datetime.datetime": _json_to_datetime,
         "datetime.time": _json_to_time,
         "datetime.timedelta": _json_to_timedelta,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -126,12 +126,12 @@ def to_json(obj: Any, ctx: Context) -> dict:
         }
         ```
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (datetime, _datetime_to_json),
         (time, _time_to_json),
         (timedelta, _timedelta_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

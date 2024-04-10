@@ -13,11 +13,11 @@ def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         3: _json_to_dataclass_v3,
     }
     try:
-        return DECODERS[dct["__version__"]](dct, ctx)
+        return decoders[dct["__version__"]](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 

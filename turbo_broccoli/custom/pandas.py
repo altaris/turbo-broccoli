@@ -32,10 +32,10 @@ def _dataframe_to_json(df: pd.DataFrame, ctx: Context) -> dict:
 
 
 def _json_to_dataframe(dct: dict, ctx: Context) -> pd.DataFrame:
-    DECODERS = {
+    decoders = {
         2: _json_to_dataframe_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
@@ -64,10 +64,10 @@ def _json_to_dataframe_v2(dct: dict, ctx: Context) -> pd.DataFrame:
 
 def _json_to_series(dct: dict, ctx: Context) -> pd.Series:
     ctx.raise_if_nodecode("pandas.dataframe")
-    DECODERS = {
+    decoders = {
         2: _json_to_series_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_series_v2(dct: dict, ctx: Context) -> pd.Series:
@@ -86,13 +86,13 @@ def _series_to_json(ser: pd.Series, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "pandas.dataframe": _json_to_dataframe,
         "pandas.series": _json_to_series,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -158,11 +158,11 @@ def to_json(obj: Any, ctx: Context) -> dict:
         Series and column names must be strings!
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (pd.DataFrame, _dataframe_to_json),
         (pd.Series, _series_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

@@ -3,6 +3,8 @@
 # pylint: disable=redefined-builtin
 # pylint: disable=unused-wildcard-import
 # pylint: disable=wildcard-import
+# pylint: disable=invalid-name
+
 """
 bokeh (de)serialization test suite. This test suite serializes and deserializes
 various figures, but does not check for similarity between the original and the

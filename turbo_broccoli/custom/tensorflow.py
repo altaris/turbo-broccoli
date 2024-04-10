@@ -10,10 +10,10 @@ from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_sparse_tensor(dct: dict, ctx: Context) -> tf.Tensor:
-    DECODERS = {
+    decoders = {
         2: _json_to_sparse_tensor_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
@@ -26,10 +26,10 @@ def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
 
 def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     ctx.raise_if_nodecode("bytes")
-    DECODERS = {
+    decoders = {
         4: _json_to_tensor_v4,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_tensor_v4(dct: dict, ctx: Context) -> tf.Tensor:
@@ -37,10 +37,10 @@ def _json_to_tensor_v4(dct: dict, ctx: Context) -> tf.Tensor:
 
 
 def _json_to_variable(dct: dict, ctx: Context) -> tf.Variable:
-    DECODERS = {
+    decoders = {
         3: _json_to_variable_v3,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_variable_v3(dct: dict, ctx: Context) -> tf.Variable:
@@ -87,14 +87,14 @@ def _variable_to_json(var: tf.Variable, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "tensorflow.sparse_tensor": _json_to_sparse_tensor,
         "tensorflow.tensor": _json_to_tensor,
         "tensorflow.variable": _json_to_variable,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -153,13 +153,13 @@ def to_json(obj: Any, ctx: Context) -> dict:
       the variable, see above.
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (tf.RaggedTensor, _ragged_tensor_to_json),
         (tf.SparseTensor, _sparse_tensor_to_json),
         (tf.Tensor, _tensor_to_json),
         (tf.Variable, _variable_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

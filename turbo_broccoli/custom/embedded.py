@@ -7,7 +7,8 @@ document.
 """
 
 # pylint: disable=cyclic-import
-# pylint: disable=import-outside-toplevel
+# pylint: disable=import-outside-toplevel  # to avoid actual circular imports
+# pylint: disable=protected-access
 
 
 from pathlib import Path
@@ -68,10 +69,10 @@ def _embedded_list_to_json(obj: EmbeddedList, ctx: Context) -> dict:
 
 
 def _json_to_embedded_dict(dct: dict, ctx: Context) -> EmbeddedDict:
-    DECODERS = {
+    decoders = {
         1: _json_to_embedded_dict_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_embedded_dict_v1(dct: dict, ctx: Context) -> EmbeddedDict:
@@ -85,10 +86,10 @@ def _json_to_embedded_dict_v1(dct: dict, ctx: Context) -> EmbeddedDict:
 
 
 def _json_to_embedded_list(dct: dict, ctx: Context) -> EmbeddedList:
-    DECODERS = {
+    decoders = {
         1: _json_to_embedded_list_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 # TODO: deduplicate with _json_to_embedded_dict_v1
@@ -104,13 +105,13 @@ def _json_to_embedded_list_v1(dct: dict, ctx: Context) -> EmbeddedList:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "embedded.dict": _json_to_embedded_dict,
         "embedded.list": _json_to_embedded_list,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -140,11 +141,11 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
     where the UUID points to the artefact containing the actual data.
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (EmbeddedDict, _embedded_dict_to_json),
         (EmbeddedList, _embedded_list_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

@@ -23,10 +23,10 @@ def _json_to_XXX(dct: dict, ctx: Context) -> Any:
     # TODO: Rename
     # TODO: Type return
     # TODO: Check dispatch
-    DECODERS = {
+    decoders = {
         1: _json_to_XXX_v1,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_XXX_v1(dct: dict, ctx: Context) -> Any:
@@ -39,12 +39,12 @@ def _json_to_XXX_v1(dct: dict, ctx: Context) -> Any:
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     # TODO: Check dispatch
-    DECODERS = {
+    decoders = {
         "XXX": _json_to_XXX,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -69,10 +69,10 @@ def to_json(obj: Any, ctx: Context) -> dict:
     """
     # TODO: Write doc
     # TODO: Check dispatch
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (XXX, _XXX_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

@@ -87,21 +87,21 @@ def _from_json_v2(dct: dict, ctx: Context) -> Any:
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     ctx.raise_if_nodecode("bytes")
-    DECODERS = {
+    decoders = {
         # 1: _from_json_v1,  # Use turbo_broccoli v3
         2: _from_json_v2,
     }
-    obj = DECODERS[dct["__version__"]](dct, ctx)
+    obj = decoders[dct["__version__"]](dct, ctx)
     if isinstance(obj, LockedSecret):
         return obj
-    TYPES = {
+    types = {
         dict: SecretDict,
         float: SecretFloat,
         int: SecretInt,
         list: SecretList,
         str: SecretStr,
     }
-    return TYPES[type(obj)](obj)
+    return types[type(obj)](obj)
 
 
 def to_json(obj: Secret, ctx: Context) -> dict:

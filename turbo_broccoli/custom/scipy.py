@@ -21,10 +21,10 @@ def _csr_matrix_to_json(m: csr_matrix, ctx: Context) -> dict:
 
 
 def _json_to_csr_matrix(dct: dict, ctx: Context) -> csr_matrix:
-    DECODERS = {
+    decoders = {
         2: _json_to_csr_matrix_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_csr_matrix_v2(dct: dict, ctx: Context) -> csr_matrix:
@@ -37,12 +37,12 @@ def _json_to_csr_matrix_v2(dct: dict, ctx: Context) -> csr_matrix:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "scipy.csr_matrix": _json_to_csr_matrix,
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -68,10 +68,10 @@ def to_json(obj: Any, ctx: Context) -> dict:
         ```
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (csr_matrix, _csr_matrix_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

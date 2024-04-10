@@ -61,19 +61,14 @@ confidence=
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
 disable=
-      duplicate-code,
-      import-error,
-      invalid-name,
-      line-too-long,
-      logging-fstring-interpolation,
-      protected-access,
-      too-few-public-methods,
-      too-many-arguments,
+      bare-except,  # i know what i'm doing >:(
+      broad-except,  # i know what i'm doing >:(
+      duplicate-code,  # to many false positives
+      import-error,  # to many false positives
+      line-too-long,  # しょうがない
+      logging-fstring-interpolation,  # for logging/loguru agnostic code
+      too-few-public-methods,  # i know what i'm doing >:(
       unused-argument,
-      ; broad-except,
-      ; duplicate-code,
-      ; global-statement,
-      ; import-outside-toplevel,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

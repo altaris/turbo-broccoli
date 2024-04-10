@@ -23,7 +23,7 @@ def _from_jsonable(obj: Any, ctx: Context) -> Any:
                 base = obj["__type__"].split(".")[0]
                 if base == "user":
                     name = ".".join(obj["__type__"].split(".")[1:])
-                    if decoder := user.DECODERS.get(name):
+                    if decoder := user.decoders.get(name):
                         obj = decoder(obj, ctx)
                 else:
                     obj = get_decoders()[base](obj, ctx)
@@ -45,8 +45,8 @@ def _to_jsonable(obj: Any, ctx: Context) -> Any:
     readily vanilla JSON-serializable.
     """
     name = obj.__class__.__name__
-    if name in user.ENCODERS:
-        obj = user.ENCODERS[name](obj, ctx)
+    if name in user.encoders:
+        obj = user.encoders[name](obj, ctx)
     for encoder in get_encoders():
         try:
             obj = encoder(obj, ctx)

@@ -10,8 +10,8 @@ ClassOrClasses: TypeAlias = (
     type | str | list[type | str] | tuple[type | str] | set[type | str]
 )
 
-ENCODERS: dict[str, Encoder] = {}
-DECODERS: dict[str, Decoder] = {}
+encoders: dict[str, Encoder] = {}
+decoders: dict[str, Decoder] = {}
 
 
 def register_encoder(encoder: Encoder | None, class_or_tuple: ClassOrClasses):
@@ -46,10 +46,10 @@ def register_encoder(encoder: Encoder | None, class_or_tuple: ClassOrClasses):
         )
     for cls in class_or_tuple:
         name = cls if isinstance(cls, str) else cls.__name__
-        if encoder is None and name in ENCODERS:
-            del ENCODERS[name]
+        if encoder is None and name in encoders:
+            del encoders[name]
         elif encoder is not None:
-            ENCODERS[name] = encoder
+            encoders[name] = encoder
 
 
 def register_decoder(decoder: Decoder | None, class_or_tuple: ClassOrClasses):
@@ -72,7 +72,7 @@ def register_decoder(decoder: Decoder | None, class_or_tuple: ClassOrClasses):
         )
     for cls in class_or_tuple:
         name = cls if isinstance(cls, str) else cls.__name__
-        if decoder is None and name in DECODERS:
-            del DECODERS[name]
+        if decoder is None and name in decoders:
+            del decoders[name]
         elif decoder is not None:
-            DECODERS[name] = decoder
+            decoders[name] = decoder

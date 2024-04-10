@@ -247,10 +247,10 @@ KERAS_LEGACY_OPTIMIZERS = {
 
 
 def _json_to_layer(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         2: _json_to_layer_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
@@ -261,10 +261,10 @@ def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_loss(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         2: _json_to_loss_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
@@ -275,10 +275,10 @@ def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_metric(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         2: _json_to_metric_v2,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
@@ -289,10 +289,10 @@ def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_model(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         5: _json_to_model_v5,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
@@ -314,11 +314,11 @@ def _json_to_model_v5(dct: dict, ctx: Context) -> Any:
 
 
 def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         2: _json_to_optimizer_v2,
         3: _json_to_optimizer_v3,
     }
-    return DECODERS[dct["__version__"]](dct, ctx)
+    return decoders[dct["__version__"]](dct, ctx)
 
 
 def _json_to_optimizer_v2(dct: dict, ctx: Context) -> Any:
@@ -385,7 +385,7 @@ def _optimizer_to_json(obj: Any, ctx: Context) -> dict:
 
 # pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
-    DECODERS = {
+    decoders = {
         "keras.model": _json_to_model,  # must be first!
         "keras.layer": _json_to_layer,
         "keras.loss": _json_to_loss,
@@ -394,7 +394,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
     }
     try:
         type_name = dct["__type__"]
-        return DECODERS[type_name](dct, ctx)
+        return decoders[type_name](dct, ctx)
     except KeyError as exc:
         raise DeserializationError() from exc
 
@@ -440,7 +440,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
       behaviour](https://www.tensorflow.org/api_docs/python/tf/keras/saving/save_model).
 
     """
-    ENCODERS: list[Tuple[type, Callable[[Any, Context], dict]]] = [
+    encoders: list[Tuple[type, Callable[[Any, Context], dict]]] = [
         (keras.Model, _model_to_json),  # must be first
         (keras.metrics.Metric, partial(_generic_to_json, type_="metric")),
         (keras.layers.Layer, partial(_generic_to_json, type_="layer")),
@@ -448,7 +448,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
         (keras.optimizers.Optimizer, _optimizer_to_json),
         (keras.optimizers.legacy.Optimizer, _optimizer_to_json),
     ]
-    for t, f in ENCODERS:
+    for t, f in encoders:
         if isinstance(obj, t):
             return f(obj, ctx)
     raise TypeNotSupported()

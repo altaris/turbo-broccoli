@@ -1,4 +1,6 @@
 # pylint: disable=missing-function-docstring
+# pylint: disable=protected-access
+
 """deque (de)serialization test suite"""
 
 from json import loads
