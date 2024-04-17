@@ -536,6 +536,11 @@ Doesn't work with:
 Bokeh [figures](https://docs.bokeh.org/en/latest) and
 [models](https://docs.bokeh.org/en/latest/docs/reference/models.html).
 
+### [NetworkX](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/networkx.html#to_json)
+
+All NetworkX [graph
+objects](https://networkx.org/documentation/stable/reference/classes/index.html#which-graph-class-should-i-use).
+
 ### [Secrets](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/secret.html#to_json)
 
 Basic Python types can be wrapped in their corresponding secret type according
@@ -756,6 +761,8 @@ by modifying `os.environ`. Rather, use a
 
   - `keras`, `keras.model`, `keras.layer`, `keras.loss`, `keras.metric`,
     `keras.optimizer`,
+
+  - `networkx`, `networkx.graph`,
 
   - `numpy`, `numpy.ndarray`, `numpy.number`, `numpy.dtype`,
     `numpy.random_state`,
