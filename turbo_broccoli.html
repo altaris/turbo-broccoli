@@ -198,7 +198,7 @@ object manually:</p>
 <p>See <a href="https://altaris.github.io/turbo_broccoli/context.html#Context">the
 documentation</a>.</p>
 
-<h3 id="guarded-blocks">Guarded blocks</h3>
+<h3 id="guarded-blockshttpsaltarisgithubioturbo-broccoliturbo_broccoliguardhtml"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html">Guarded blocks</a></h3>
 
 <p>A
 <a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler"><code>turbo_broccoli.GuardedBlockHandler</code></a>
@@ -207,7 +207,7 @@ been in the past. Check out <a href="https://altaris.github.io/turbo-broccoli/tu
 documentation</a>
 for some examples.</p>
 
-<h3 id="guarded-parallel-executors">Guarded-parallel executors</h3>
+<h3 id="guarded-parallel-executorshttpsaltarisgithubioturbo-broccoliturbo_broccoliparallelhtml"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html">Guarded-parallel executors</a></h3>
 
 <p>A mix of
 <a href="https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html"><code>joblib.Parallel</code></a>
@@ -352,10 +352,10 @@ If deserialization is necessary, instantiate a <a href="https://altaris.github.i
 <h3 id="basic-types">Basic types</h3>
 
 <ul>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json"><code>bytes</code></a></p></li>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json">Collections</a>:
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/bytes.html#to_json"><code>bytes</code></a></p></li>
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/collections.html#to_json">Collections</a>:
 <code>collections.deque</code>, <code>collections.namedtuple</code></p></li>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json">Dataclasses</a>:
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/dataclass.html#to_json">Dataclasses</a>:
 serialization is straightforward:</p>
 
 <div class="pdoc-code codehilite">
@@ -375,7 +375,7 @@ serialization is straightforward:</p>
 <span class="n">tb</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">ctx</span><span class="p">)</span>
 </code></pre>
 </div></li>
-<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json"><code>datetime.datetime</code>, <code>datetime.time</code>,
+<li><p><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/datetime.html#to_json"><code>datetime.datetime</code>, <code>datetime.time</code>,
 <code>datetime.timedelta</code></a></p></li>
 <li><p>Non JSON-able dicts, i.e. dicts whose keys are not all <code>str</code>, <code>int</code>, <code>float</code>,
 <code>bool</code> or <code>None</code></p></li>
@@ -412,7 +412,7 @@ of attributes whose values will be serialized. For example,</p>
 <p>Registered attributes can of course have any type supported by TurboBroccoli,
 such as numpy arrays. Registered attributes can be <code>@property</code> methods.</p>
 
-<h3 id="kerashttpsaltarisgithubioturbo-broccoliturbo_broccolikerashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/keras.html#to_json">Keras</a></h3>
+<h3 id="kerashttpsaltarisgithubioturbo-broccoliturbo_broccolicustomkerashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/keras.html#to_json">Keras</a></h3>
 
 <ul>
 <li><p><a href="https://keras.io/api/models/model/"><code>keras.Model</code></a>;</p></li>
@@ -422,11 +422,11 @@ such as numpy arrays. Registered attributes can be <code>@property</code> method
 <a href="https://keras.io/api/optimizers/"><code>keras.optimizers.Optimizer</code></a>.</p></li>
 </ul>
 
-<h3 id="numpyhttpsaltarisgithubioturbo-broccoliturbo_broccolinumpyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/numpy.html#to_json">Numpy</a></h3>
+<h3 id="numpyhttpsaltarisgithubioturbo-broccoliturbo_broccolicustomnumpyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/numpy.html#to_json">Numpy</a></h3>
 
 <p><code>numpy.number</code>, <code>numpy.ndarray</code> with numerical dtype, and <code>numpy.dtype</code>.</p>
 
-<h3 id="pandashttpsaltarisgithubioturbo-broccoliturbo_broccolipandashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/pandas.html#to_json">Pandas</a></h3>
+<h3 id="pandashttpsaltarisgithubioturbo-broccoliturbo_broccolicustompandashtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/pandas.html#to_json">Pandas</a></h3>
 
 <p><code>pandas.DataFrame</code> and <code>pandas.Series</code>, but with the following limitations:</p>
 
@@ -442,11 +442,11 @@ not acceptable</p>
 </div></li>
 </ul>
 
-<h3 id="tensorflowhttpsaltarisgithubioturbo-broccoliturbo_broccolitensorflowhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/tensorflow.html#to_json">Tensorflow</a></h3>
+<h3 id="tensorflowhttpsaltarisgithubioturbo-broccoliturbo_broccolicustomtensorflowhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/tensorflow.html#to_json">Tensorflow</a></h3>
 
 <p><code>tensorflow.Tensor</code> with numerical dtype, but not <code>tensorflow.RaggedTensor</code>.</p>
 
-<h3 id="pytorchhttpsaltarisgithubioturbo-broccoliturbo_broccolipytorchhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/pytorch.html#to_json">Pytorch</a></h3>
+<h3 id="pytorchhttpsaltarisgithubioturbo-broccoliturbo_broccolicustompytorchhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/pytorch.html#to_json">Pytorch</a></h3>
 
 <ul>
 <li><p><code>torch.Tensor</code>, <strong>Warning</strong>: loaded tensors are automatically placed on the
@@ -522,11 +522,11 @@ nested structure of datasets ultimately lead to
 tensor datasets is supported)</p></li>
 </ul>
 
-<h3 id="scipyhttpsaltarisgithubioturbo-broccoliturbo_broccoliscipyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json">Scipy</a></h3>
+<h3 id="scipyhttpsaltarisgithubioturbo-broccoliturbo_broccolicustomscipyhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/scipy.html#to_json">Scipy</a></h3>
 
 <p>Just <code>scipy.sparse.csr_matrix</code>. ^^"</p>
 
-<h3 id="scikit-learnhttpsaltarisgithubioturbo-broccoliturbo_broccolisklearnhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json">Scikit-learn</a></h3>
+<h3 id="scikit-learnhttpsaltarisgithubioturbo-broccoliturbo_broccolicustomsklearnhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/sklearn.html#to_json">Scikit-learn</a></h3>
 
 <p><code>sklearn</code> estimators (i.e. that inherit from
 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html"><code>sklean.base.BaseEstimator</code></a>).
@@ -663,12 +663,17 @@ returns an array?</p></li>
 </ul></li>
 </ul>
 
-<h3 id="bokehhttpsaltarisgithubioturbo-broccoliturbo_broccolibokehhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json">Bokeh</a></h3>
+<h3 id="bokehhttpsaltarisgithubioturbo-broccoliturbo_broccolicustombokehhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/bokeh.html#to_json">Bokeh</a></h3>
 
 <p>Bokeh <a href="https://docs.bokeh.org/en/latest">figures</a> and
 <a href="https://docs.bokeh.org/en/latest/docs/reference/models.html">models</a>.</p>
 
-<h3 id="secretshttpsaltarisgithubioturbo-broccoliturbo_broccolisecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json">Secrets</a></h3>
+<h3 id="networkxhttpsaltarisgithubioturbo-broccoliturbo_broccolicustomnetworkxhtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/networkx.html#to_json">NetworkX</a></h3>
+
+<p>All NetworkX <a href="https://networkx.org/documentation/stable/reference/classes/index.html#which-graph-class-should-i-use">graph
+objects</a>.</p>
+
+<h3 id="secretshttpsaltarisgithubioturbo-broccoliturbo_broccolicustomsecrethtmlto_json"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/secret.html#to_json">Secrets</a></h3>
 
 <p>Basic Python types can be wrapped in their corresponding secret type according
 to the following table</p>
@@ -910,6 +915,7 @@ Comma-separated list of types to not deserialize, for example
 <li><p><code>generic</code>,</p></li>
 <li><p><code>keras</code>, <code>keras.model</code>, <code>keras.layer</code>, <code>keras.loss</code>, <code>keras.metric</code>,
 <code>keras.optimizer</code>,</p></li>
+<li><p><code>networkx</code>, <code>networkx.graph</code>,</p></li>
 <li><p><code>numpy</code>, <code>numpy.ndarray</code>, <code>numpy.number</code>, <code>numpy.dtype</code>,
 <code>numpy.random_state</code>,</p></li>
 <li><p><code>pandas</code>, <code>pandas.dataframe</code>, <code>pandas.series</code>, <strong>Warning</strong>: excluding
