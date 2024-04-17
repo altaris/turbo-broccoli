@@ -122,7 +122,7 @@ tb.save_json(obj, "foo/bar/foobar.json", nacl_shared_key=key)
 See [the
 documentation](https://altaris.github.io/turbo_broccoli/context.html#Context).
 
-### Guarded blocks
+### [Guarded blocks](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html)
 
 A
 [`turbo_broccoli.GuardedBlockHandler`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html#GuardedBlockHandler)
@@ -131,7 +131,7 @@ been in the past. Check out [the
 documentation](https://altaris.github.io/turbo-broccoli/turbo_broccoli/guard.html)
 for some examples.
 
-### Guarded-parallel executors
+### [Guarded-parallel executors](https://altaris.github.io/turbo-broccoli/turbo_broccoli/parallel.html)
 
 A mix of
 [`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
@@ -269,12 +269,12 @@ obj = tb.from_json(doc, ctx)
 
 ### Basic types
 
-- [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bytes.html#to_json)
+- [`bytes`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/bytes.html#to_json)
 
-- [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/collections.html#to_json):
+- [Collections](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/collections.html#to_json):
   `collections.deque`, `collections.namedtuple`
 
-- [Dataclasses](https://altaris.github.io/turbo-broccoli/turbo_broccoli/dataclass.html#to_json):
+- [Dataclasses](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/dataclass.html#to_json):
   serialization is straightforward:
 
   ```py
@@ -294,7 +294,7 @@ obj = tb.from_json(doc, ctx)
   ```
 
 - [`datetime.datetime`, `datetime.time`,
-  `datetime.timedelta`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/datetime.html#to_json)
+  `datetime.timedelta`](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/datetime.html#to_json)
 
 - Non JSON-able dicts, i.e. dicts whose keys are not all `str`, `int`, `float`,
   `bool` or `None`
@@ -330,7 +330,7 @@ produces the following string:
 Registered attributes can of course have any type supported by TurboBroccoli,
 such as numpy arrays. Registered attributes can be `@property` methods.
 
-### [Keras](https://altaris.github.io/turbo-broccoli/turbo_broccoli/keras.html#to_json)
+### [Keras](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/keras.html#to_json)
 
 - [`keras.Model`](https://keras.io/api/models/model/);
 
@@ -339,11 +339,11 @@ such as numpy arrays. Registered attributes can be `@property` methods.
   [`keras.metrics.Metric`](https://keras.io/api/metrics/), and
   [`keras.optimizers.Optimizer`](https://keras.io/api/optimizers/).
 
-### [Numpy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/numpy.html#to_json)
+### [Numpy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/numpy.html#to_json)
 
 `numpy.number`, `numpy.ndarray` with numerical dtype, and `numpy.dtype`.
 
-### [Pandas](https://altaris.github.io/turbo-broccoli/turbo_broccoli/pandas.html#to_json)
+### [Pandas](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/pandas.html#to_json)
 
 `pandas.DataFrame` and `pandas.Series`, but with the following limitations:
 
@@ -357,11 +357,11 @@ such as numpy arrays. Registered attributes can be `@property` methods.
   df = pd.DataFrame([[1, 2], [3, 4]], columns=["0", "1"])
   ```
 
-### [Tensorflow](https://altaris.github.io/turbo-broccoli/turbo_broccoli/tensorflow.html#to_json)
+### [Tensorflow](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/tensorflow.html#to_json)
 
 `tensorflow.Tensor` with numerical dtype, but not `tensorflow.RaggedTensor`.
 
-### [Pytorch](https://altaris.github.io/turbo-broccoli/turbo_broccoli/pytorch.html#to_json)
+### [Pytorch](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/pytorch.html#to_json)
 
 - `torch.Tensor`, **Warning**: loaded tensors are automatically placed on the
   CPU and gradients are lost;
@@ -434,11 +434,11 @@ such as numpy arrays. Registered attributes can be `@property` methods.
   `torch.utils.data.TensorDataset`s (e.g. a subset of a stack of subsets of
   tensor datasets is supported)
 
-### [Scipy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/scipy.html#to_json)
+### [Scipy](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/scipy.html#to_json)
 
 Just `scipy.sparse.csr_matrix`. ^^"
 
-### [Scikit-learn](https://altaris.github.io/turbo-broccoli/turbo_broccoli/sklearn.html#to_json)
+### [Scikit-learn](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/sklearn.html#to_json)
 
 `sklearn` estimators (i.e. that inherit from
 [`sklean.base.BaseEstimator`](https://scikit-learn.org/stable/modules/generated/sklearn.base.BaseEstimator.html)).
@@ -531,12 +531,12 @@ Doesn't work with:
 
   - `RadiusNeighborsTransformer`: Inverse problem from `KNeighborsTransformer`.
 
-### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/bokeh.html#to_json)
+### [Bokeh](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/bokeh.html#to_json)
 
 Bokeh [figures](https://docs.bokeh.org/en/latest) and
 [models](https://docs.bokeh.org/en/latest/docs/reference/models.html).
 
-### [Secrets](https://altaris.github.io/turbo-broccoli/turbo_broccoli/secret.html#to_json)
+### [Secrets](https://altaris.github.io/turbo-broccoli/turbo_broccoli/custom/secret.html#to_json)
 
 Basic Python types can be wrapped in their corresponding secret type according
 to the following table
