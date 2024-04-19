@@ -149,6 +149,18 @@ and
 </code></pre>
 </div>
 
+<p>It is also possible to read/write compressed (with
+<a href="https://www.zlib.net/">zlib</a>) JSON files:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">tb</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;foo/bar/foobar.json.gz&quot;</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">obj</span> <span class="o">=</span> <span class="n">tb</span><span class="o">.</span><span class="n">load_json</span><span class="p">(</span><span class="s2">&quot;foo/bar/foobar.json.gz&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+
 <h3 id="contextshttpsaltarisgithubioturbo-broccoliturbo_broccolicontexthtmlcontext"><a href="https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context">Contexts</a></h3>
 
 <p>The behaviour of
