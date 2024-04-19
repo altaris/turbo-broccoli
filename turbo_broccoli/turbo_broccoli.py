@@ -38,6 +38,29 @@ def _from_jsonable(obj: Any, ctx: Context) -> Any:
     return obj
 
 
+def _make_or_set_ctx(
+    file_path: str | Path | None, ctx: Context | None, **kwargs
+) -> Context:
+    """
+    Generate a context object that is consistent with the inputs.
+    """
+    if file_path is None and ctx is None:
+        raise ValueError(
+            "Either a file path or a context (or both) must be provided."
+        )
+    if file_path is not None and ctx is not None:
+        if ctx.file_path is not None and ctx.file_path != file_path:
+            raise ValueError(
+                "The file path in the context does not match the provided "
+                "file path."
+            )
+        assert isinstance(file_path, (str, Path))  # for typechecking
+        ctx.file_path = Path(file_path)
+    if ctx is None:
+        ctx = Context(file_path=file_path, **kwargs)
+    return ctx
+
+
 def _to_jsonable(obj: Any, ctx: Context) -> Any:
     """
     Transforms an object (dict, list, primitive) that possibly contains types
@@ -68,28 +91,30 @@ def from_json(doc: str, ctx: Context | None = None) -> Any:
 
 
 def load_json(
-    file_path: str | Path, ctx: Context | None = None, **kwargs
+    file_path: str | Path | None = None, ctx: Context | None = None, **kwargs
 ) -> Any:
     """
     Loads a JSON file.
 
     Args:
-        file_path (str | Path):
+        file_path (str | Path | None): If left to `None`, a context with a file
+            path must be provided
         ctx (Context | None): The context to use. If `None`, a new context will
             be created with the kwargs.
         **kwargs: Forwarded to the `turbo_broccoli.context.Context`
-            constructor.
+            constructor. If `ctx` is provided, the kwargs are ignored.
     """
-    if ctx is None:
-        kwargs["file_path"] = file_path
-        ctx = Context(**kwargs)
+    ctx = _make_or_set_ctx(file_path, ctx, **kwargs)
     assert isinstance(ctx.file_path, Path)  # for typechecking
     with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
         return _from_jsonable(json.load(fp), ctx)
 
 
 def save_json(
-    obj: Any, file_path: str | Path, ctx: Context | None = None, **kwargs
+    obj: Any,
+    file_path: str | Path | None = None,
+    ctx: Context | None = None,
+    **kwargs,
 ) -> None:
     """
     Serializes an object and writes the result to a file. The artifact path and
@@ -103,9 +128,7 @@ def save_json(
         **kwargs: Forwarded to the `turbo_broccoli.context.Context`
             constructor.
     """
-    if ctx is None:
-        kwargs["file_path"] = file_path
-        ctx = Context(**kwargs)
+    ctx = _make_or_set_ctx(file_path, ctx, **kwargs)
     data = json.dumps(_to_jsonable(obj, ctx))
     assert isinstance(ctx.file_path, Path)  # for typechecking
     if not ctx.file_path.parent.exists():
