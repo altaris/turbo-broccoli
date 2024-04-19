@@ -1,6 +1,7 @@
 """Main module containing the JSON encoder and decoder methods."""
 
 import json
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -86,7 +87,10 @@ def _to_jsonable(obj: Any, ctx: Context) -> Any:
 
 
 def from_json(doc: str, ctx: Context | None = None) -> Any:
-    """Deserializes a JSON string."""
+    """
+    Deserializes a JSON string. The context's file path and compression setting
+    will be ignored.
+    """
     return _from_jsonable(json.loads(doc), Context() if ctx is None else ctx)
 
 
@@ -106,6 +110,10 @@ def load_json(
     """
     ctx = _make_or_set_ctx(file_path, ctx, **kwargs)
     assert isinstance(ctx.file_path, Path)  # for typechecking
+    if ctx.compress:
+        with ctx.file_path.open(mode="rb") as fp:
+            s = zlib.decompress(fp.read()).decode("utf-8")
+        return _from_jsonable(json.loads(s), ctx)
     with ctx.file_path.open(mode="r", encoding="utf-8") as fp:
         return _from_jsonable(json.load(fp), ctx)
 
@@ -133,14 +141,19 @@ def save_json(
     assert isinstance(ctx.file_path, Path)  # for typechecking
     if not ctx.file_path.parent.exists():
         ctx.file_path.parent.mkdir(parents=True)
-    with ctx.file_path.open(mode="w", encoding="utf-8") as fp:
-        fp.write(data)
+    if ctx.compress:
+        with ctx.file_path.open(mode="wb") as fp:
+            fp.write(zlib.compress(data.encode("utf-8")))
+    else:
+        with ctx.file_path.open(mode="w", encoding="utf-8") as fp:
+            fp.write(data)
 
 
 def to_json(obj: Any, ctx: Context | None = None) -> str:
     """
     Converts an object to a JSON string. The context's artifact folder will be
-    created if it doesn't exist.
+    created if it doesn't exist. The context's file path and compression
+    setting will be ignored.
     """
     ctx = Context() if ctx is None else ctx
     if not ctx.artifact_path.exists():

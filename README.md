@@ -75,6 +75,17 @@ tb.save_json(obj, "foo/bar/foobar.json")
 obj = tb.load_json("foo/bar/foobar.json")
 ```
 
+It is also possible to read/write compressed (with
+[zlib](https://www.zlib.net/)) JSON files:
+
+```py
+tb.save_json(obj, "foo/bar/foobar.json.gz")
+
+...
+
+obj = tb.load_json("foo/bar/foobar.json.gz")
+```
+
 ### [Contexts](https://altaris.github.io/turbo-broccoli/turbo_broccoli/context.html#Context)
 
 The behaviour of

@@ -48,6 +48,7 @@ class Context:
     pandas_format: str
     pandas_kwargs: dict
     pytorch_module_types: dict[str, type]
+    compress: bool
 
     # pylint: disable=too-many-arguments
     def __init__(
@@ -79,6 +80,7 @@ class Context:
         dataclass_types: dict[str, type] | list[type] | None = None,
         pytorch_module_types: dict[str, type] | list[type] | None = None,
         json_path: str = "$",
+        compress: bool = False,
     ) -> None:
         """
         Args:
@@ -116,6 +118,9 @@ class Context:
                 of pytorch module types for deserialization. See the
                 [README](https://altaris.github.io/turbo-broccoli/turbo_broccoli.html#supported-types).
             json_path (str, optional): Current JSONpath. Don't use.
+            compress (bool, optional): Wether to compress the output JSON file/
+                string. Defaults to `False`. If `file_path` is provided and
+                ends in `.json.gz`, then this parameter is overrode to `True`.
         """
         self.json_path = json_path
         self.file_path = (
@@ -162,6 +167,14 @@ class Context:
             _list_of_types_to_dict(pytorch_module_types)
             if isinstance(pytorch_module_types, list)
             else (pytorch_module_types or {})
+        )
+        self.compress = (
+            True
+            if (
+                self.file_path is not None
+                and self.file_path.name.endswith(".json.gz")
+            )
+            else compress
         )
 
     def __repr__(self) -> str:

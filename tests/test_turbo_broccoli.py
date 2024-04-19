@@ -58,3 +58,11 @@ def test_turbo_broccoli_load_json_none():
 def test_turbo_broccoli_load_json_conflict():
     with pytest.raises(ValueError):
         load_json("a.json", Context("b.json"))
+
+
+def test_turbo_broccoli_save_load_json_compress():
+    p = TEST_PATH + "test_turbo_broccoli_save_load_json_compress.json.gz"
+    x = {"a": "abc" * 1000}
+    save_json(x, p)
+    y = load_json(p)
+    assert x == y
