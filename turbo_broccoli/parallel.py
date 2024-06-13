@@ -77,18 +77,9 @@ gives
   arguments](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
   can be passed as kwargs to the constructor.
 
-* TurboBroccoli's `Parallel` honors the `return_as` argument of
-  [`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
-  (which can be `"list"` or `"generator"`). However, the value
-  `return_as="generator_unordered"` is not supported and will fall back to
-  `"generator"` with a warning. Also, note that eventhough you might set
-  `return_as="list"`, the result will still be a dict.
-
-* Everytime a new result is obtained, it is immediately written to the output
-  file. This means that if there are N jobs, the output file will be written to
-  up to N times. If the results are accessed in quick succession (e.g.
-  `return_as="list"` which is the default), this can slam the filesystem pretty
-  hard.
+* TurboBroccoli's `Parallel` *does not* honor the `return_as` argument of
+  [`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html).
+  The return value of `Parallel.__call__` is always a `dict`.
 
 * If the output of the job's function are large, it might be inefficient to
   rewrite every past results the output file each time a new result is
@@ -172,25 +163,14 @@ class Parallel:
             kwargs (Any): Forwarded to
                 [`joblib.Parallel`](https://joblib.readthedocs.io/en/latest/generated/joblib.Parallel.html)
         """
-        if kwargs.get("return_as") == "generator_unordered":
-            logging.warning(
-                "The option return_as='generator_unordered' is not supported. "
-                "Using 'generator' instead."
-            )
-            kwargs["return_as"] = "generator"
         self.context = context or Context(output_file)
         self.executor = joblib.Parallel(**kwargs)
         self.only_one_arg = only_one_arg
 
-    def __call__(
-        self, jobs: Iterable[_DelayedCall]
-    ) -> dict | Generator[tuple[Any, Any], None, None]:
+    def __call__(self, jobs: Iterable[_DelayedCall]) -> dict:
         jobs = list(jobs)
         self.sanity_check(jobs)
-        g = self._execute(jobs)
-        if self.executor.return_generator:
-            return g
-        return dict(g)
+        return dict(self._execute(jobs))
 
     # pylint: disable=stop-iteration-return
     def _execute(
