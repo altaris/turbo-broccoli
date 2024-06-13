@@ -153,7 +153,7 @@ class Parallel:
 
     context: Context
     executor: joblib.Parallel
-    lonly_one_arg: bool
+    only_one_arg: bool
 
     def __init__(
         self,
