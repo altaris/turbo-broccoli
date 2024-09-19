@@ -45,8 +45,8 @@ from sklearn import (
 from sklearn.base import BaseEstimator
 from sklearn.tree._tree import Tree
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 _SKLEARN_SUBMODULES = [
     # calibration,

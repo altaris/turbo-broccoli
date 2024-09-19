@@ -4,8 +4,8 @@ from base64 import b64decode, b64encode
 from math import ceil
 from typing import Any
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _bytes_from_json_v3(dct: dict, ctx: Context) -> bytes:

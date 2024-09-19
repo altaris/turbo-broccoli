@@ -11,8 +11,8 @@ from bokeh.core.serialization import (
 from bokeh.models import Model
 from bokeh.plotting import figure as Figure
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _buffer_to_json(obj: Buffer, ctx: Context) -> dict:

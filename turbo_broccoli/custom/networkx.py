@@ -4,8 +4,8 @@ from typing import Any, Callable, Tuple
 
 import networkx as nx
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _graph_to_json(obj: nx.Graph, ctx: Context) -> dict:

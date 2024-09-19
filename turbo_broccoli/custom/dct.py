@@ -2,8 +2,8 @@
 
 from typing import Any
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_dict_v1(dct: dict, ctx: Context) -> dict:

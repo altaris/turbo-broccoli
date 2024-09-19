@@ -2,18 +2,18 @@
 
 from typing import Any, Callable
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.custom import bytes as _bytes
-from turbo_broccoli.custom import collections as _collections
-from turbo_broccoli.custom import dataclass as _dataclass
-from turbo_broccoli.custom import datetime as _datetime
-from turbo_broccoli.custom import dct as _dict
-from turbo_broccoli.custom import embedded as _embedded
-from turbo_broccoli.custom import external as _external
-from turbo_broccoli.custom import generic as _generic
-from turbo_broccoli.custom import networkx as _networkx
-from turbo_broccoli.custom import pathlib as _pathlib
-from turbo_broccoli.custom import uuid as _uuid
+from ..context import Context
+from . import bytes as _bytes
+from . import collections as _collections
+from . import dataclass as _dataclass
+from . import datetime as _datetime
+from . import dct as _dict
+from . import embedded as _embedded
+from . import external as _external
+from . import generic as _generic
+from . import networkx as _networkx
+from . import pathlib as _pathlib
+from . import uuid as _uuid
 
 try:
     from turbo_broccoli.custom import keras as _keras

@@ -7,8 +7,8 @@ from torch import Tensor
 from torch.nn import Module
 from torch.utils.data import ConcatDataset, StackDataset, Subset, TensorDataset
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _concatdataset_to_json(obj: ConcatDataset, ctx: Context) -> dict:

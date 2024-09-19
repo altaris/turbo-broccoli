@@ -11,8 +11,8 @@ import joblib
 import numpy as np
 from safetensors import numpy as st
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:

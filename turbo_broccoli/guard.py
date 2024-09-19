@@ -161,9 +161,9 @@ except ModuleNotFoundError:
 
 from typing import Any, Generator, Iterable, Literal
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.native import load as native_load
-from turbo_broccoli.native import save as native_save
+from .context import Context
+from .native import load as native_load
+from .native import save as native_save
 
 
 class GuardedBlockHandler:

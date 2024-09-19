@@ -8,8 +8,8 @@ See also:
 from typing import Any
 from uuid import UUID
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _json_to_uuid_v1(dct: dict, ctx: Context) -> Any:

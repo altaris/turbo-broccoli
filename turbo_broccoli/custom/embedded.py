@@ -9,8 +9,8 @@ document.
 from pathlib import Path
 from typing import Any, Callable, Tuple
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 class EmbeddedDict(dict):

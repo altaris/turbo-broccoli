@@ -3,8 +3,8 @@
 from collections import deque, namedtuple
 from typing import Any, Callable, Tuple
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 
 def _deque_to_json(deq: deque, ctx: Context) -> dict:

@@ -5,10 +5,10 @@ import zlib
 from pathlib import Path
 from typing import Any
 
-from turbo_broccoli import user
-from turbo_broccoli.context import Context
-from turbo_broccoli.custom import get_decoders, get_encoders
-from turbo_broccoli.exceptions import TypeIsNodecode, TypeNotSupported
+from . import user
+from .context import Context
+from .custom import get_decoders, get_encoders
+from .exceptions import TypeIsNodecode, TypeNotSupported
 
 
 def _from_jsonable(obj: Any, ctx: Context) -> Any:

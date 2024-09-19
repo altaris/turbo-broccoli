@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Literal
 from uuid import uuid4
 
-from turbo_broccoli.exceptions import TypeIsNodecode
+from .exceptions import TypeIsNodecode
 
 
 def _list_of_types_to_dict(lot: list[type]) -> dict[str, type]:

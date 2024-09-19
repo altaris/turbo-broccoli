@@ -17,14 +17,14 @@ try:
 except ModuleNotFoundError:
     HAS_SAFETENSORS = False
 
-from turbo_broccoli.custom import (
+from .custom import (
     HAS_KERAS,
     HAS_NUMPY,
     HAS_PANDAS,
     HAS_PYTORCH,
     HAS_TENSORFLOW,
 )
-from turbo_broccoli.turbo_broccoli import load_json, save_json
+from .turbo_broccoli import load_json, save_json
 
 
 def _is_dict_of(obj: Any, value_type: type, key_type: type = str) -> bool:

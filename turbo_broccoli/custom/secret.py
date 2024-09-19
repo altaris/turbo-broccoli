@@ -5,8 +5,8 @@ from typing import Any, NoReturn
 
 from nacl.secret import SecretBox
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import TypeNotSupported
+from ..context import Context
+from ..exceptions import TypeNotSupported
 
 
 class Secret:

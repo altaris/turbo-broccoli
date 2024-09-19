@@ -5,8 +5,8 @@ from typing import Any, Callable, Tuple
 
 from tensorflow import keras
 
-from turbo_broccoli.context import Context
-from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
+from ..context import Context
+from ..exceptions import DeserializationError, TypeNotSupported
 
 KERAS_LAYERS = {
     "Activation": keras.layers.Activation,
