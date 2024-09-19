@@ -115,7 +115,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
             "dtypes": [
                 [col1, dtype1],
                 [col2, dtype2],
-                ...
+                ...,
             ],
         }
         ```

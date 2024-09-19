@@ -34,8 +34,8 @@ def to_json(obj: Any, ctx: Context) -> dict:
                 "key": ...,
                 "value": ...,
             },
-            ...
-        ]
+            ...,
+        ],
     }
     ```
 

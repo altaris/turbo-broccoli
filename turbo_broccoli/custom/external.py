@@ -80,7 +80,7 @@ def to_json(obj: Any, ctx: Context) -> dict:
     {
         "__type__": "external",
         "__version__": 2,
-        "path": {...}
+        "path": {...},
     }
     ```
 

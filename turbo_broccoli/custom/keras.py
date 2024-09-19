@@ -410,7 +410,6 @@ def to_json(obj: Any, ctx: Context) -> dict:
 
         ```py
         {
-
             "__type__": "keras.model",
             "__version__": 5,
             "loss": {...} or null,

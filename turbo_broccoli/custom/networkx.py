@@ -45,7 +45,7 @@ def to_json(obj: nx.Graph, ctx: Context) -> dict:
     {
         "__type__": "networkx.graph",
         "__version__": 1,
-        "data": {...}
+        "data": {...},
     }
     ```
 
