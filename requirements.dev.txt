@@ -1,16 +1,14 @@
-black
 bokeh
 fastparquet
-isort
 joblib
 loguru
 mypy
 numpy
 pandas
 pdoc
-pylint
 pynacl
 pytest
+ruff
 safetensors
 scikit-learn
 tensorflow

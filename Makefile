@@ -25,12 +25,12 @@ docs-browser:
 
 .PHONY: format
 format:
-	$(PYTHON) -m isort $(SRC_PATH)
-	$(PYTHON) -m black $(SRC_PATH)
+	ruff check --select I --fix
+	ruff format
 
 .PHONY: lint
 lint:
-	$(PYTHON) -m pylint $(SRC_PATH)
+	ruff check
 
 .PHONY: test
 test:
