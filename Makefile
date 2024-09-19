@@ -1,46 +1,42 @@
-DOCS_PATH 		= out/docs
-SRC_PATH 		= turbo_broccoli
-TST_PATH 		= tests
-VENV			= ./venv
-PDOC			= pdoc -d google
+SRC_PATH 	= turbo_broccoli
+VENV_PATH	= venv
+DOCS_PATH 	= docs
 
-ISORT			= isort --line-length 79 --python-version 310 --multi-line VERTICAL_HANGING_INDENT
-BLACK			= black --line-length 79 --target-version py310
+PDOC		= pdoc -d google --math
+PYTHON		= python3.11
 
 .ONESHELL:
 
 all: format typecheck lint
 
-.PHONY: test-clean
+.PHONY: clean
 clean:
 	-rm -r out/test/*
 
 .PHONY: docs
 docs:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	$(PDOC) --output-directory $(DOCS_PATH) $(SRC_PATH)
+	$(PYTHON) -m $(PDOC) --output-directory $(DOCS_PATH) $(SRC_PATH)
 
 .PHONY: docs-browser
 docs-browser:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	PDOC_ALLOW_EXEC=1 $(PDOC) $(SRC_PATH)
+	$(PYTHON) -m $(PDOC) -h 0.0.0.0 -p 8081 -n $(SRC_PATH)
 
 .PHONY: format
 format:
-	$(ISORT) $(SRC_PATH)
-	$(ISORT) $(TST_PATH)
-	$(BLACK) $(SRC_PATH) $(TST_PATH)
+	$(PYTHON) -m isort $(SRC_PATH)
+	$(PYTHON) -m black $(SRC_PATH)
 
 .PHONY: lint
 lint:
-	-pylint $(SRC_PATH)
-	-pylint $(TST_PATH)
+	$(PYTHON) -m pylint $(SRC_PATH)
 
 .PHONY: test
 test:
 	-mkdir -p out/test
-	pytest -v
+	TB_ARTIFACT_PATH=out/test pytest -v
 
 .PHONY: typecheck
 typecheck:
-	mypy -p $(SRC_PATH) --check-untyped-defs
+	$(PYTHON) -m mypy -p $(SRC_PATH)
