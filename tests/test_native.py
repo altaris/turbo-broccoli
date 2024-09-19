@@ -1,6 +1,3 @@
-# pylint: disable=import-outside-toplevel
-# pylint: disable=missing-function-docstring
-# pylint: disable=wrong-import-position
 """turbo_broccoli.native test suite"""
 
 import sys

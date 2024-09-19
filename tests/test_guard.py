@@ -1,6 +1,3 @@
-# pylint: disable=import-outside-toplevel
-# pylint: disable=missing-function-docstring
-# pylint: disable=unused-import
 """Test suite for guarded blocks/loops"""
 
 from pathlib import Path
@@ -28,28 +25,28 @@ def test_guarded_bloc_handler():
 def test_guarded_bloc_handler_iter_dict():
     path = TEST_PATH / "test_guarded_bloc_handler_iter_dict.json"
     h = GuardedBlockHandler(path)
-    l = ["a", "b", "c", "d"]
-    for i, x in h(l[:-1], result_type="dict"):
+    lst = ["a", "b", "c", "d"]
+    for i, x in h(lst[:-1], result_type="dict"):
         h.result[x] = [i, x]
-    for i, x in h(l, result_type="dict"):
-        assert x == l[-1]  # a, b, c should be skipped
+    for i, x in h(lst, result_type="dict"):
+        assert x == lst[-1]  # a, b, c should be skipped
         h.result[x] = [i, x]
-    assert h.result == {x: [i, x] for i, x in enumerate(l)}
-    for i, x in h(l, result_type="dict"):
+    assert h.result == {x: [i, x] for i, x in enumerate(lst)}
+    for i, x in h(lst, result_type="dict"):
         assert False  # entire loop should be skipped
 
 
 def test_guarded_bloc_handler_iter_list():
     path = TEST_PATH / "test_guarded_bloc_handler_iter_list.json"
     h = GuardedBlockHandler(path)
-    l = ["a", "b", "c", "d"]
-    for i, x in h(l[:-1], result_type="list"):
+    lst = ["a", "b", "c", "d"]
+    for i, x in h(lst[:-1], result_type="list"):
         h.result.append([i, x])
-    for i, x in h(l, result_type="list"):
-        assert x == l[-1]  # a, b, c should be skipped
+    for i, x in h(lst, result_type="list"):
+        assert x == lst[-1]  # a, b, c should be skipped
         h.result.append([i, x])
-    assert h.result == [[i, x] for i, x in enumerate(l)]
-    for i, x in h(l, result_type="list"):
+    assert h.result == [[i, x] for i, x in enumerate(lst)]
+    for i, x in h(lst, result_type="list"):
         assert False  # entire loop should be skipped
 
 

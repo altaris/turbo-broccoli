@@ -11,7 +11,6 @@ def _json_to_dataclass_v3(dct: dict, ctx: Context) -> Any:
     return ctx.dataclass_types[class_name](**dct["data"])
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         3: _json_to_dataclass_v3,
@@ -22,7 +21,6 @@ def from_json(dct: dict, ctx: Context) -> Any:
         raise DeserializationError() from exc
 
 
-# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a dataclass into JSON by cases. The return dict has the

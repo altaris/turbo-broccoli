@@ -1,5 +1,3 @@
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 """deque (de)serialization test suite"""
 
 from dataclasses import dataclass

@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """Tensorflow (de)serialization test suite"""
 
 import tensorflow as tf

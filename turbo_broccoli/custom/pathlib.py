@@ -7,7 +7,6 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
-# pylint: disable=unused-argument
 def _path_to_json(obj: Path, ctx: Context) -> dict:
     return {"__type__": "pathlib.path", "__version__": 1, "path": str(obj)}
 
@@ -19,12 +18,10 @@ def _json_to_path(dct: dict, ctx: Context) -> Path:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_path_v1(dct: dict, ctx: Context) -> Path:
     return Path(dct["path"])
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         "pathlib.path": _json_to_path,

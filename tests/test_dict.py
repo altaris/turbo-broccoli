@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """bytes (de)serialization test suite"""
 
 from json import loads
@@ -17,7 +16,6 @@ def test_dict_normal():
 
 
 def test_dict():
-    # pylint: disable=duplicate-key
     x = {
         "a": "a",
         1: 1,

@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """Numpy (de)serialization test suite"""
 
 import numpy as np

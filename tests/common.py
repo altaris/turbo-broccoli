@@ -7,7 +7,6 @@ from typing import Any
 sys.path.append(str(Path(__file__).parent.parent))
 
 
-# pylint: disable=wrong-import-position
 from turbo_broccoli import Context, from_json, to_json
 
 

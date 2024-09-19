@@ -1,8 +1,5 @@
 """Serialize secrets"""
 
-# pylint: disable=missing-class-docstring
-# pylint: disable=too-few-public-methods
-
 import json
 from typing import Any, NoReturn
 
@@ -86,7 +83,6 @@ def _from_json_v2(dct: dict, ctx: Context) -> Any:
     return json.loads(box.decrypt(dct["data"]).decode("utf-8"))
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     ctx.raise_if_nodecode("bytes")
     decoders = {

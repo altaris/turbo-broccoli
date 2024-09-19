@@ -1,10 +1,9 @@
-# pylint: disable=missing-function-docstring
 """Keras (de)serialization test suite"""
 
 import numpy as np
 from common import to_from_json
 from numpy.testing import assert_array_equal
-from tensorflow import keras  # pylint: disable=no-name-in-module
+from tensorflow import keras
 
 from turbo_broccoli import Context
 

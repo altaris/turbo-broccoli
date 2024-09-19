@@ -104,7 +104,6 @@ from typing import Any, Callable, Generator, Iterable
 
 import joblib
 
-# pylint: disable=unused-import
 try:
     from loguru import logger as logging
 except ModuleNotFoundError:
@@ -115,7 +114,6 @@ from .turbo_broccoli import load_json, save_json
 
 
 class _DelayedCall:
-
     function: Callable
     args: tuple[Any, ...]
 
@@ -173,7 +171,6 @@ class Parallel:
         self.sanity_check(jobs)
         return dict(self._execute(jobs))
 
-    # pylint: disable=stop-iteration-return
     def _execute(
         self, jobs: Iterable[_DelayedCall]
     ) -> Generator[tuple[Any, Any], None, None]:

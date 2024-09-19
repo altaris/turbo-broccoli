@@ -20,7 +20,6 @@ def _list_of_types_to_dict(lot: list[type]) -> dict[str, type]:
     return {t.__name__: t for t in lot}
 
 
-# pylint: disable=too-many-instance-attributes
 class Context:
     """
     (De)Serialization context, which is an object that contains various
@@ -50,7 +49,6 @@ class Context:
     pytorch_module_types: dict[str, type]
     compress: bool
 
-    # pylint: disable=too-many-arguments
     def __init__(
         self,
         file_path: str | Path | None = None,

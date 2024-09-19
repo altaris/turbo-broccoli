@@ -6,11 +6,6 @@ in its own JSON artefact being created and referenced by the main JSON
 document.
 """
 
-# pylint: disable=cyclic-import
-# pylint: disable=import-outside-toplevel  # to avoid actual circular imports
-# pylint: disable=protected-access
-
-
 from pathlib import Path
 from typing import Any, Callable, Tuple
 
@@ -103,7 +98,6 @@ def _json_to_embedded_list_v1(dct: dict, ctx: Context) -> EmbeddedList:
     return obj
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         "embedded.dict": _json_to_embedded_dict,

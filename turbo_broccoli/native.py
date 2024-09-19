@@ -6,15 +6,12 @@
 * `turbo_broccoli.native.load` does the opposite.
 """
 
-# pylint: disable=unused-argument
-# pylint: disable=import-outside-toplevel
-
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable
 
 try:
-    import safetensors  # pylint: disable=unused-import
+    import safetensors
 
     HAS_SAFETENSORS = True
 except ModuleNotFoundError:
@@ -187,7 +184,7 @@ def _save_pt(obj: Any, path: str | Path, **kwargs) -> None:
 def _save_st(obj: Any, path: str | Path, **kwargs) -> None:
     if not HAS_SAFETENSORS:
         _raise_package_not_installed("safetensors", ".safetensors/.st")
-    import safetensors  # pylint: disable=redefined-outer-name
+    import safetensors
 
     if HAS_NUMPY:
         import numpy as np

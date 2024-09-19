@@ -16,7 +16,6 @@ def _bytes_from_json_v3(dct: dict, ctx: Context) -> bytes:
         return fp.read()
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> bytes | None:
     decoders = {
         3: _bytes_from_json_v3,

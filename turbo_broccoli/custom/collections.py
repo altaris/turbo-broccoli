@@ -7,7 +7,6 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
-# pylint: disable=unused-argument
 def _deque_to_json(deq: deque, ctx: Context) -> dict:
     return {
         "__type__": "collections.deque",
@@ -24,7 +23,6 @@ def _json_to_deque(dct: dict, ctx: Context) -> deque | None:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_deque_v2(dct: dict, ctx: Context) -> Any:
     return deque(dct["data"], dct["maxlen"])
 
@@ -36,7 +34,6 @@ def _json_to_namedtuple(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_namedtuple_v2(dct: dict, ctx: Context) -> Any:
     return namedtuple(dct["class"], dct["data"].keys())(**dct["data"])
 
@@ -48,7 +45,6 @@ def _json_to_set(dct: dict, ctx: Context) -> set:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_set_v2(dct: dict, ctx: Context) -> Any:
     return set(dct["data"])
 
@@ -60,17 +56,14 @@ def _json_to_tuple(dct: dict, ctx: Context) -> tuple:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_tuple_v1(dct: dict, ctx: Context) -> Any:
     return tuple(dct["data"])
 
 
-# pylint: disable=unused-argument
 def _set_to_json(obj: set, ctx: Context) -> dict:
     return {"__type__": "collections.set", "__version__": 2, "data": list(obj)}
 
 
-# pylint: disable=unused-argument
 def _tuple_to_json(obj: tuple, ctx: Context) -> dict:
     """
     Converts a tuple or namedtuple into a JSON document.
@@ -94,7 +87,6 @@ def _tuple_to_json(obj: tuple, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         "collections.deque": _json_to_deque,

@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """Numpy (de)serialization test suite"""
 
 from datetime import datetime
@@ -8,7 +7,7 @@ from common import to_from_json
 
 
 def _assert_equal(a, b):
-    assert type(a) == type(b)  # pylint: disable=unidiomatic-typecheck
+    assert isinstance(a, type(b))
     if isinstance(a, pd.DataFrame):
         assert ((a == b).all()).all()
     elif isinstance(a, pd.Series):

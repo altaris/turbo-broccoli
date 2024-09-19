@@ -9,7 +9,6 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import TypeNotSupported
 
 
-# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a generic object into JSON. The return document contains all

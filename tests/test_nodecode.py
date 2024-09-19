@@ -1,5 +1,3 @@
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 """Decode exclusion tests"""
 
 from dataclasses import dataclass

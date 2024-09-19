@@ -36,7 +36,6 @@ def _json_to_XXX_v1(dct: dict, ctx: Context) -> Any:
     pass
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     # TODO: Check dispatch
     decoders = {

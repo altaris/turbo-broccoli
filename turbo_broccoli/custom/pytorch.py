@@ -11,7 +11,6 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
-# pylint: disable=unused-argument
 def _concatdataset_to_json(obj: ConcatDataset, ctx: Context) -> dict:
     return {
         "__type__": "pytorch.concatdataset",
@@ -42,7 +41,6 @@ def _json_to_module_v3(dct: dict, ctx: Context) -> Module:
     return module
 
 
-# pylint: disable=unused-argument
 def _json_to_concatdataset_v1(dct: dict, ctx: Context) -> ConcatDataset:
     return ConcatDataset(dct["datasets"])
 
@@ -52,7 +50,6 @@ def _json_to_stackdataset(dct: dict, ctx: Context) -> StackDataset:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_stackdataset_v1(dct: dict, ctx: Context) -> StackDataset:
     d = dct["datasets"]
     if isinstance(d, dict):
@@ -65,7 +62,6 @@ def _json_to_subset(dct: dict, ctx: Context) -> Subset:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_subset_v1(dct: dict, ctx: Context) -> Subset:
     return Subset(dct["dataset"], dct["indices"])
 
@@ -78,7 +74,6 @@ def _json_to_tensor(dct: dict, ctx: Context) -> Tensor:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_tensor_v3(dct: dict, ctx: Context) -> Tensor:
     data = dct["data"]
     return Tensor() if data is None else st.load(data)["data"]
@@ -89,12 +84,10 @@ def _json_to_tensordataset(dct: dict, ctx: Context) -> TensorDataset:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_tensordataset_v1(dct: dict, ctx: Context) -> TensorDataset:
     return TensorDataset(*dct["tensors"])
 
 
-# pylint: disable=unused-argument
 def _module_to_json(module: Module, ctx: Context) -> dict:
     return {
         "__type__": "pytorch.module." + module.__class__.__name__,
@@ -103,7 +96,6 @@ def _module_to_json(module: Module, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=unused-argument
 def _stackdataset_to_json(obj: StackDataset, ctx: Context) -> dict:
     return {
         "__type__": "pytorch.stackdataset",
@@ -112,7 +104,6 @@ def _stackdataset_to_json(obj: StackDataset, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=unused-argument
 def _subset_to_json(obj: Subset, ctx: Context) -> dict:
     return {
         "__type__": "pytorch.subset",
@@ -122,7 +113,6 @@ def _subset_to_json(obj: Subset, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=unused-argument
 def _tensor_to_json(tens: Tensor, ctx: Context) -> dict:
     x = tens.detach().cpu().contiguous()
     return {
@@ -132,7 +122,6 @@ def _tensor_to_json(tens: Tensor, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=unused-argument
 def _tensordataset_to_json(obj: TensorDataset, ctx: Context) -> dict:
     return {
         "__type__": "pytorch.tensordataset",
@@ -141,7 +130,6 @@ def _tensordataset_to_json(obj: TensorDataset, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         "pytorch.concatdataset": _json_to_concatdataset,

@@ -1,8 +1,4 @@
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-
 """User-provided custom (de)serialization functions test suite"""
-
 
 from datetime import datetime
 from json import dumps

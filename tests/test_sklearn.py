@@ -1,13 +1,4 @@
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
-# pylint: disable=no-member
-# pylint: disable=too-many-lines
-# pylint: disable=unbalanced-tuple-unpacking
-# pylint: disable=unused-import
-# pylint: disable=unused-wildcard-import
-# pylint: disable=wildcard-import
 """sklearn estimators (de)serialization test suite"""
-
 
 import numpy as np
 import pandas as pd
@@ -1561,7 +1552,7 @@ def test_decisiontreeclassifier():
     https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html
     """
     iris = load_iris()
-    x, y = iris.data, iris.target  # pylint: disable=no-member
+    x, y = iris.data, iris.target
     e = DecisionTreeClassifier(random_state=0)
     _fit_score_test(e, x, x, y, y)
 

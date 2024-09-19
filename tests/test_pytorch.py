@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """Pytorch (de)serialization test suite"""
 
 import torch

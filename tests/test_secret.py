@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """(de)serialization of secrets"""
 
 import nacl.secret
@@ -26,7 +25,7 @@ def _new_key() -> bytes:
 
 
 def assert_secret_equal(a: Secret, b: Secret):
-    assert type(a) == type(b)  # pylint: disable=unidiomatic-typecheck
+    assert isinstance(a, type(b))
     if not isinstance(a, LockedSecret):
         assert a.get_secret_value() == b.get_secret_value()
 

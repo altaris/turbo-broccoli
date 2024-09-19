@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """Python collections (de)serialization test suite"""
 
 from collections import deque, namedtuple
@@ -50,7 +49,6 @@ def test_namedtuple_default():
 
 
 def test_namedtuple_subclass_1():
-    # pylint: disable=missing-class-docstring
     class C(namedtuple("C", ["x", "y"])):
         @property
         def z(self):
@@ -60,7 +58,6 @@ def test_namedtuple_subclass_1():
 
 
 def test_namedtuple_subclass_2():
-    # pylint: disable=missing-class-docstring
     class C(NamedTuple):
         x: int
         y: int

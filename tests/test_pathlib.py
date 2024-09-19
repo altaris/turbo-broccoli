@@ -1,4 +1,3 @@
-# pylint: disable=missing-function-docstring
 """bytes (de)serialization test suite"""
 
 from pathlib import Path

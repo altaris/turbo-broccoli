@@ -1,10 +1,8 @@
-# pylint: disable=missing-function-docstring
 """deque (de)serialization test suite"""
 
 from common import to_from_json
 
 
-# pylint: disable=missing-class-docstring
 class C:
     __turbo_broccoli__ = ["a_str", "an_int"]
     a_byte_str: bytes

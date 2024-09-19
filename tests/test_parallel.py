@@ -1,5 +1,3 @@
-# pylint: disable=missing-function-docstring
-# pylint: disable=unnecessary-lambda-assignment
 """Parallel-guard test suite"""
 
 from pathlib import Path
@@ -112,5 +110,4 @@ def test_parallel_sanity_kwargs():
         return x + x
 
     with pytest.raises(ValueError):
-        # pylint: disable=expression-not-assigned
         [delayed(f)(x=x) for x in range(5)]

@@ -1,4 +1,3 @@
-# pylint: disable=bare-except
 """Custom type encoder and decoders, all grouped in a dedicated submodule"""
 
 from typing import Any, Callable

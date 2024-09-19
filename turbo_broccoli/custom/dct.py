@@ -6,12 +6,10 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
-# pylint: disable=unused-argument
 def _json_to_dict_v1(dct: dict, ctx: Context) -> dict:
     return {d["key"]: d["value"] for d in dct["data"]}
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> dict:
     try:
         decoders = {
@@ -22,7 +20,6 @@ def from_json(dct: dict, ctx: Context) -> dict:
         raise DeserializationError() from exc
 
 
-# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a dict with non-string keys. The return dict has the following

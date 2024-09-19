@@ -70,12 +70,10 @@ def _json_to_series(dct: dict, ctx: Context) -> pd.Series:
     return decoders[dct["__version__"]](dct, ctx)
 
 
-# pylint: disable=unused-argument
 def _json_to_series_v2(dct: dict, ctx: Context) -> pd.Series:
     return dct["data"][dct["name"]]
 
 
-# pylint: disable=unused-argument
 def _series_to_json(ser: pd.Series, ctx: Context) -> dict:
     name = ser.name if ser.name is not None else "main"
     return {
@@ -86,7 +84,6 @@ def _series_to_json(ser: pd.Series, ctx: Context) -> dict:
     }
 
 
-# pylint: disable=missing-function-docstring
 def from_json(dct: dict, ctx: Context) -> Any:
     decoders = {
         "pandas.dataframe": _json_to_dataframe,
