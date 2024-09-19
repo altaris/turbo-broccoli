@@ -1,92 +1,82 @@
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#a-full-example
 [project]
-name = "turbo_broccoli"
-version = "0.0.0"
-requires-python = ">=3.11"
-authors = [{ name = "Cédric Ho Thanh" }]
-description = "JSON (de)serialization extensions"
-readme = "README.md"
-license = { file = "LICENSE" }
-
-[project.urls]
-Homepage = "https://github.com/altaris/turbo-broccoli"
-Documentation = "https://github.com/altaris/turbo-broccoli"
-Repository = "https://github.com/altaris/turbo-broccoli.git"
-"Bug Tracker" = "https://github.com/altaris/turbo-broccoli/issues"
-Changelog = "https://github.com/altaris/turbo-broccoli/blob/main/CHANGELOG.md"
-
+    authors         = [{ name = "Cédric Ho Thanh" }]
+    description     = "JSON (de)serialization extensions"
+    license         = { file = "LICENSE" }
+    name            = "turbo_broccoli"
+    readme          = "README.md"
+    requires-python = ">=3.11"
+    version         = "0.0.0"
+    [project.urls]
+        "Bug Tracker" = "https://github.com/altaris/turbo-broccoli/issues"
+        Changelog     = "https://github.com/altaris/turbo-broccoli/blob/main/CHANGELOG.md"
+        Documentation = "https://github.com/altaris/turbo-broccoli"
+        Homepage      = "https://github.com/altaris/turbo-broccoli"
+        Repository    = "https://github.com/altaris/turbo-broccoli.git"
 # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
 [tool.mypy]
-ignore_missing_imports = true
-check_untyped_defs = true
-
+    check_untyped_defs     = true
+    ignore_missing_imports = true
 [tool.pyright]
-include = ["turbo_broccoli"]
-
+    include = ["turbo_broccoli"]
 [tool.pytest.ini_options]
-filterwarnings = [
-    "ignore::DeprecationWarning",
-    "ignore::FutureWarning",
-    "ignore::RuntimeWarning",
-    "ignore::sklearn.exceptions.ConvergenceWarning",
-    "ignore::UserWarning",
-]
-
+    filterwarnings = [
+        "ignore::DeprecationWarning",
+        "ignore::FutureWarning",
+        "ignore::RuntimeWarning",
+        "ignore::UserWarning",
+        "ignore::sklearn.exceptions.ConvergenceWarning",
+    ]
 [tool.ruff]
-target-version = "py311"
-line-length = 79
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".ipynb_checkpoints",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pyenv",
-    ".pytest_cache",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    ".vscode",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "site-packages",
-    "venv",
-    "template.py",
-]
-
-
-
-[tool.ruff.format]
-docstring-code-format = false
-docstring-code-line-length = "dynamic"
-indent-style = "space"
-line-ending = "auto"
-quote-style = "double"
-skip-magic-trailing-comma = false
-
-[tool.ruff.lint]
-# https://flake8.pycqa.org/en/latest/user/error-codes.html
-# https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
-# select = ["E4", "E7", "E9", "F"]
-ignore = [
-    "F401",  # `module` imported but unused
-    "E722",  # Do not use bare `except`
-    "F405",  # `name` may be undefined, or defined from star imports: module
-    "F403",  # `from module import *` used; unable to detect undefined names
-    "E731",  # Do not assign a `lambda` expression, use a `def`
-]
-fixable = ["ALL"]
-
+    exclude = [
+        ".bzr",
+        ".direnv",
+        ".eggs",
+        ".git",
+        ".git-rewrite",
+        ".hg",
+        ".ipynb_checkpoints",
+        ".mypy_cache",
+        ".nox",
+        ".pants.d",
+        ".pyenv",
+        ".pytest_cache",
+        ".pytype",
+        ".ruff_cache",
+        ".svn",
+        ".tox",
+        ".venv",
+        ".vscode",
+        "__pypackages__",
+        "_build",
+        "buck-out",
+        "build",
+        "dist",
+        "node_modules",
+        "site-packages",
+        "template.py",
+        "venv",
+    ]
+    line-length = 79
+    target-version = "py311"
+    [tool.ruff.format]
+        docstring-code-format      = false
+        docstring-code-line-length = "dynamic"
+        indent-style               = "space"
+        line-ending                = "auto"
+        quote-style                = "double"
+        skip-magic-trailing-comma  = false
+    [tool.ruff.lint]
+        # https://flake8.pycqa.org/en/latest/user/error-codes.html
+        # https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
+        # select = ["E4", "E7", "E9", "F"]
+        fixable = ["ALL"]
+        ignore = [
+            "E722", # Do not use bare `except`
+            "E731", # Do not assign a `lambda` expression, use a `def`
+            "F401", # `module` imported but unused
+            "F403", # `from module import *` used; unable to detect undefined names
+            "F405", # `name` may be undefined, or defined from star imports: module
+        ]
 [tool.setuptools]
-package-dir = { "" = "turbo_broccoli" }
+    package-dir = { "" = "turbo_broccoli" }
