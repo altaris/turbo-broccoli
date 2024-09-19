@@ -228,7 +228,7 @@ class GuardedBlockHandler:
             yield from self._guard_iter_list(it, **kwargs)
 
     def _guard_iter_dict(
-        self, it: Iterable, **kwargs
+        self, it: Iterable, **__
     ) -> Generator[tuple[int, Any], None, None]:
         for i, x in enumerate(it):
             if x in self.result:
@@ -242,7 +242,7 @@ class GuardedBlockHandler:
             self._save()
 
     def _guard_iter_list(
-        self, it: Iterable, **kwargs
+        self, it: Iterable, **__
     ) -> Generator[tuple[int, Any], None, None]:
         for i, x in enumerate(it):
             if i < len(self.result):
@@ -255,7 +255,7 @@ class GuardedBlockHandler:
             yield (i, x)
             self._save()
 
-    def _guard_no_iter(self, **kwargs) -> Generator[Any, None, None]:
+    def _guard_no_iter(self, **__) -> Generator[Any, None, None]:
         if self.file_path.is_file():
             self.result = (
                 native_load(self.file_path) if self.load_if_skip else None

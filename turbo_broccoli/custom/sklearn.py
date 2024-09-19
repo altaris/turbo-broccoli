@@ -43,7 +43,7 @@ from sklearn import (
     tree,
 )
 from sklearn.base import BaseEstimator
-from sklearn.tree._tree import Tree
+from sklearn.tree._tree import Tree  # pylint: disable=no-name-in-module
 
 from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
@@ -108,7 +108,9 @@ _SKLEARN_TREE_ATTRIBUTES = [
 ]
 
 _SUPPORTED_PICKLABLE_TYPES = [
-    tree._tree.Tree,  # pylint: disable=protected-access
+    # pylint: disable=c-extension-no-member
+    # pylint: disable=protected-access
+    tree._tree.Tree,
     neighbors.KDTree,
 ]
 """sklearn types that shall be pickled"""
@@ -145,6 +147,7 @@ def _all_base_estimators() -> dict[str, type]:
     return {cls.__name__: cls for cls in result}
 
 
+# pylint: disable=unused-argument
 def _sklearn_estimator_to_json(obj: BaseEstimator, ctx: Context) -> dict:
     return {
         "__type__": "sklearn.estimator." + obj.__class__.__name__,
@@ -172,6 +175,7 @@ def _sklearn_to_raw(obj: Any, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _sklearn_tree_to_json(obj: Tree, ctx: Context) -> dict:
     return {
         "__type__": "sklearn.tree",
@@ -199,6 +203,7 @@ def _json_to_sklearn_estimator(dct: dict, ctx: Context) -> BaseEstimator:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_sklearn_estimator_v2(dct: dict, ctx: Context) -> BaseEstimator:
     bes = _all_base_estimators()
     cls = bes[dct["__type__"].split(".")[-1]]

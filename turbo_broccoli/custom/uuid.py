@@ -12,6 +12,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=unused-argument
 def _json_to_uuid_v1(dct: dict, ctx: Context) -> Any:
     return UUID(hex=dct["hex"])
 
@@ -27,6 +28,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
         raise DeserializationError() from exc
 
 
+# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a

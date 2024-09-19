@@ -8,6 +8,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=unused-argument
 def _graph_to_json(obj: nx.Graph, ctx: Context) -> dict:
     return {
         "__type__": "networkx.graph",
@@ -21,6 +22,7 @@ def _json_to_graph(dct: dict, ctx: Context) -> nx.Graph:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_graph_v1(dct: dict, ctx: Context) -> nx.Graph:
     return nx.adjacency_graph(dct["data"])
 

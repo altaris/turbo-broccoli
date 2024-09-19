@@ -22,6 +22,7 @@ def from_json(dct: dict, ctx: Context) -> Any:
         raise DeserializationError() from exc
 
 
+# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes a dataclass into JSON by cases. The return dict has the

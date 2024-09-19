@@ -16,6 +16,7 @@ def _json_to_sparse_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_sparse_tensor_v2(dct: dict, ctx: Context) -> tf.Tensor:
     return tf.SparseTensor(
         dense_shape=dct["shape"],
@@ -32,6 +33,7 @@ def _json_to_tensor(dct: dict, ctx: Context) -> tf.Tensor:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_tensor_v4(dct: dict, ctx: Context) -> tf.Tensor:
     return st.load(dct["data"])["data"]
 
@@ -57,6 +59,7 @@ def _ragged_tensor_to_json(obj: tf.Tensor, ctx: Context) -> dict:
     )
 
 
+# pylint: disable=unused-argument
 def _sparse_tensor_to_json(obj: tf.SparseTensor, ctx: Context) -> dict:
     return {
         "__type__": "tensorflow.sparse_tensor",
@@ -67,6 +70,7 @@ def _sparse_tensor_to_json(obj: tf.SparseTensor, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _tensor_to_json(obj: tf.Tensor, ctx: Context) -> dict:
     return {
         "__type__": "tensorflow.tensor",
@@ -75,6 +79,7 @@ def _tensor_to_json(obj: tf.Tensor, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _variable_to_json(var: tf.Variable, ctx: Context) -> dict:
     return {
         "__type__": "tensorflow.variable",

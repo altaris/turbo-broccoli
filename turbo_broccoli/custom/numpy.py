@@ -22,6 +22,7 @@ def _json_to_dtype(dct: dict, ctx: Context) -> np.dtype:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_dtype_v2(dct: dict, ctx: Context) -> np.dtype:
     return np.lib.format.descr_to_dtype(dct["dtype"])
 
@@ -34,6 +35,7 @@ def _json_to_ndarray(dct: dict, ctx: Context) -> np.ndarray:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_ndarray_v5(dct: dict, ctx: Context) -> np.ndarray:
     return st.load(dct["data"])["data"]
 
@@ -60,6 +62,7 @@ def _json_to_random_state_v3(dct: dict, ctx: Context) -> np.number:
     return joblib.load(ctx.id_to_artifact_path(dct["data"]))
 
 
+# pylint: disable=unused-argument
 def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:
     return {
         "__type__": "numpy.dtype",
@@ -68,6 +71,7 @@ def _dtype_to_json(d: np.dtype, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _ndarray_to_json(arr: np.ndarray, ctx: Context) -> dict:
     return {
         "__type__": "numpy.ndarray",
@@ -76,6 +80,7 @@ def _ndarray_to_json(arr: np.ndarray, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _number_to_json(num: np.number, ctx: Context) -> dict:
     return {
         "__type__": "numpy.number",
@@ -85,6 +90,8 @@ def _number_to_json(num: np.number, ctx: Context) -> dict:
     }
 
 
+# pylint bug?
+# pylint: disable=no-member
 def _random_state_to_json(obj: np.random.RandomState, ctx: Context) -> dict:
     path, name = ctx.new_artifact_path()
     with path.open(mode="wb") as fp:
@@ -177,7 +184,10 @@ def to_json(obj: Any, ctx: Context) -> dict:
         (np.ndarray, _ndarray_to_json),
         (np.number, _number_to_json),
         (np.dtype, _dtype_to_json),
-        (np.random.RandomState, _random_state_to_json),
+        (
+            np.random.RandomState,  # pylint: disable=no-member
+            _random_state_to_json,
+        ),
     ]
     for t, f in encoders:
         if isinstance(obj, t):

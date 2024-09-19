@@ -12,6 +12,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=unused-argument
 def _datetime_to_json(obj: datetime, ctx: Context) -> dict:
     return {
         "__type__": "datetime.datetime",
@@ -20,6 +21,7 @@ def _datetime_to_json(obj: datetime, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _time_to_json(obj: time, ctx: Context) -> dict:
     return {
         "__type__": "datetime.time",
@@ -28,6 +30,7 @@ def _time_to_json(obj: time, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _timedelta_to_json(obj: timedelta, ctx: Context) -> dict:
     return {
         "__type__": "datetime.timedelta",
@@ -45,6 +48,7 @@ def _json_to_datetime(dct: dict, ctx: Context) -> datetime:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_datetime_v1(dct: dict, ctx: Context) -> datetime:
     return datetime.fromisoformat(dct["datetime"])
 
@@ -56,6 +60,7 @@ def _json_to_time(dct: dict, ctx: Context) -> time:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_time_v1(dct: dict, ctx: Context) -> time:
     return time.fromisoformat(dct["time"])
 
@@ -67,6 +72,7 @@ def _json_to_timedelta(dct: dict, ctx: Context) -> timedelta:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_timedelta_v1(dct: dict, ctx: Context) -> timedelta:
     return timedelta(
         days=dct["days"],

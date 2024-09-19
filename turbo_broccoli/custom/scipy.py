@@ -8,6 +8,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=unused-argument
 def _csr_matrix_to_json(m: csr_matrix, ctx: Context) -> dict:
     return {
         "__type__": "scipy.csr_matrix",

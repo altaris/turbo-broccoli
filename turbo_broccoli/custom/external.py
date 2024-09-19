@@ -22,6 +22,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=too-few-public-methods
 class ExternalData:
     """Encapsulate the data of a file"""
 
@@ -76,6 +77,7 @@ def from_json(dct: dict, ctx: Context) -> ExternalData:
         raise DeserializationError() from exc
 
 
+# pylint: disable=unused-argument
 def to_json(obj: Any, ctx: Context) -> dict:
     """
     Serializes an `ExternalData` object into JSON. The return dict has the

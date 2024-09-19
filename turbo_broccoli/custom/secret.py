@@ -1,5 +1,7 @@
-# pylint: disable=missing-class-docstring
 """Serialize secrets"""
+
+# pylint: disable=missing-class-docstring
+# pylint: disable=too-few-public-methods
 
 import json
 from typing import Any, NoReturn

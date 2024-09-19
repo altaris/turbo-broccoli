@@ -104,6 +104,7 @@ from typing import Any, Callable, Generator, Iterable
 
 import joblib
 
+# pylint: disable=unused-import
 try:
     from loguru import logger as logging
 except ModuleNotFoundError:

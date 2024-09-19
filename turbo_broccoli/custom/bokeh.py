@@ -15,6 +15,7 @@ from turbo_broccoli.context import Context
 from turbo_broccoli.exceptions import DeserializationError, TypeNotSupported
 
 
+# pylint: disable=unused-argument
 def _buffer_to_json(obj: Buffer, ctx: Context) -> dict:
     return {
         "__type__": "bokeh.buffer",
@@ -24,6 +25,7 @@ def _buffer_to_json(obj: Buffer, ctx: Context) -> dict:
     }
 
 
+# pylint: disable=unused-argument
 def _generic_to_json(obj: Figure, ctx: Context) -> dict:
     s = Serializer().serialize(obj)
     return {
@@ -41,6 +43,7 @@ def _json_to_buffer(dct: dict, ctx: Context) -> Buffer:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_buffer_v2(dct: dict, ctx: Context) -> Buffer:
     return Buffer(id=dct["id"], data=dct["data"])
 
@@ -52,6 +55,7 @@ def _json_to_generic(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_generic_v2(dct: dict, ctx: Context) -> Any:
     c, b = dct["content"], dct["buffers"]
     return Deserializer().deserialize(Serialized(content=c, buffers=b))

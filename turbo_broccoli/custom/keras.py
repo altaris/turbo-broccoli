@@ -253,6 +253,7 @@ def _json_to_layer(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_layer_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
@@ -267,6 +268,7 @@ def _json_to_loss(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_loss_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
@@ -281,6 +283,7 @@ def _json_to_metric(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_metric_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
@@ -321,6 +324,7 @@ def _json_to_optimizer(dct: dict, ctx: Context) -> Any:
     return decoders[dct["__version__"]](dct, ctx)
 
 
+# pylint: disable=unused-argument
 def _json_to_optimizer_v2(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
@@ -328,6 +332,7 @@ def _json_to_optimizer_v2(dct: dict, ctx: Context) -> Any:
     )
 
 
+# pylint: disable=unused-argument
 def _json_to_optimizer_v3(dct: dict, ctx: Context) -> Any:
     return keras.utils.deserialize_keras_object(
         dct["data"],
