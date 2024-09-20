@@ -1,5 +1,4 @@
 SRC_PATH 	= turbo_broccoli
-VENV_PATH	= venv
 DOCS_PATH 	= docs
 
 PDOC		= pdoc -d google --math
