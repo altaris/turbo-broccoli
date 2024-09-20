@@ -18,11 +18,11 @@ except ModuleNotFoundError:
     HAS_SAFETENSORS = False
 
 from .custom import (
-    HAS_KERAS,
+    # HAS_KERAS,
     HAS_NUMPY,
     HAS_PANDAS,
     HAS_PYTORCH,
-    HAS_TENSORFLOW,
+    # HAS_TENSORFLOW,
 )
 from .turbo_broccoli import load_json, save_json
 
@@ -47,13 +47,13 @@ def _load_csv(path: str | Path, **kwargs) -> Any:
     return df
 
 
-def _load_keras(path: str | Path, **kwargs) -> Any:
-    if not HAS_KERAS:
-        _raise_package_not_installed("keras", "keras")
+# def _load_keras(path: str | Path, **kwargs) -> Any:
+#     if not HAS_KERAS:
+#         _raise_package_not_installed("keras", "keras")
 
-    import keras
+#     import keras
 
-    return keras.saving.load_model(path, **kwargs)
+#     return keras.saving.load_model(path, **kwargs)
 
 
 def _load_np(path: str | Path, **kwargs) -> Any:
@@ -130,15 +130,15 @@ def _save_csv(obj: Any, path: str | Path, **kwargs) -> None:
     obj.to_csv(path, **kwargs)
 
 
-def _save_keras(obj: Any, path: str | Path, **kwargs) -> None:
-    if not HAS_KERAS:
-        _raise_package_not_installed("keras", "keras")
+# def _save_keras(obj: Any, path: str | Path, **kwargs) -> None:
+#     if not HAS_KERAS:
+#         _raise_package_not_installed("keras", "keras")
 
-    import keras
+#     import keras
 
-    if not isinstance(obj, keras.Model):
-        _raise_wrong_type(path, "keras model")
-    keras.saving.save_model(obj, path, **kwargs)
+#     if not isinstance(obj, keras.Model):
+#         _raise_wrong_type(path, "keras model")
+#     keras.saving.save_model(obj, path, **kwargs)
 
 
 def _save_npy(obj: Any, path: str | Path, **kwargs) -> None:
@@ -193,12 +193,12 @@ def _save_st(obj: Any, path: str | Path, **kwargs) -> None:
             safetensors.numpy.save_file(obj, str(path), **kwargs)
             return
 
-    if HAS_TENSORFLOW:
-        import tensorflow as tf
+    # if HAS_TENSORFLOW:
+    #     import tensorflow as tf
 
-        if _is_dict_of(obj, tf.Tensor):
-            safetensors.tensorflow.save_file(obj, str(path), **kwargs)
-            return
+    #     if _is_dict_of(obj, tf.Tensor):
+    #         safetensors.tensorflow.save_file(obj, str(path), **kwargs)
+    #         return
 
     if HAS_PYTORCH:
         import torch
@@ -227,15 +227,15 @@ def load(path: str | Path, **kwargs) -> Any:
     extension = Path(path).suffix
     methods: dict[str, Callable[[str | Path], Any]] = {
         ".csv": _load_csv,
-        ".h5": _load_keras,
-        ".keras": _load_keras,
+        # ".h5": _load_keras,
+        # ".keras": _load_keras,
         ".npy": _load_np,
         ".npz": _load_np,
         ".parquet": _load_pq,
         ".pq": _load_pq,
         ".pt": _load_pt,
         ".st": _load_st,
-        ".tf": _load_keras,
+        # ".tf": _load_keras,
     }
     method: Callable = methods.get(extension, load_json)
     return method(path, **kwargs)
@@ -279,15 +279,15 @@ def save(obj: Any, path: str | Path, **kwargs) -> None:
     extension = Path(path).suffix
     methods: dict[str, Callable[[Any, str | Path], None]] = {
         ".csv": _save_csv,
-        ".h5": partial(_save_keras, save_format="h5"),
-        ".keras": partial(_save_keras, save_format="keras"),
+        # ".h5": partial(_save_keras, save_format="h5"),
+        # ".keras": partial(_save_keras, save_format="keras"),
         ".npy": _save_npy,
         ".npz": _save_npz,
         ".parquet": _save_pq,
         ".pq": _save_pq,
         ".pt": _save_pt,
         ".st": _save_st,
-        ".tf": partial(_save_keras, save_format="tf"),
+        # ".tf": partial(_save_keras, save_format="tf"),
     }
     method = methods.get(extension, save_json)
     method(obj, path, **kwargs)

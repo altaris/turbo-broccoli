@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+
+# import tensorflow as tf
 import torch
 from common import assert_to_from_json, to_from_json
 from test_pandas import _assert_equal as assert_equal_pd
@@ -55,16 +56,16 @@ def test_nodecode_bytes_numpy():
     assert y["b"]["data"]["__type__"] == "bytes"
 
 
-def test_nodecode_bytes_tensorflow():
-    ctx = Context(min_artifact_size=0, nodecode_types=["bytes"])
-    x = {"b": tf.random.uniform((100, 100), dtype=tf.float64), **_basic_dict()}
-    y = to_from_json(x, ctx)
-    assert set(x.keys()) == set(y.keys())
-    assert set(y["b"].keys()) == {"__type__", "__version__", "data"}
-    assert y["b"]["__type__"] == "tensorflow.tensor"
-    assert isinstance(y["b"]["data"], dict)
-    assert set(y["b"]["data"].keys()) == {"__type__", "__version__", "id"}
-    assert y["b"]["data"]["__type__"] == "bytes"
+# def test_nodecode_bytes_tensorflow():
+#     ctx = Context(min_artifact_size=0, nodecode_types=["bytes"])
+#     x = {"b": tf.random.uniform((100, 100), dtype=tf.float64), **_basic_dict()}
+#     y = to_from_json(x, ctx)
+#     assert set(x.keys()) == set(y.keys())
+#     assert set(y["b"].keys()) == {"__type__", "__version__", "data"}
+#     assert y["b"]["__type__"] == "tensorflow.tensor"
+#     assert isinstance(y["b"]["data"], dict)
+#     assert set(y["b"]["data"].keys()) == {"__type__", "__version__", "id"}
+#     assert y["b"]["data"]["__type__"] == "bytes"
 
 
 def test_nodecode_bytes_torch_tensor():

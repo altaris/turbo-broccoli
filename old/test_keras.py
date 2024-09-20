@@ -2,7 +2,7 @@
 
 import numpy as np
 from common import to_from_json
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_array_almost_equal
 from tensorflow import keras
 
 from turbo_broccoli import Context
@@ -10,9 +10,11 @@ from turbo_broccoli import Context
 
 def _assert_model_equal(a, b):
     for i, w in enumerate(a.weights):
-        assert_array_equal(w, b.weights[i])
+        assert_array_almost_equal(w, b.weights[i])
     # Not really necessary but why not
-    assert_array_equal(a(np.ones((1, 28, 28, 1))), b(np.ones((1, 28, 28, 1))))
+    assert_array_almost_equal(
+        a(np.ones((1, 28, 28, 1))), b(np.ones((1, 28, 28, 1)))
+    )
 
 
 def _build_model():

@@ -105,22 +105,22 @@ def test_save_native_st_np():
         np.testing.assert_array_equal(v, y[k])
 
 
-def test_save_native_st_tf():
-    import tensorflow as tf
-    from safetensors import tensorflow as st
+# def test_save_native_st_tf():
+#     import tensorflow as tf
+#     from safetensors import tensorflow as st
 
-    gen = tf.random.Generator.from_seed(0)
-    x = {
-        "a": gen.uniform((5, 5)),
-        "b": gen.uniform((10, 10)),
-        "c": gen.uniform((15, 15)),
-    }
-    native_save(x, TEST_PATH / "test_save_native_st_tf.st")
-    y = st.load_file(TEST_PATH / "test_save_native_st_tf.st")
-    assert isinstance(y, dict)
-    assert sorted(list(x.keys())) == sorted(list(y.keys()))
-    for k, v in x.items():
-        tf.debugging.assert_equal(v, y[k])
+#     gen = tf.random.Generator.from_seed(0)
+#     x = {
+#         "a": gen.uniform((5, 5)),
+#         "b": gen.uniform((10, 10)),
+#         "c": gen.uniform((15, 15)),
+#     }
+#     native_save(x, TEST_PATH / "test_save_native_st_tf.st")
+#     y = st.load_file(TEST_PATH / "test_save_native_st_tf.st")
+#     assert isinstance(y, dict)
+#     assert sorted(list(x.keys())) == sorted(list(y.keys()))
+#     for k, v in x.items():
+#         tf.debugging.assert_equal(v, y[k])
 
 
 def test_save_native_st_torch():

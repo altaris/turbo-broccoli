@@ -15,12 +15,12 @@ from . import networkx as _networkx
 from . import pathlib as _pathlib
 from . import uuid as _uuid
 
-try:
-    from turbo_broccoli.custom import keras as _keras
+# try:
+#     from turbo_broccoli.custom import keras as _keras
 
-    HAS_KERAS = True
-except:
-    HAS_KERAS = False
+#     HAS_KERAS = True
+# except:
+#     HAS_KERAS = False
 
 try:
     from turbo_broccoli.custom import numpy as _numpy
@@ -44,12 +44,12 @@ try:
 except:
     HAS_SECRET = False
 
-try:
-    from turbo_broccoli.custom import tensorflow as _tensorflow
+# try:
+#     from turbo_broccoli.custom import tensorflow as _tensorflow
 
-    HAS_TENSORFLOW = True
-except:
-    HAS_TENSORFLOW = False
+#     HAS_TENSORFLOW = True
+# except:
+#     HAS_TENSORFLOW = False
 
 try:
     from turbo_broccoli.custom import pytorch as _pytorch
@@ -111,8 +111,8 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         "pathlib": _pathlib.from_json,
         "uuid": _uuid.from_json,
     }
-    if HAS_KERAS:
-        decoders["keras"] = _keras.from_json
+    # if HAS_KERAS:
+    #     decoders["keras"] = _keras.from_json
     if HAS_NUMPY:
         decoders["numpy"] = _numpy.from_json
     if HAS_PANDAS:
@@ -121,8 +121,8 @@ def get_decoders() -> dict[str, Callable[[dict, Context], Any]]:
         decoders["pytorch"] = _pytorch.from_json
     if HAS_SECRET:
         decoders["secret"] = _secret.from_json
-    if HAS_TENSORFLOW:
-        decoders["tensorflow"] = _tensorflow.from_json
+    # if HAS_TENSORFLOW:
+    #     decoders["tensorflow"] = _tensorflow.from_json
     if HAS_SCIPY:
         decoders["scipy"] = _scipy.from_json
     if HAS_SKLEARN:
@@ -162,8 +162,8 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         _pathlib.to_json,
         _uuid.to_json,
     ]
-    if HAS_KERAS:
-        encoders.append(_keras.to_json)
+    # if HAS_KERAS:
+    #     encoders.append(_keras.to_json)
     if HAS_NUMPY:
         encoders.append(_numpy.to_json)
     if HAS_PANDAS:
@@ -172,8 +172,8 @@ def get_encoders() -> list[Callable[[Any, Context], dict]]:
         encoders.append(_pytorch.to_json)
     if HAS_SECRET:
         encoders.append(_secret.to_json)
-    if HAS_TENSORFLOW:
-        encoders.append(_tensorflow.to_json)
+    # if HAS_TENSORFLOW:
+    #     encoders.append(_tensorflow.to_json)
     if HAS_SCIPY:
         encoders.append(_scipy.to_json)
     if HAS_SKLEARN:
