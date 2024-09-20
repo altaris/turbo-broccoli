@@ -1103,10 +1103,14 @@ name = "turbo-broccoli"
 version = "0.0.0"
 source = { virtual = "." }
 
+[package.optional-dependencies]
+test = [
+    { name = "bokeh-sampledata" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "bokeh" },
-    { name = "bokeh-sampledata" },
     { name = "fastparquet" },
     { name = "joblib" },
     { name = "loguru" },
@@ -1123,11 +1127,11 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "bokeh-sampledata", marker = "extra == 'test'", specifier = ">=2024.2" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "bokeh", specifier = ">=3.5.2" },
-    { name = "bokeh-sampledata", specifier = ">=2024.2" },
     { name = "fastparquet", specifier = ">=2024.5.0" },
     { name = "joblib", specifier = ">=1.4.2" },
     { name = "loguru", specifier = ">=0.7.2" },

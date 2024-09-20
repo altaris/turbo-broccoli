@@ -13,6 +13,8 @@
         Documentation = "https://github.com/altaris/turbo-broccoli"
         Homepage      = "https://github.com/altaris/turbo-broccoli"
         Repository    = "https://github.com/altaris/turbo-broccoli.git"
+    [project.optional-dependencies]
+        test = ["bokeh-sampledata>=2024.2"]
 # https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
 [tool.mypy]
     check_untyped_defs     = true
@@ -82,7 +84,6 @@
     package-dir = { "" = "turbo_broccoli" }
 [tool.uv]
     dev-dependencies = [
-        "bokeh-sampledata>=2024.2",
         "bokeh>=3.5.2",
         "fastparquet>=2024.5.0",
         "joblib>=1.4.2",
@@ -97,4 +98,4 @@
         "safetensors>=0.4.5",
         "scikit-learn>=1.5.2",
         "torch>=2.4.1",
-]
+    ]
