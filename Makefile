@@ -14,12 +14,12 @@ clean:
 .PHONY: docs
 docs:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	uv run $(PDOC) --output-directory $(DOCS_PATH) $(SRC_PATH)
+	PDOC_ALLOW_EXEC=1 uv run $(PDOC) --output-directory $(DOCS_PATH) $(SRC_PATH)
 
 .PHONY: docs-browser
 docs-browser:
 	-@mkdir $(DOCS_PATH) > /dev/null 2>&1
-	uv run $(PDOC) -p 8081 -n $(SRC_PATH)
+	PDOC_ALLOW_EXEC=1 uv run $(PDOC) -p 8081 -n $(SRC_PATH)
 
 .PHONY: format
 format:
