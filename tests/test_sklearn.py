@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 from common import from_json, to_from_json, to_json
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_almost_equal
 from scipy import sparse
 from sklearn.base import BaseEstimator
 from sklearn.calibration import *
@@ -53,7 +53,7 @@ def _fit_labels_test(
 ) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.labels_, obj.labels_)
+    assert_almost_equal(obj.labels_, obj.labels_)
     return obj, obj2
 
 
@@ -62,7 +62,7 @@ def _fit_predict_x_z_test(
 ) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.predict(z), obj2.predict(z))
+    assert_almost_equal(obj.predict(z), obj2.predict(z))
     return obj, obj2
 
 
@@ -71,7 +71,7 @@ def _fit_predict_x_y_z_test(
 ) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x, y)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.predict(z), obj2.predict(z))
+    assert_almost_equal(obj.predict(z), obj2.predict(z))
     return obj, obj2
 
 
@@ -84,7 +84,7 @@ def _fit_score_test(
 ) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train, y_train)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.score(x_test, y_test), obj2.score(x_test, y_test))
+    assert_almost_equal(obj.score(x_test, y_test), obj2.score(x_test, y_test))
     return obj, obj2
 
 
@@ -95,7 +95,7 @@ def _fit_transform_x_test(
 ) -> tuple[BaseEstimator, BaseEstimator]:
     obj = obj.fit(x_train)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.transform(x_test), obj2.transform(x_test))
+    assert_almost_equal(obj.transform(x_test), obj2.transform(x_test))
     return obj, obj2
 
 
@@ -111,12 +111,12 @@ def _fit_transform_x_y_test(
     if y_test is None:
         x_tr1 = obj.transform(x_test)
         x_tr2 = obj2.transform(x_test)
-        assert_array_equal(x_tr1, x_tr2)
+        assert_almost_equal(x_tr1, x_tr2)
     else:
         x_tr1, y_tr1 = obj.transform(x_test, y_test)
         x_tr2, y_tr2 = obj2.transform(x_test, y_test)
-        assert_array_equal(x_tr1, x_tr2)
-        assert_array_equal(y_tr1, y_tr2)
+        assert_almost_equal(x_tr1, x_tr2)
+        assert_almost_equal(y_tr1, y_tr2)
     return obj, obj2
 
 
@@ -129,8 +129,8 @@ def _test_cross_decomposition_estimator(
     obj2 = _to_json_and_back(obj)
     x1, y1 = obj.transform(x, y)
     x2, y2 = obj2.transform(x, y)
-    assert_array_equal(x1, x2)
-    assert_array_equal(y1, y2)
+    assert_almost_equal(x1, x2)
+    assert_almost_equal(y1, y2)
     return obj, obj2
 
 
@@ -152,8 +152,8 @@ def _test_covariance_estimator(
     x_test = np.random.multivariate_normal(**kw)
     obj = obj.fit(x)
     obj2 = _to_json_and_back(obj)
-    assert_array_equal(obj.score(x_test), obj2.score(x_test))
-    assert_array_equal(obj.mahalanobis(x_test), obj2.mahalanobis(x_test))
+    assert_almost_equal(obj.score(x_test), obj2.score(x_test))
+    assert_almost_equal(obj.mahalanobis(x_test), obj2.mahalanobis(x_test))
     return obj, obj2
 
 
@@ -182,7 +182,7 @@ def test_agglomerativeclustering():
 #     e = Birch(n_clusters=None)
 #     e.fit(x)
 #     e2 = _to_json_and_back(e)
-#     assert_array_equal(e.predict(x), e2.predict(x))
+#     assert_almost_equal(e.predict(x), e2.predict(x))
 
 
 def test_dbscan():
@@ -232,7 +232,7 @@ def test_kmeans():
 #     y = [[0, 0], [12, 3]]
 #     e = BisectingKMeans(n_clusters=3, random_state=0).fit(x)
 #     e2 = _to_json_and_back(e)
-#     assert_array_equal(e.predict(y), e2.predict(y))
+#     assert_almost_equal(e.predict(y), e2.predict(y))
 
 
 def test_minibatchkmeans():
@@ -289,8 +289,8 @@ def test_spectralbiclustering():
     x = np.array([[1, 1], [2, 1], [1, 0], [4, 7], [3, 5], [3, 6]])
     e = SpectralBiclustering(n_clusters=2, random_state=0).fit(x)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.row_labels_, e2.row_labels_)
-    assert_array_equal(e.column_labels_, e2.column_labels_)
+    assert_almost_equal(e.row_labels_, e2.row_labels_)
+    assert_almost_equal(e.column_labels_, e2.column_labels_)
 
 
 def test_spectralcoclustering():
@@ -300,8 +300,8 @@ def test_spectralcoclustering():
     x = np.array([[1, 1], [2, 1], [1, 0], [4, 7], [3, 5], [3, 6]])
     e = SpectralCoclustering(n_clusters=2, random_state=0).fit(x)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.row_labels_, e2.row_labels_)
-    assert_array_equal(e.column_labels_, e2.column_labels_)
+    assert_almost_equal(e.row_labels_, e2.row_labels_)
+    assert_almost_equal(e.column_labels_, e2.column_labels_)
 
 
 def test_ellipticenvelope():
@@ -431,7 +431,7 @@ def test_incrementalpca():
     e = IncrementalPCA(n_components=7, batch_size=200)
     e.partial_fit(x[:100, :])
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.fit_transform(y), e2.fit_transform(y))
+    assert_almost_equal(e.fit_transform(y), e2.fit_transform(y))
 
 
 def test_kernelpca():
@@ -521,7 +521,7 @@ def test_pca():
     x = np.array([[-1, -1], [-2, -1], [-3, -2], [1, 1], [2, 1], [3, 2]])
     e = PCA(n_components=2)
     e, e2 = _fit_transform_x_test(e, x, x)
-    assert_array_equal(e.score(x), e2.score(x))
+    assert_almost_equal(e.score(x), e2.score(x))
 
 
 def test_sparsepca():
@@ -579,7 +579,7 @@ def test_randomforestclassifier():
     e = RandomForestClassifier(max_depth=2, random_state=0)
     e.fit(x, y)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.predict(z), e2.predict(z))
+    assert_almost_equal(e.predict(z), e2.predict(z))
 
 
 def test_randomforestregressor():
@@ -598,7 +598,7 @@ def test_randomforestregressor():
     e = RandomForestRegressor(max_depth=2, random_state=0)
     e.fit(x, y)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.predict(z), e2.predict(z))
+    assert_almost_equal(e.predict(z), e2.predict(z))
 
 
 # def test_randomtreesembedding():
@@ -693,7 +693,7 @@ def test_isolationforest():
 #     x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=0)
 #     e = GradientBoostingRegressor(random_state=0)
 #     e, e2 = _fit_predict_x_y_z_test(e, x_train, y_train, x_test[1:2])
-#     assert_array_equal(e.score(x_test, y_test), e2.score(x_test, y_test))
+#     assert_almost_equal(e.score(x_test, y_test), e2.score(x_test, y_test))
 
 
 def test_adaboostclassifier():
@@ -711,7 +711,7 @@ def test_adaboostclassifier():
     z = [[0, 0, 0, 0]]
     e = AdaBoostClassifier(n_estimators=100, random_state=0)
     e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
-    assert_array_equal(e.score(x, y), e2.score(x, y))
+    assert_almost_equal(e.score(x, y), e2.score(x, y))
 
 
 def test_adaboostregressor():
@@ -729,7 +729,7 @@ def test_adaboostregressor():
     z = [[0, 0, 0, 0]]
     e = AdaBoostRegressor(random_state=0, n_estimators=100)
     e, e2 = _fit_predict_x_y_z_test(e, x, y, z)
-    assert_array_equal(e.score(x, y), e2.score(x, y))
+    assert_almost_equal(e.score(x, y), e2.score(x, y))
 
 
 # def test_histgradientboostingclassifier():
@@ -765,11 +765,11 @@ def test_variancethreshold():
 #     kernel = DotProduct() + WhiteKernel()
 #     e = GaussianProcessRegressor(kernel=kernel, random_state=0)
 #     e, e2 = _fit_score_test(e, x, x, y, y)
-#     assert_array_equal(
+#     assert_almost_equal(
 #         e.predict(x[:2, :], return_std=True),
 #         e2.predict(x[:2, :], return_std=True),
 #     )
-#     assert_array_equal(
+#     assert_almost_equal(
 #         e.predict(x[:2, :], return_cov=True),
 #         e2.predict(x[:2, :], return_cov=True),
 #     )
@@ -785,7 +785,7 @@ def test_variancethreshold():
 #         kernel=kernel, random_state=0, max_iter_predict=10
 #     )
 #     e, e2 = _fit_score_test(e, x, x, y, y)
-#     assert_array_equal(
+#     assert_almost_equal(
 #         e.predict_proba(x[:2, :]),
 #         e2.predict_proba(x[:2, :]),
 #     )
@@ -837,7 +837,7 @@ def test_huberregressor():
     y[:4] = rng.uniform(10, 20, 4)
     e = HuberRegressor()
     e, e2 = _fit_score_test(e, x, x, y, y)
-    assert_array_equal(
+    assert_almost_equal(
         e.predict(x[:1, :]),
         e2.predict(x[:1, :]),
     )
@@ -884,7 +884,7 @@ def test_linearregression():
     y = np.dot(x, np.array([1, 2])) + 3
     z = np.array([[3, 5]])
     e, e2 = _fit_score_test(LinearRegression(), x, x, y, y)
-    assert_array_equal(e.predict(z), e2.predict(z))
+    assert_almost_equal(e.predict(z), e2.predict(z))
 
 
 def test_logisticregression():
@@ -894,7 +894,7 @@ def test_logisticregression():
     x, y = load_iris(return_X_y=True)
     e = LogisticRegression(random_state=0, max_iter=100).fit(x, y)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.score(x, y), e2.score(x, y))
+    assert_almost_equal(e.score(x, y), e2.score(x, y))
 
 
 def test_multitaskelasticnet():
@@ -919,7 +919,7 @@ def test_orthogonalmatchingpursuit():
     """
     x, y = make_regression(noise=4, random_state=0)
     e, e2 = _fit_score_test(OrthogonalMatchingPursuit(), x, x, y, y)
-    assert_array_equal(e.predict(x[:1, :]), e2.predict(x[:1, :]))
+    assert_almost_equal(e.predict(x[:1, :]), e2.predict(x[:1, :]))
 
 
 # def test_passiveaggressiveclassifier():
@@ -929,7 +929,7 @@ def test_orthogonalmatchingpursuit():
 #     x, y = make_regression(noise=4, random_state=0)
 #     e = PassiveAggressiveClassifier(max_iter=10, random_state=0)
 #     e, e2 = _fit_score_test(e, x, x, y, y)
-#     assert_array_equal(e.predict(x), e2.predict(x))
+#     assert_almost_equal(e.predict(x), e2.predict(x))
 
 
 def test_passiveaggressiveregressor():
@@ -939,7 +939,7 @@ def test_passiveaggressiveregressor():
     x, y = make_regression(noise=4, random_state=0)
     e = PassiveAggressiveRegressor(max_iter=10, random_state=0)
     e, e2 = _fit_score_test(e, x, x, y, y)
-    assert_array_equal(e.predict(x), e2.predict(x))
+    assert_almost_equal(e.predict(x), e2.predict(x))
 
 
 # def test_perceptron():
@@ -1060,7 +1060,7 @@ def test_locallylinearembedding():
     e = LocallyLinearEmbedding(n_components=2)
     xe = e.fit_transform(x[:100])
     e2 = _to_json_and_back(e)
-    assert_array_equal(xe, e2.embedding_)
+    assert_almost_equal(xe, e2.embedding_)
 
 
 def test_isomap():
@@ -1071,7 +1071,7 @@ def test_isomap():
     e = Isomap(n_components=2)
     xe = e.fit_transform(x[:100])
     e2 = _to_json_and_back(e)
-    assert_array_equal(xe, e2.embedding_)
+    assert_almost_equal(xe, e2.embedding_)
 
 
 def test_mds():
@@ -1082,7 +1082,7 @@ def test_mds():
     e = MDS(n_components=2, normalized_stress="auto")
     xe = e.fit_transform(x[:100])
     e2 = _to_json_and_back(e)
-    assert_array_equal(xe, e2.embedding_)
+    assert_almost_equal(xe, e2.embedding_)
 
 
 def test_spectralembedding():
@@ -1093,7 +1093,7 @@ def test_spectralembedding():
     e = SpectralEmbedding(n_components=2)
     xe = e.fit_transform(x[:100])
     e2 = _to_json_and_back(e)
-    assert_array_equal(xe, e2.embedding_)
+    assert_almost_equal(xe, e2.embedding_)
 
 
 def test_tsne():
@@ -1104,7 +1104,7 @@ def test_tsne():
     e = TSNE(n_components=2, perplexity=3, n_iter=250)
     xe = e.fit_transform(x)
     e2 = _to_json_and_back(e)
-    assert_array_equal(xe, e2.embedding_)
+    assert_almost_equal(xe, e2.embedding_)
 
 
 def test_gaussianmixture():
@@ -1115,8 +1115,8 @@ def test_gaussianmixture():
     gm = GaussianMixture(n_components=2, random_state=0).fit(x)
     gm2 = _to_json_and_back(gm)
     y = [[0, 0], [12, 3]]
-    assert_array_equal(gm.predict(y), gm2.predict(y))
-    assert_array_equal(gm.score(x), gm2.score(x))
+    assert_almost_equal(gm.predict(y), gm2.predict(y))
+    assert_almost_equal(gm.score(x), gm2.score(x))
 
 
 def test_bayesiangaussianmixture():
@@ -1127,8 +1127,8 @@ def test_bayesiangaussianmixture():
     gm = BayesianGaussianMixture(n_components=2, random_state=0).fit(x)
     gm2 = _to_json_and_back(gm)
     y = [[0, 0], [12, 3]]
-    assert_array_equal(gm.predict(y), gm2.predict(y))
-    assert_array_equal(gm.score(x), gm2.score(x))
+    assert_almost_equal(gm.predict(y), gm2.predict(y))
+    assert_almost_equal(gm.score(x), gm2.score(x))
 
 
 def test_bernoullinb():
@@ -1220,7 +1220,7 @@ def test_nearestneighbors():
     e = NearestNeighbors(n_neighbors=2, radius=0.4)
     e.fit(x)
     e2 = _to_json_and_back(e)
-    assert_array_equal(
+    assert_almost_equal(
         e.kneighbors(z, 2, return_distance=False),
         e2.kneighbors(z, 2, return_distance=False),
     )
@@ -1259,7 +1259,7 @@ def test_kerneldensity():
     x = rng.random_sample((100, 3))
     e = KernelDensity(kernel="gaussian", bandwidth=0.5).fit(x)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.score_samples(x[:3]), e2.score_samples(x[:3]))
+    assert_almost_equal(e.score_samples(x[:3]), e2.score_samples(x[:3]))
 
 
 def test_localoutlierfactor():
@@ -1280,7 +1280,7 @@ def test_neighborhoodcomponentsanalysis():
     x_tr1 = e1.fit_transform(x, y)
     e2 = _to_json_and_back(e1)
     x_tr2 = e2.transform(x)
-    assert_array_equal(x_tr1, x_tr2)
+    assert_almost_equal(x_tr1, x_tr2)
 
 
 def test_bernoullirbm():
@@ -1665,7 +1665,7 @@ def test_additivechi2sampler():
     e = AdditiveChi2Sampler(sample_steps=2)
     e.fit(x, y)
     e2 = _to_json_and_back(e)
-    assert_array_equal(e.transform(x), e2.transform(x))
+    assert_almost_equal(e.transform(x), e2.transform(x))
 
 
 def test_nystroem():

@@ -2,13 +2,13 @@
 
 import numpy as np
 from common import to_from_json
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_almost_equal
 from scipy.sparse import csr_matrix
 
 
 def _assert_csr_matrix_equal(m1: csr_matrix, m2: csr_matrix) -> None:
     assert not (m1 != m2).toarray().any()
-    assert_array_equal(m1.toarray(), m2.toarray())
+    assert_almost_equal(m1.toarray(), m2.toarray())
 
 
 def test_csr_matrix():

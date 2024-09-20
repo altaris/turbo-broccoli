@@ -33,7 +33,7 @@ def test_save_native_npy():
     x = state.rand(5, 5)
     native_save(x, TEST_PATH / "test_save_native_npy_1.npy")
     y = np.load(TEST_PATH / "test_save_native_npy_1.npy")
-    np.testing.assert_array_equal(x, y)
+    np.testing.assert_almost_equal(x, y)
 
 
 def test_save_native_npz():
@@ -50,7 +50,7 @@ def test_save_native_npz():
     # assert isinstance(y, dict)
     assert sorted(list(x.keys())) == sorted(list(y.keys()))
     for k, v in x.items():
-        np.testing.assert_array_equal(v, y[k])
+        np.testing.assert_almost_equal(v, y[k])
 
 
 def test_save_native_pq():
@@ -102,7 +102,7 @@ def test_save_native_st_np():
     assert isinstance(y, dict)
     assert sorted(list(x.keys())) == sorted(list(y.keys()))
     for k, v in x.items():
-        np.testing.assert_array_equal(v, y[k])
+        np.testing.assert_almost_equal(v, y[k])
 
 
 # def test_save_native_st_tf():

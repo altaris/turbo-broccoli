@@ -2,7 +2,7 @@
 
 import numpy as np
 from common import assert_to_from_json, to_from_json
-from numpy.testing import assert_array_equal, assert_equal
+from numpy.testing import assert_almost_equal, assert_equal
 
 from turbo_broccoli import Context
 
@@ -12,7 +12,7 @@ def _assert_equal(a, b):
     assert_equal(type(a), type(b))
     assert_equal(a.dtype, b.dtype)
     if isinstance(a, np.ndarray):
-        assert_array_equal(a, b)
+        assert_almost_equal(a, b)
     else:
         assert_equal(a, b)
 

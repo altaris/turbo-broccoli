@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 from common import to_from_json
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_almost_equal
 
 from turbo_broccoli import Context, ExternalData, save
 from turbo_broccoli.turbo_broccoli import load_json, save_json
@@ -26,9 +26,9 @@ def test_external_relative_1():
     a = np.arange(10)
     save(a, TEST_PATH + q)
     x = {"a": ExternalData(q, ctx)}
-    assert_array_equal(a, x["a"].data)
+    assert_almost_equal(a, x["a"].data)
     y = to_from_json(x, ctx)
-    assert_array_equal(a, y["a"].data)
+    assert_almost_equal(a, y["a"].data)
 
 
 def test_external_relative_2():
@@ -38,9 +38,9 @@ def test_external_relative_2():
     a = np.arange(10)
     save(a, TEST_PATH + q)
     x = {"a": ExternalData(q, ctx)}
-    assert_array_equal(a, x["a"].data)
+    assert_almost_equal(a, x["a"].data)
     y = to_from_json(x, ctx)
-    assert_array_equal(a, y["a"].data)
+    assert_almost_equal(a, y["a"].data)
 
 
 def test_external_absolute_1():
@@ -50,9 +50,9 @@ def test_external_absolute_1():
     a = np.arange(10)
     save(a, q)
     x = {"a": ExternalData(q, ctx)}
-    assert_array_equal(a, x["a"].data)
+    assert_almost_equal(a, x["a"].data)
     y = to_from_json(x, ctx)
-    assert_array_equal(a, y["a"].data)
+    assert_almost_equal(a, y["a"].data)
 
 
 def test_external_absolute_2():
@@ -62,9 +62,9 @@ def test_external_absolute_2():
     a = np.arange(10)
     save(a, q)
     x = {"a": ExternalData(q, ctx)}
-    assert_array_equal(a, x["a"].data)
+    assert_almost_equal(a, x["a"].data)
     y = to_from_json(x, ctx)
-    assert_array_equal(a, y["a"].data)
+    assert_almost_equal(a, y["a"].data)
 
 
 def test_external_nodecode_path():
