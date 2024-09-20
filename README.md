@@ -206,7 +206,7 @@ deserialized.
 ### Artifacts
 
 If an object inside `obj` is too large to be embedded inside the JSON file
-(e.g. a large numpy array), then an *artifact* file is created:
+(e.g. a large numpy array), then an _artifact_ file is created:
 
 ```py
 import numpy as np
@@ -335,7 +335,7 @@ tb.to_json(x)
 produces the following string:
 
 ```json
-{"a": 42,"b": 43}
+{ "a": 42, "b": 43 }
 ```
 
 Registered attributes can of course have any type supported by TurboBroccoli,
@@ -500,34 +500,34 @@ Doesn't work with:
 
 - Other classes that have non JSON-serializable attributes:
 
-    | Class                       | Non-serializable attr.    |
-    | --------------------------- | ------------------------- |
-    | `Birch`                     | `_CFNode`                 |
-    | `BisectingKMeans`           | `function`                |
-    | `ColumnTransformer`         | `slice`                   |
-    | `GammaRegressor`            | `HalfGammaLoss`           |
-    | `GaussianProcessClassifier` | `Product`                 |
-    | `GaussianProcessRegressor`  | `Sum`                     |
-    | `IsotonicRegression`        | `interp1d`                |
-    | `OutputCodeClassifier`      | `_ConstantPredictor`      |
-    | `Perceptron`                | `Hinge`                   |
-    | `PoissonRegressor`          | `HalfPoissonLoss`         |
-    | `SGDClassifier`             | `Hinge`                   |
-    | `SGDOneClassSVM`            | `Hinge`                   |
-    | `SplineTransformer`         | `BSpline`                 |
-    | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
+  | Class                       | Non-serializable attr.    |
+  | --------------------------- | ------------------------- |
+  | `Birch`                     | `_CFNode`                 |
+  | `BisectingKMeans`           | `function`                |
+  | `ColumnTransformer`         | `slice`                   |
+  | `GammaRegressor`            | `HalfGammaLoss`           |
+  | `GaussianProcessClassifier` | `Product`                 |
+  | `GaussianProcessRegressor`  | `Sum`                     |
+  | `IsotonicRegression`        | `interp1d`                |
+  | `OutputCodeClassifier`      | `_ConstantPredictor`      |
+  | `Perceptron`                | `Hinge`                   |
+  | `PoissonRegressor`          | `HalfPoissonLoss`         |
+  | `SGDClassifier`             | `Hinge`                   |
+  | `SGDOneClassSVM`            | `Hinge`                   |
+  | `SplineTransformer`         | `BSpline`                 |
+  | `TweedieRegressor`          | `HalfTweedieLossIdentity` |
 
 - Other errors:
 
   - `FastICA`: I'm not sure why...
 
   - `BaggingClassifier`: `IndexError: only integers, slices (:), ellipsis
-    (...), numpy.newaxis (None) and integer or boolean arrays are valid
-    indices`.
+(...), numpy.newaxis (None) and integer or boolean arrays are valid
+indices`.
 
   - `GradientBoostingClassifier`, `GradientBoostingRegressor`,
     `RandomTreesEmbedding`, `KBinsDiscretizer`: `Exception:
-    dtype object is not covered`.
+dtype object is not covered`.
 
   - `HistGradientBoostingClassifier`: Problems with deserialization of
     `_BinMapper` object?
@@ -655,7 +655,7 @@ will result in a `data.json` file containing
 `data.4ea0b3f3-f3e4-42bd-9db9-1e4e0b9f4fae.json` containing
 
 ```json
-{"c": 2, "d": 3}
+{ "c": 2, "d": 3 }
 ```
 
 ###  External data
@@ -685,8 +685,8 @@ tb.save_json(document, "foo/bar.json")
 # Loading
 document2 = tb.load_json("foo/bar.json")
 
-from numpy.testing import assert_array_equal
-assert_array_equal(document["a"].data, document2["a"].data)
+from numpy.testing import assert_array_almost_equal
+assert_array_almost_equal(document["a"].data, document2["a"].data)
 ```
 
 Warnings:
@@ -813,21 +813,9 @@ by modifying `os.environ`. Rather, use a
 
 - `python3.10` or newer;
 
-- `requirements.txt` for runtime dependencies;
+- [`uv`](https://docs.astral.sh/uv/);
 
-- `requirements.dev.txt` for development dependencies.
-
-- `make` (optional);
-
-Simply run
-
-```sh
-virtualenv venv -p python3.10
-. ./venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-pip install -r requirements.dev.txt
-```
+- `make` (optional).
 
 ### Documentation
 
